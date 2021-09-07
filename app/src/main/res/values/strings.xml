@@ -139,6 +139,8 @@
     <string name="last_name">Last name*</string>
     <string name="l_name">Last name</string>
 
+    <string name="addconsumables">Add Consumables</string>
+
 
     <string name="gender">Gender : </string>
     <string name="diabetes">Diabetes : </string>

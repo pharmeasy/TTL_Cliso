@@ -427,7 +427,7 @@
                 android:layout_gravity="center"
                 android:background="@drawable/next_button"
                 android:padding="5dp"
-                android:text="Done"
+                android:text="SUBMIT"
                 android:textSize="@dimen/label"
                 android:textColor="@color/colorWhite" />
         </LinearLayout>

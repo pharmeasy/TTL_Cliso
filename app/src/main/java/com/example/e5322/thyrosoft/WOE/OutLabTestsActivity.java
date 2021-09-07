@@ -171,22 +171,41 @@ public class OutLabTestsActivity extends AppCompatActivity {
                                 isNhlAvailable = getValueFromSelectedList(Selcted_Outlab_Test);
                             }
                         }*/
+                        if (brandName.equalsIgnoreCase("TTL-OTHERS")) {
+                            String sendTestNames = show_selected_tests_list_test_ils.getText().toString();
+                            if (Selcted_Outlab_Test.size() == 1) {
+                                intent = new Intent(OutLabTestsActivity.this, Scan_Barcode_Outlabs.class);
+                                Bundle bundle = new Bundle();
+                                Log.e(TAG, "onClick: " + Selcted_Outlab_Test.size());
+                                Global.Selcted_Outlab_Test_global = Selcted_Outlab_Test;
+                                // bundle.putParcelableArrayList("getOutlablist", Selcted_Outlab_Test);
+                                bundle.putString("selectedTest", sendTestNames);
+                                bundle.putString("getTypeName", getTypeName);
+                                GlobalClass.selectedTestnamesOutlab = sendTestNames;
+                                intent.putExtras(bundle);
+                                startActivity(intent);
+                            } else {
+                                Toast.makeText(OutLabTestsActivity.this, "Cannot select more than 1 test", Toast.LENGTH_LONG).show();
+                            }
 
-                        String sendTestNames = show_selected_tests_list_test_ils.getText().toString();
-                        if (Selcted_Outlab_Test.size() == 1) {
-                            intent = new Intent(OutLabTestsActivity.this, Scan_Barcode_Outlabs.class);
-                        } else {
-                            intent = new Intent(OutLabTestsActivity.this, Cliso_SelctSampleActivity.class);
+                        }else {
+                            String sendTestNames = show_selected_tests_list_test_ils.getText().toString();
+                            if (Selcted_Outlab_Test.size() == 1) {
+                                intent = new Intent(OutLabTestsActivity.this, Scan_Barcode_Outlabs.class);
+                            } else {
+                                intent = new Intent(OutLabTestsActivity.this, Cliso_SelctSampleActivity.class);
+                            }
+                            Bundle bundle = new Bundle();
+                            Log.e(TAG, "onClick: " + Selcted_Outlab_Test.size());
+                            Global.Selcted_Outlab_Test_global = Selcted_Outlab_Test;
+                            // bundle.putParcelableArrayList("getOutlablist", Selcted_Outlab_Test);
+                            bundle.putString("selectedTest", sendTestNames);
+                            bundle.putString("getTypeName", getTypeName);
+                            GlobalClass.selectedTestnamesOutlab = sendTestNames;
+                            intent.putExtras(bundle);
+                            startActivity(intent);
                         }
-                        Bundle bundle = new Bundle();
-                        Log.e(TAG, "onClick: " + Selcted_Outlab_Test.size());
-                        Global.Selcted_Outlab_Test_global = Selcted_Outlab_Test;
-                        // bundle.putParcelableArrayList("getOutlablist", Selcted_Outlab_Test);
-                        bundle.putString("selectedTest", sendTestNames);
-                        bundle.putString("getTypeName", getTypeName);
-                        GlobalClass.selectedTestnamesOutlab = sendTestNames;
-                        intent.putExtras(bundle);
-                        startActivity(intent);
+
 
                     }
                 }
@@ -234,8 +253,6 @@ public class OutLabTestsActivity extends AppCompatActivity {
                                     (product != null && product.contains(s1))) {
                                 String testname = outlabdetails_outLabs.get(i).getName();
                                 filteredFiles.add(outlabdetails_outLabs.get(i));
-                            } else {
-
                             }
                             OutLabAdapter outLabRecyclerView = new OutLabAdapter(OutLabTestsActivity.this, filteredFiles);
                             outlab_list.setAdapter(outLabRecyclerView);
@@ -461,17 +478,25 @@ public class OutLabTestsActivity extends AppCompatActivity {
 
                         if (brandName.equals("TTL-OTHERS")) {
                             if (Selcted_Outlab_Test != null && Selcted_Outlab_Test.size() > 0) {
-                                //  Selcted_Outlab_Test.clear();
-                                Selcted_Outlab_Test.add(outlabdetails_outLabs.get(position));
-                                notifyDataSetChanged();
+
+//                                if (Selcted_Outlab_Test.size() >= 1) {
+//                                    Toast.makeText(context, "Cannot select more than 1 test", Toast.LENGTH_LONG).show();
+//                                } else {
+                                    Selcted_Outlab_Test.add(outlabdetails_outLabs.get(position));
+                                    notifyDataSetChanged();
+//                                }
+
                             } else {
                                 Selcted_Outlab_Test.add(outlabdetails_outLabs.get(position));
                             }
 
                             if (showTestNmaes != null && showTestNmaes.size() > 0) {
-                                //showTestNmaes.clear();
-                                showTestNmaes.add(outlabdetails_outLabs.get(position).getName());
-                                notifyDataSetChanged();
+
+//                                if (Selcted_Outlab_Test.size() >= 1) {
+//                                } else {
+                                    showTestNmaes.add(outlabdetails_outLabs.get(position).getName());
+                                    notifyDataSetChanged();
+//                                }
                             } else {
                                 showTestNmaes.add(outlabdetails_outLabs.get(position).getName());
                             }
@@ -481,15 +506,28 @@ public class OutLabTestsActivity extends AppCompatActivity {
                             Selcted_Outlab_Test.add(outlabdetails_outLabs.get(position));
                         }
 
-                        lineargetselectedtestforILS.setVisibility(View.VISIBLE);
-                        holder.checked.setVisibility(View.VISIBLE);
-                        holder.un_check.setVisibility(View.GONE);
+                 /*       if (brandName.equals("TTL-OTHERS")) {
+                            if (Selcted_Outlab_Test.size() == 1) {
+                                holder.checked.setVisibility(View.VISIBLE);
+                                holder.un_check.setVisibility(View.GONE);
+                            } else {
+                                holder.checked.setVisibility(View.GONE);
+                                holder.un_check.setVisibility(View.VISIBLE);
+                                lineargetselectedtestforILS.setVisibility(View.VISIBLE);
+                                show_selected_tests_list_test_ils.setText("");
+                                String displayslectedtest = TextUtils.join(",", showTestNmaes);
+                                show_selected_tests_list_test_ils.setText(displayslectedtest);
+                            }
+                        } else {*/
+                            holder.checked.setVisibility(View.VISIBLE);
+                            holder.un_check.setVisibility(View.GONE);
+                            lineargetselectedtestforILS.setVisibility(View.VISIBLE);
+                            show_selected_tests_list_test_ils.setText("");
+                            String displayslectedtest = TextUtils.join(",", showTestNmaes);
+                            show_selected_tests_list_test_ils.setText(displayslectedtest);
+//                        }
 
-                        lineargetselectedtestforILS.setVisibility(View.VISIBLE);
-                        show_selected_tests_list_test_ils.setText("");
 
-                        String displayslectedtest = TextUtils.join(",", showTestNmaes);
-                        show_selected_tests_list_test_ils.setText(displayslectedtest);
                     } else {
                         Selcted_Outlab_Test.remove(outlabdetails_outLabs.get(position));
                         lineargetselectedtestforILS.setVisibility(View.VISIBLE);

@@ -127,7 +127,8 @@ public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.ViewHolder> 
         }
 
         if (!GlobalClass.isNull(url)) {
-            tv_url.setVisibility(View.VISIBLE);
+//            tv_url.setVisibility(View.VISIBLE);
+            tv_url.setVisibility(View.GONE);
             tv_url.setText(Html.fromHtml("<u>" + "View Sample" + "</u>"));
         } else {
             tv_url.setVisibility(View.GONE);

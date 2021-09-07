@@ -2,6 +2,10 @@ package com.example.e5322.thyrosoft.Models.PincodeMOdel;
 
 import android.widget.TextView;
 
+import com.example.e5322.thyrosoft.Models.InclusionMasterModel;
+
+import java.util.ArrayList;
+
 /**
  * Created by Orion on 4/27/2017.
  */
@@ -79,6 +83,7 @@ public class BundleConstants {
     public static int FlagForR = 0;
     public static int SetDownLoadExcelCount = 0;
     public static final String Directory_Folder = "/BTSDocuments";
+    public static ArrayList<InclusionMasterModel> lists_incl_dupl;
 
     //Image Paading from left right top bottom boom menu item
     public static int Imagepadding=13;

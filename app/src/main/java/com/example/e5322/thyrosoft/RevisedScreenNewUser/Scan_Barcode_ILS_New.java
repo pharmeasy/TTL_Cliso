@@ -1,5 +1,10 @@
 package com.example.e5322.thyrosoft.RevisedScreenNewUser;
 
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
+import static com.example.e5322.thyrosoft.ToastFile.invalid_brcd;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -116,11 +121,6 @@ import java.util.Set;
 
 import in.galaxyofandroid.spinerdialog.OnSpinerItemClick;
 import in.galaxyofandroid.spinerdialog.SpinnerDialog;
-
-import static android.Manifest.permission.CAMERA;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
-import static com.example.e5322.thyrosoft.ToastFile.invalid_brcd;
 
 public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerInterface {
     private static final int REQUEST_CAMERA = 1;
@@ -2078,7 +2078,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                     } else if (getLocationRespModel.getProcessAt().equalsIgnoreCase("RPL")) {
                         tv_lab.setTextColor(mActivity.getResources().getColor(R.color.colorPrimary));
                     }
-                    tv_location.setText(Html.fromHtml("<b>Note: </b> This sample will be processed at "));
+                    tv_location.setText(Html.fromHtml("This sample will be processed at "));
                     ADDITIONAL1 = getLocationRespModel.getProcessAt();
                 } else {
                     tv_location.setVisibility(View.GONE);

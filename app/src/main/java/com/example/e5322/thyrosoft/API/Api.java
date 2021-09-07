@@ -47,6 +47,8 @@ public class Api {
     public static String BDN = LIVEAPI + "WO.svc/";
 
     //TODO SCANSO
+    public static String MASTERInclusion = SCANSOAPI + "MasterData/GetInclusionMaster";
+    public static String POSTADDINCLUSION = SCANSOAPI + "Billing/PostAddInclusion";
     public static String gettoken = SCANSOAPI + "Login/RegisteredUser";
     public static String LEAD_BOOKING = SCANSOAPI + "/LeadBooking/BookLead";
     public static String OTP_CREDIT_MIS = LIVEAPI + "COMMON.svc/";

@@ -72,6 +72,7 @@ public class Summary_Activity_WOE extends AppCompatActivity {
     private Global globalClass;
     int passvalue = 0;
     private String TAG = Summary_Activity_WOE.class.getSimpleName().toString();
+    TextView tv_edit, tv_delete;
 
     @SuppressLint("NewApi")
     @Override
@@ -105,6 +106,8 @@ public class Summary_Activity_WOE extends AppCompatActivity {
         ll_patient_gender = (LinearLayout) findViewById(R.id.ll_patient_gender);
         txt_pat_gender = (TextView) findViewById(R.id.txt_pat_gender);
         txt_pat_age = (TextView) findViewById(R.id.txt_pat_age);
+        tv_delete = (TextView) findViewById(R.id.tv_delete);
+        tv_edit = (TextView) findViewById(R.id.tv_edit);
 
         linearLayoutManager = new LinearLayoutManager(Summary_Activity_WOE.this);
         sample_list.setLayoutManager(linearLayoutManager);
@@ -291,10 +294,9 @@ public class Summary_Activity_WOE extends AppCompatActivity {
             }
         });
 
-
-        delete_patient_test.setOnClickListener(new View.OnClickListener() {
+        tv_delete.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
 
                 DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                     @Override
@@ -307,9 +309,11 @@ public class Summary_Activity_WOE extends AppCompatActivity {
 
                             case DialogInterface.BUTTON_NEGATIVE:
                                 //No button clicked
-                                Intent i = new Intent(Summary_Activity_WOE.this, Woe_Edt_Activity.class);
-                                startActivity(i);
-                                finish();
+//                                Intent i = new Intent(Summary_Activity_WOE.this, Woe_Edt_Activity.class);
+//                                startActivity(i);
+//                                finish();
+
+
 
 //                                Intent intent = new Intent(Summary_Activity_WOE.this, FragmentsHandlerActivity.class);
 //                                intent.putExtra("head", "WOE Edit");
@@ -324,19 +328,111 @@ public class Summary_Activity_WOE extends AppCompatActivity {
                 try {
                     if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getORDER_NO() != null) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(Summary_Activity_WOE.this);
-                        builder.setTitle("Confirm delete !");
+                        builder.setTitle("Confirm Delete !");
                         builder.setMessage(ToastFile.wish_woe_dlt).setPositiveButton("Yes", dialogClickListener).show();
                     } else {
                         AlertDialog.Builder builder = new AlertDialog.Builder(Summary_Activity_WOE.this);
-                        builder.setTitle("Confirm delete !");
+                        builder.setTitle("Confirm Delete !");
                         builder.setMessage(ToastFile.wish_woe_dlt).setPositiveButton("Yes", dialogClickListener)
-                                .setNegativeButton("Edit", dialogClickListener).show();
+                                .setNegativeButton("No", dialogClickListener).show();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
+
+        tv_edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case DialogInterface.BUTTON_POSITIVE:
+                                //Yes button clicked
+                                Intent i = new Intent(Summary_Activity_WOE.this, Woe_Edt_Activity.class);
+                                startActivity(i);
+                                finish();
+                                break;
+
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                //No button clicked
+
+
+//                                Intent intent = new Intent(Summary_Activity_WOE.this, FragmentsHandlerActivity.class);
+//                                intent.putExtra("head", "WOE Edit");
+//                                intent.putExtra("type", "woe_edit");
+//                                startActivity(intent);
+                                break;
+                        }
+                    }
+                };
+
+
+                try {
+                    if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getORDER_NO() != null) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Summary_Activity_WOE.this);
+                        builder.setTitle("Confirm Edit !");
+                        builder.setMessage(ToastFile.wish_woe_edit).setPositiveButton("Yes", dialogClickListener).show();
+                    } else {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Summary_Activity_WOE.this);
+                        builder.setTitle("Confirm Edit !");
+                        builder.setMessage(ToastFile.wish_woe_edit).setPositiveButton("Yes", dialogClickListener)
+                                .setNegativeButton("No", dialogClickListener).show();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+//        delete_patient_test.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        switch (which) {
+//                            case DialogInterface.BUTTON_POSITIVE:
+//                                //Yes button clicked
+//                                deletePatientDetailsandTest();
+//                                break;
+//
+//                            case DialogInterface.BUTTON_NEGATIVE:
+//                                //No button clicked
+//                                Intent i = new Intent(Summary_Activity_WOE.this, Woe_Edt_Activity.class);
+//                                startActivity(i);
+//                                finish();
+//
+////                                Intent intent = new Intent(Summary_Activity_WOE.this, FragmentsHandlerActivity.class);
+////                                intent.putExtra("head", "WOE Edit");
+////                                intent.putExtra("type", "woe_edit");
+////                                startActivity(intent);
+//                                break;
+//                        }
+//                    }
+//                };
+//
+//
+//                try {
+//                    if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getORDER_NO() != null) {
+//                        AlertDialog.Builder builder = new AlertDialog.Builder(Summary_Activity_WOE.this);
+//                        builder.setTitle("Confirm delete !");
+//                        builder.setMessage(ToastFile.wish_woe_dlt).setPositiveButton("Yes", dialogClickListener).show();
+//                    } else {
+//                        AlertDialog.Builder builder = new AlertDialog.Builder(Summary_Activity_WOE.this);
+//                        builder.setTitle("Confirm delete !");
+//                        builder.setMessage(ToastFile.wish_woe_dlt).setPositiveButton("Yes", dialogClickListener)
+//                                .setNegativeButton("Edit", dialogClickListener).show();
+//                    }
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
 
 
     }

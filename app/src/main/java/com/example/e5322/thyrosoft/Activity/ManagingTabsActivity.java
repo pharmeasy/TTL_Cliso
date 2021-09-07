@@ -1,5 +1,7 @@
 package com.example.e5322.thyrosoft.Activity;
 
+import static com.example.e5322.thyrosoft.API.Constants.NHF;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -90,8 +92,6 @@ import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
-
-import static com.example.e5322.thyrosoft.API.Constants.NHF;
 
 public class ManagingTabsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -290,6 +290,12 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         navigationDrawerNameTSP = (TextView) headerView.findViewById(R.id.navigationDrawerNameTSP);
         ecode = (TextView) headerView.findViewById(R.id.ecode);
         imageViewprofile = (ImageView) headerView.findViewById(R.id.imageViewprofile);
+        imageViewprofile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(activity, MyProfile_activity.class));
+            }
+        });
 
         if (appPreferenceManager != null && appPreferenceManager.getCovidAccessResponseModel() != null) {
             covidacc = appPreferenceManager.getCovidAccessResponseModel().isCovidRegistration();
@@ -335,11 +341,11 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             navigationView.getMenu().findItem(R.id.crab_camp).setVisible(covidacc);
             navigationView.getMenu().findItem(R.id.payment).setVisible(false);
             navigationView.getMenu().findItem(R.id.otp_credit).setVisible(false);
-            navigationView.getMenu().findItem(R.id.feedback).setVisible(true);
-            navigationView.getMenu().findItem(R.id.profile).setVisible(true);
-            navigationView.getMenu().findItem(R.id.notification).setVisible(true);
-            navigationView.getMenu().findItem(R.id.phone).setVisible(true);
-            navigationView.getMenu().findItem(R.id.whatsapp).setVisible(true);
+//            navigationView.getMenu().findItem(R.id.feedback).setVisible(true);
+//            navigationView.getMenu().findItem(R.id.profile).setVisible(true);
+//            navigationView.getMenu().findItem(R.id.notification).setVisible(true);
+//            navigationView.getMenu().findItem(R.id.phone).setVisible(true);
+//            navigationView.getMenu().findItem(R.id.whatsapp).setVisible(true);
             navigationView.getMenu().findItem(R.id.logout).setVisible(true);
             navigationView.getMenu().findItem(R.id.upload_document_navigation).setVisible(true);
             navigationView.getMenu().findItem(R.id.sgc_pgc_entry_data).setVisible(true);
@@ -347,14 +353,14 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             navigationView.getMenu().findItem(R.id.vid_leggy).setVisible(true);
             navigationView.getMenu().findItem(R.id.item_certificate).setVisible(true);
             navigationView.getMenu().findItem(R.id.notice).setVisible(true);
-            navigationView.getMenu().findItem(R.id.notification).setVisible(true);
+//            navigationView.getMenu().findItem(R.id.notification).setVisible(true);
             navigationView.getMenu().findItem(R.id.synchronization).setVisible(false);
-            navigationView.getMenu().findItem(R.id.faq_data).setVisible(true);
+//            navigationView.getMenu().findItem(R.id.faq_data).setVisible(true);
             navigationView.getMenu().findItem(R.id.accr_data).setVisible(true);
             navigationView.getMenu().findItem(R.id.offer_data).setVisible(false);
             navigationView.getMenu().findItem(R.id.articles_data).setVisible(false);
             navigationView.getMenu().findItem(R.id.company_contcat).setVisible(true);
-            navigationView.getMenu().findItem(R.id.thyroshop).setVisible(true);
+//            navigationView.getMenu().findItem(R.id.thyroshop).setVisible(true);
             navigationView.getMenu().findItem(R.id.bs_entry).setVisible(false);
             navigationView.getMenu().findItem(R.id.rbarcode).setVisible(false);
 
@@ -392,14 +398,14 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
                 navigationView.getMenu().findItem(R.id.HHH).setVisible(false);//todo hide DRT Module
                 navigationView.getMenu().findItem(R.id.communication).setVisible(true);
-                navigationView.getMenu().findItem(R.id.notification).setVisible(true);
+//                navigationView.getMenu().findItem(R.id.notification).setVisible(true);
                 navigationView.getMenu().findItem(R.id.notice).setVisible(true);
-                navigationView.getMenu().findItem(R.id.feedback).setVisible(true);
+//                navigationView.getMenu().findItem(R.id.feedback).setVisible(true);
                 navigationView.getMenu().findItem(R.id.logout).setVisible(true);
-                navigationView.getMenu().findItem(R.id.phone).setVisible(true);
+//                navigationView.getMenu().findItem(R.id.phone).setVisible(true);
                 navigationView.getMenu().findItem(R.id.item_certificate).setVisible(true);
-                navigationView.getMenu().findItem(R.id.whatsapp).setVisible(true);
-                navigationView.getMenu().findItem(R.id.profile).setVisible(true);
+//                navigationView.getMenu().findItem(R.id.whatsapp).setVisible(true);
+//                navigationView.getMenu().findItem(R.id.profile).setVisible(true);
                 navigationView.getMenu().findItem(R.id.synchronization).setVisible(true);
             } else if (access.equals("ADMIN")) {
 
@@ -410,14 +416,14 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
                 navigationView.getMenu().findItem(R.id.HHH).setVisible(false);//todo hide DRT Module
                 navigationView.getMenu().findItem(R.id.communication).setVisible(true);
-                navigationView.getMenu().findItem(R.id.notification).setVisible(true);
+//                navigationView.getMenu().findItem(R.id.notification).setVisible(true);
                 navigationView.getMenu().findItem(R.id.notice).setVisible(true);
-                navigationView.getMenu().findItem(R.id.feedback).setVisible(true);
+//                navigationView.getMenu().findItem(R.id.feedback).setVisible(true);
                 navigationView.getMenu().findItem(R.id.logout).setVisible(true);
-                navigationView.getMenu().findItem(R.id.phone).setVisible(true);
-                navigationView.getMenu().findItem(R.id.whatsapp).setVisible(true);
+//                navigationView.getMenu().findItem(R.id.phone).setVisible(true);
+//                navigationView.getMenu().findItem(R.id.whatsapp).setVisible(true);
                 navigationView.getMenu().findItem(R.id.item_certificate).setVisible(true);
-                navigationView.getMenu().findItem(R.id.profile).setVisible(true);
+//                navigationView.getMenu().findItem(R.id.profile).setVisible(true);
                 navigationView.getMenu().findItem(R.id.synchronization).setVisible(true);
             }
         }
@@ -1226,7 +1232,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                         public void onClick(DialogInterface dialog, int id) {
                             TastyToast.makeText(getApplicationContext(), getResources().getString(R.string.Success), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                             //   distoye();
-                            new LogUserActivityTagging(activity, Constants.LOGOUT,"");
+                            new LogUserActivityTagging(activity, Constants.LOGOUT, "");
                             logout();
                         }
                     })

@@ -2,9 +2,8 @@ package com.example.e5322.thyrosoft.Adapter;
 
 import android.app.Activity;
 import android.content.Context;
-
-import androidx.core.content.ContextCompat;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +14,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.core.content.ContextCompat;
 
 import com.example.e5322.thyrosoft.Activity.Communication_Activity;
 import com.example.e5322.thyrosoft.Interface.Interface_Pass_CommunicationValue;
@@ -96,11 +97,11 @@ public class ExpandableListCommunication extends BaseExpandableListAdapter {
 
         String headerTitle = inboxes[groupPosition].getQuestion();
 
-        date.setText(this.inboxes[groupPosition].getCommDate());
-        name.setText(this.inboxes[groupPosition].getCommBy());
+        date.setText(Html.fromHtml(this.inboxes[groupPosition].getCommDate()));
+        name.setText(Html.fromHtml(this.inboxes[groupPosition].getCommBy()));
 
         commHeader.setVisibility(View.VISIBLE);
-        commHeader.setText(headerTitle);
+        commHeader.setText(Html.fromHtml(headerTitle));
 
         /*Linkify.addLinks(commHeader, Linkify.EMAIL_ADDRESSES);
         commHeader.setMovementMethod(LinkMovementMethod.getInstance());*/
@@ -149,10 +150,10 @@ public class ExpandableListCommunication extends BaseExpandableListAdapter {
             name.setVisibility(View.VISIBLE);
             respondedby.setVisibility(View.GONE);
 
-            name.setText(inboxes[groupPosition].getCommBy());
+            name.setText(Html.fromHtml(inboxes[groupPosition].getCommBy()));
 
-            response.setText(inboxes[groupPosition].getResponse());
-            resdate.setText(inboxes[groupPosition].getResDate());
+            response.setText(Html.fromHtml(inboxes[groupPosition].getResponse()));
+            resdate.setText(Html.fromHtml(inboxes[groupPosition].getResDate()));
             tat.setText("TAT: " + inboxes[groupPosition].getTAT());
 
             if (inboxes.length > 0) {

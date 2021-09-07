@@ -207,8 +207,8 @@
                             android:scrollbars="vertical"
                             android:text="Select Test"
                             android:textAlignment="viewStart"
-                            android:textAllCaps="true"
-                            android:textColor="@color/maroon"
+                            android:textAllCaps="false"
+                            android:textColor="@color/black"
                             android:textSize="@dimen/value" />
 
                         <LinearLayout
@@ -232,8 +232,8 @@
                                     android:background="@color/white"
                                     android:gravity="center"
                                     android:text="B2C :"
-                                    android:textColor="@color/DARKGray"
-                                    android:textSize="@dimen/note" />
+                                    android:textColor="@color/black"
+                                    android:textSize="10sp" />
 
                                 <TextView
                                     android:id="@+id/show_rates"
@@ -243,7 +243,7 @@
                                     android:layout_weight="1"
                                     android:gravity="start"
                                     android:text="450"
-                                    android:textColor="@color/maroon"
+                                    android:textColor="@color/black"
                                     android:textSize="@dimen/note"
                                     tools:ignore="RtlCompat" />
 
@@ -264,9 +264,9 @@
                                     android:background="@color/white"
                                     android:gravity="center"
                                     android:text="Your Rate :"
-                                    android:textAllCaps="true"
-                                    android:textColor="@color/DARKGray"
-                                    android:textSize="@dimen/note" />
+                                    android:textAllCaps="false"
+                                    android:textColor="@color/black"
+                                    android:textSize="10sp" />
 
 
                                 <TextView
@@ -277,7 +277,7 @@
                                     android:layout_weight="1"
                                     android:gravity="start"
                                     android:text="100"
-                                    android:textColor="@color/maroon"
+                                    android:textColor="@color/black"
                                     android:textSize="11sp"
                                     tools:ignore="RtlCompat" />
 
@@ -437,8 +437,8 @@
                         android:padding="3dp"
                         android:scrollbars="vertical"
                         android:text="Select Test"
-                        android:textAllCaps="true"
-                        android:textColor="@color/maroon"
+                        android:textAllCaps="false"
+                        android:textColor="@color/black"
                         android:textSize="@dimen/value" />
 
                     <LinearLayout
@@ -462,8 +462,8 @@
                                 android:background="@color/white"
                                 android:gravity="center"
                                 android:text="B2C :"
-                                android:textColor="@color/DARKGray"
-                                android:textSize="@dimen/value" />
+                                android:textColor="@color/black"
+                                android:textSize="10sp" />
 
                             <TextView
                                 android:id="@+id/out_lab_cost"
@@ -472,7 +472,7 @@
                                 android:layout_gravity="start"
                                 android:layout_weight="1"
                                 android:text="741"
-                                android:textColor="@color/maroon"
+                                android:textColor="@color/black"
                                 android:textSize="@dimen/value"
                                 tools:ignore="RtlCompat" />
 
@@ -493,9 +493,9 @@
                                 android:background="@color/white"
                                 android:gravity="center"
                                 android:text="Your Rate :"
-                                android:textAllCaps="true"
-                                android:textColor="@color/DARKGray"
-                                android:textSize="@dimen/value"
+                                android:textAllCaps="false"
+                                android:textColor="@color/black"
+                                android:textSize="10sp"
                                 android:visibility="visible" />
 
                             <TextView
@@ -506,7 +506,7 @@
                                 android:layout_weight="1"
                                 android:gravity="start"
                                 android:text="820"
-                                android:textColor="@color/maroon"
+                                android:textColor="@color/black"
                                 android:textSize="@dimen/value" />
 
                         </LinearLayout>

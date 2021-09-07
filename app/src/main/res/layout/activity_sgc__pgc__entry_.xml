@@ -13,6 +13,7 @@
         android:background="@color/lightgray"
         android:orientation="horizontal"
         android:weightSum="5">
+      
 
         <ImageView
             android:id="@+id/back"
@@ -28,7 +29,7 @@
             android:layout_gravity="center"
             android:layout_weight="4"
             android:gravity="center"
-            android:text="SGC/PGC Entry"
+            android:text="SGC/PGC REGISTRATION"
             android:textSize="@dimen/header"
             android:textStyle="bold" />
 
@@ -42,7 +43,7 @@
 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -51,25 +52,23 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="9dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginRight="9dp"
-                android:layout_weight="4.9">
+                android:layout_marginRight="9dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="250dp"
+                    android:layout_height="500dp"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
                     android:layout_marginTop="20dp"
-                    android:layout_weight="8"
                     android:background="@drawable/maroon_border_white_bg"
                     android:orientation="vertical"
                     android:paddingTop="20dp">
 
+<!--     Removed    android:id="@+id/latlong"-->
                     <LinearLayout
-                        android:id="@+id/latlong"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_gravity="center"
@@ -80,6 +79,7 @@
                         android:layout_weight="1"
                         android:background="@drawable/grey_curve_border"
                         android:ems="10"
+                        android:visibility="gone"
                         android:orientation="horizontal">
 
                         <ImageView
@@ -89,7 +89,6 @@
                             android:src="@drawable/placepicker" />
 
                         <TextView
-
                             android:id="@+id/lattitude_txt"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
@@ -117,22 +116,26 @@
                     </LinearLayout>
 
                     <EditText
-                        android:id="@+id/pincode_edt"
+                        android:id="@+id/client_name_edt"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
+                        android:layout_below="@+id/textView"
+                        android:layout_alignParentLeft="true"
+                        android:layout_gravity="center"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
                         android:layout_marginBottom="8dp"
                         android:layout_weight="1"
                         android:background="@drawable/grey_curve_border"
-                        android:digits="0123456789"
-                        android:hint="ENTER PINCODE*"
-                        android:inputType="number"
-                        android:maxLength="6"
-                        android:maxLines="1"
+                        android:digits="QWERTYUIOPLKJHGFDSAZXCVBNMqwertyuiopasdfghjklzxcvbnm.@_ "
+                        android:ems="10"
+                        android:gravity="center|left"
+                        android:hint="ENTER CLIENT NAME*"
+                        android:inputType="textCapCharacters"
+                        android:maxLength="25"
                         android:paddingLeft="6dp"
+                        android:textColor="@color/DARKGray"
                         android:textSize="@dimen/value" />
-
 
                     <EditText
                         android:id="@+id/mobile_edt"
@@ -161,8 +164,8 @@
                         android:layout_alignParentLeft="true"
                         android:layout_gravity="center"
                         android:layout_marginLeft="10dp"
-                        android:layout_marginBottom="8dp"
                         android:layout_marginRight="10dp"
+                        android:layout_marginBottom="8dp"
                         android:layout_weight="1"
                         android:background="@drawable/grey_curve_border"
                         android:ems="10"
@@ -173,26 +176,61 @@
                         android:textColor="@color/DARKGray"
                         android:textSize="@dimen/value" />
 
-                    <EditText
-                        android:id="@+id/client_name_edt"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_below="@+id/textView"
-                        android:layout_alignParentLeft="true"
                         android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/grey_curve_border"
+                        android:ems="10"
+                        android:orientation="horizontal"
+                        android:weightSum="1.2">
+
+                        <ImageView
+                            android:id="@+id/latlong"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.2"
+                            android:src="@drawable/placepicker" />
+
+                        <EditText
+                            android:id="@+id/address"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_below="@+id/textView"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            android:enabled="false"
+                            android:digits="QWERTYUIOPLKJHGFDSAZXCVBNMqwertyuiopasdfghjklzxcvbnm.,:/@0123456789 "
+                            android:ems="10"
+                            android:background="@color/transparent"
+                            android:hint="ENTER ADDRESS*"
+                            android:inputType="textEmailAddress"
+                            android:maxLines="4"
+                            android:paddingLeft="6dp"
+                            android:textColor="@color/DARKGray"
+                            android:textSize="@dimen/value" />
+                    </LinearLayout>
+
+                    <EditText
+                        android:id="@+id/pincode_edt"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
                         android:layout_marginBottom="8dp"
                         android:layout_weight="1"
                         android:background="@drawable/grey_curve_border"
-                        android:digits="QWERTYUIOPLKJHGFDSAZXCVBNMqwertyuiopasdfghjklzxcvbnm.@_ "
-                        android:ems="10"
-                        android:gravity="center|left"
-                        android:hint="ENTER CLIENT NAME*"
-                        android:inputType="textCapCharacters"
-                        android:maxLength="25"
+                        android:digits="0123456789"
+                        android:hint="ENTER PINCODE*"
+                        android:inputType="number"
+                        android:maxLength="6"
+                        android:maxLines="1"
                         android:paddingLeft="6dp"
-                        android:textColor="@color/DARKGray"
                         android:textSize="@dimen/value" />
 
                     <LinearLayout
@@ -233,11 +271,11 @@
                             android:layout_alignParentLeft="true"
                             android:layout_gravity="center"
                             android:layout_weight="4"
+                            android:background="@color/transparent"
                             android:digits="QWERTYUIOPLKJHGFDSAZXCVBNMqwertyuiopasdfghjklzxcvbnm.@_ "
                             android:ems="10"
-                            android:background="@color/transparent"
                             android:gravity="center|left"
-                            android:hint="Enter Name"
+                            android:hint="Enter Name*"
                             android:inputType="textCapCharacters"
                             android:maxLength="25"
                             android:paddingLeft="6dp"
@@ -245,74 +283,27 @@
                             android:textSize="@dimen/value" />
                     </LinearLayout>
 
-                    <EditText
-                        android:id="@+id/address_layout"
-                        style="@style/medium_text"
+                    <Spinner
+                        android:id="@+id/brand_spinner"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_below="@+id/textView"
-                        android:layout_alignParentLeft="true"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginBottom="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/grey_curve_border"
-                        android:digits="QWERTYUIOPLKJHGFDSAZXCVBNMqwertyuiopasdfghjklzxcvbnm.,:/@0123456789 "
-                        android:ems="10"
-                        android:gravity="center|left"
-                        android:hint="Enter Address  "
-                        android:inputType="textEmailAddress"
-                        android:maxLines="4"
-                        android:paddingLeft="6dp"
-                        android:textColor="@color/DARKGray"
-                        android:textSize="@dimen/value"
+                        android:layout_height="34dp"
+                        android:layout_marginLeft="25dp"
+                        android:layout_marginRight="25dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="@drawable/corner_curve_maroon"
+                        android:backgroundTint="@color/maroon"
                         android:visibility="gone" />
-                </LinearLayout>
 
-                <!--        <Spinner
-                            android:id="@+id/sgc_pgc_spinner"
-                            android:layout_width="match_parent"
-                            android:layout_height="34dp"
-                            android:layout_marginLeft="25dp"
-                            android:layout_marginRight="25dp"
-                            android:layout_weight="2"
-                            android:background="@drawable/corner_curve_maroon"
-                            android:backgroundTint="@color/maroon"
-                            android:popupBackground="@color/maroon"/>-->
-
-
-                <Spinner
-                    android:id="@+id/sgc_pgc_spinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="34dp"
-                    android:layout_marginLeft="25dp"
-                    android:layout_marginRight="25dp"
-                    android:layout_weight="2"
-                    android:background="@drawable/corner_curve_maroon"
-                    android:backgroundTint="@color/maroon" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginLeft="9dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="9dp"
-                android:layout_weight="4.9">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="250dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginTop="20dp"
-                    android:layout_weight="9"
-                    android:background="@drawable/maroon_border_white_bg"
-                    android:orientation="vertical"
-                    android:paddingTop="20dp">
-
+                    <Spinner
+                        android:id="@+id/qualification_spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="34dp"
+                        android:layout_marginLeft="25dp"
+                        android:layout_marginRight="25dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="@drawable/corner_curve_maroon"
+                        android:backgroundTint="@color/maroon"
+                        android:visibility="gone" />
 
                     <EditText
                         android:id="@+id/incharge_name"
@@ -333,29 +324,6 @@
                         android:hint="INCHARGE NAME*"
                         android:inputType="textCapCharacters"
                         android:maxLength="25"
-                        android:paddingLeft="6dp"
-                        android:textColor="@color/DARKGray"
-                        android:textSize="@dimen/value" />
-
-                    <EditText
-                        android:id="@+id/address"
-                        style="@style/medium_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_below="@+id/textView"
-                        android:layout_alignParentLeft="true"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginBottom="8dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/grey_curve_border"
-                        android:digits="QWERTYUIOPLKJHGFDSAZXCVBNMqwertyuiopasdfghjklzxcvbnm.,:/@0123456789 "
-                        android:ems="10"
-                        android:gravity="center|left"
-                        android:hint="ENTER ADDRESS*"
-                        android:inputType="textEmailAddress"
-                        android:maxLines="4"
                         android:paddingLeft="6dp"
                         android:textColor="@color/DARKGray"
                         android:textSize="@dimen/value" />
@@ -483,11 +451,10 @@
                             android:textSize="@dimen/value" />
                     </LinearLayout>
 
-
                 </LinearLayout>
 
                 <Spinner
-                    android:id="@+id/brand_spinner"
+                    android:id="@+id/sgc_pgc_spinner"
                     android:layout_width="match_parent"
                     android:layout_height="34dp"
                     android:layout_marginLeft="25dp"
@@ -496,33 +463,21 @@
                     android:background="@drawable/corner_curve_maroon"
                     android:backgroundTint="@color/maroon" />
 
-                <Spinner
-                    android:id="@+id/qualification_spinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="34dp"
-                    android:layout_marginLeft="25dp"
-                    android:layout_marginRight="25dp"
-                    android:layout_weight="2"
-                    android:background="@drawable/corner_curve_maroon"
-                    android:backgroundTint="@color/maroon"
-                    android:visibility="gone" />
-
             </RelativeLayout>
-
 
             <Button
                 android:id="@+id/next_btn_sgc_pgc"
                 android:layout_width="@dimen/_150sdp"
                 android:layout_height="0dp"
+                android:layout_gravity="center"
                 android:layout_marginLeft="9dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="9dp"
                 android:layout_marginBottom="10dp"
-                android:layout_gravity="center"
                 android:layout_weight="0.7"
                 android:background="@drawable/next_button"
                 android:padding="5dp"
-                android:text="Next"
+                android:text="@string/submit"
                 android:textAllCaps="true"
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/label" />

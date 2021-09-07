@@ -1,5 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="app/src/main/res/drawable-xhdpi/bottom_sheet_design.xml" value="0.17962962962962964" />
+        <entry key="app/src/main/res/layout/activity_billing.xml" value="0.13464912280701755" />
+        <entry key="app/src/main/res/layout/activity_billing_details.xml" value="0.2881578947368421" />
+        <entry key="app/src/main/res/layout/activity_ledger.xml" value="0.2101851851851852" />
+        <entry key="app/src/main/res/layout/activity_ledger_details_new.xml" value="0.2101851851851852" />
+        <entry key="app/src/main/res/layout/activity_out_lab_tests.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_scan__barcode__ils.xml" value="0.2881578947368421" />
+        <entry key="app/src/main/res/layout/activity_sgc__pgc__entry_.xml" value="0.2574561403508772" />
+        <entry key="app/src/main/res/layout/activity_video.xml" value="0.2574561403508772" />
+        <entry key="app/src/main/res/layout/billing_det_row_header.xml" value="0.2881578947368421" />
+        <entry key="app/src/main/res/layout/brand_item.xml" value="0.2881578947368421" />
+        <entry key="app/src/main/res/layout/certificate_item.xml" value="0.2574561403508772" />
+        <entry key="app/src/main/res/layout/custom_missed_call_verification_dialog.xml" value="0.25701754385964914" />
+        <entry key="app/src/main/res/layout/custom_slider.xml" value="0.1570175438596491" />
+        <entry key="app/src/main/res/layout/fragment_communication.xml" value="0.2101851851851852" />
+        <entry key="app/src/main/res/layout/fragment_my_profile.xml" value="0.2574561403508772" />
+        <entry key="app/src/main/res/layout/fragment_r_a_t_enter.xml" value="0.2675438596491228" />
+        <entry key="app/src/main/res/layout/fragment_rate_calculator.xml" value="0.2101851851851852" />
+        <entry key="app/src/main/res/layout/fragment_start__new__woe.xml" value="0.2657894736842105" />
+        <entry key="app/src/main/res/layout/fragment_summary.xml" value="0.2574561403508772" />
+        <entry key="app/src/main/res/layout/fromcpl_tocpl_child_row.xml" value="0.2675438596491228" />
+        <entry key="app/src/main/res/layout/lay_confbook.xml" value="0.25277777777777777" />
+        <entry key="app/src/main/res/layout/lay_nhf.xml" value="0.2675438596491228" />
+        <entry key="app/src/main/res/layout/lay_petct.xml" value="0.26406926406926406" />
+        <entry key="app/src/main/res/layout/lay_scansummary.xml" value="0.2675438596491228" />
+        <entry key="app/src/main/res/layout/nav_header_main.xml" value="0.2675438596491228" />
+        <entry key="app/src/main/res/layout/outlab_activity.xml" value="0.13903508771929823" />
+        <entry key="app/src/main/res/layout/rpl_cpl_header_row.xml" value="0.262719298245614" />
+        <entry key="app/src/main/res/layout/single_barcode_list.xml" value="0.2881578947368421" />
+        <entry key="app/src/main/res/layout/summary_activity_new.xml" value="0.2574561403508772" />
+        <entry key="app/src/main/res/menu/activity_main_drawer.xml" value="0.2574561403508772" />
+      </map>
+    </option>
+  </component>
   <component name="NullableNotNullManager">
     <option name="myDefaultNullable" value="android.support.annotation.Nullable" />
     <option name="myDefaultNotNull" value="android.support.annotation.NonNull" />
@@ -26,7 +63,7 @@
     </option>
     <option name="myNotNulls">
       <value>
-        <list size="14">
+        <list size="15">
           <item index="0" class="java.lang.String" itemvalue="org.jetbrains.annotations.NotNull" />
           <item index="1" class="java.lang.String" itemvalue="javax.annotation.Nonnull" />
           <item index="2" class="java.lang.String" itemvalue="edu.umd.cs.findbugs.annotations.NonNull" />
@@ -41,6 +78,7 @@
           <item index="11" class="java.lang.String" itemvalue="org.eclipse.jdt.annotation.NonNull" />
           <item index="12" class="java.lang.String" itemvalue="io.reactivex.annotations.NonNull" />
           <item index="13" class="java.lang.String" itemvalue="io.reactivex.rxjava3.annotations.NonNull" />
+          <item index="14" class="java.lang.String" itemvalue="lombok.NonNull" />
         </list>
       </value>
     </option>

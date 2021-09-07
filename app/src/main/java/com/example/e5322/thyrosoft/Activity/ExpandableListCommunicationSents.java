@@ -1,10 +1,13 @@
 package com.example.e5322.thyrosoft.Activity;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +22,6 @@ import androidx.core.content.ContextCompat;
 
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.Sents;
 import com.example.e5322.thyrosoft.R;
-
-import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by e5426@thyrocare.com on 22/5/18.
@@ -115,9 +116,9 @@ public class ExpandableListCommunicationSents extends BaseExpandableListAdapter 
 
 
         date.setText(this.sents[groupPosition].getCommDate());
-        name.setText(nameString);
+        name.setText(Html.fromHtml(nameString));
         commHeader.setVisibility(View.VISIBLE);
-        commHeader.setText(headerTitle);
+        commHeader.setText(Html.fromHtml(headerTitle));
 
 
         if (isExpanded) {
@@ -158,7 +159,7 @@ public class ExpandableListCommunicationSents extends BaseExpandableListAdapter 
 
             name.setVisibility(View.VISIBLE);
             respondedby.setVisibility(View.VISIBLE);
-            respondedby.setText(sents[groupPosition].getResponseBy());
+            respondedby.setText(Html.fromHtml(sents[groupPosition].getResponseBy()));
 
 
 
@@ -166,11 +167,11 @@ public class ExpandableListCommunicationSents extends BaseExpandableListAdapter 
                 response.setText("Not yet responded !");
                 response.setTextColor(Color.parseColor("#f97d7b"));
             }else{
-                response.setText(sents[groupPosition].getResponse());
+                response.setText(Html.fromHtml(sents[groupPosition].getResponse()));
                 response.setTextColor(Color.parseColor("#000000"));
             }
 
-            resdate.setText(sents[groupPosition].getResDate());
+            resdate.setText(Html.fromHtml(sents[groupPosition].getResDate()));
             tat.setText("TAT: " + sents[groupPosition].getTAT());
 
             if (sents.length > 0) {

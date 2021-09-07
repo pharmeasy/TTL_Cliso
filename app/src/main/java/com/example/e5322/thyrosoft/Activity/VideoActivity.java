@@ -8,16 +8,6 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
-import android.text.TextUtils;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -25,11 +15,20 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Adapter.VideoListAdapter;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.GetVideoLanguageWiseRequestModel;
 import com.example.e5322.thyrosoft.Models.VideoLangaugesResponseModel;
@@ -38,6 +37,7 @@ import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.Retrofit.APIInteface;
 import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -114,7 +114,7 @@ public class VideoActivity extends AppCompatActivity {
 
         initToolbar();
 
-        if (GlobalClass.isNull(prefs_Language.getString("LanguageSelected", ""))) {
+        if (GlobalClass.isNull(prefs_Language.getString("LanguageArryList", ""))) {
             if (connectionDetector.isConnectingToInternet()) {
                 CallVideoLanguagesAPI();
             } else {
@@ -122,10 +122,9 @@ public class VideoActivity extends AppCompatActivity {
             }
 
         } else {
-            tv_languageSelected.setText(prefs_Language.getString("LanguageSelected", ""));
 
             if (connectionDetector.isConnectingToInternet()) {
-                GetVideosBasedonLanguage(prefs_Language.getString("LanguageID", ""));
+                Setdata();
             } else {
                 global.showCustomToast(mActivity, "Please check internet connection.");
             }
@@ -148,6 +147,18 @@ public class VideoActivity extends AppCompatActivity {
                     }
                 })
                 .setActionTextColor(getResources().getColor(R.color.maroon));
+    }
+
+    private void Setdata() {
+        SharedPreferences.Editor editor = prefs_Language.edit();
+        editor.putString("LanguageSelected","English");
+        editor.putString("LanguageID","80");
+        editor.apply();
+
+        tv_languageSelected.setText( prefs_Language.getString("LanguageSelected", ""));
+
+        GetVideosBasedonLanguage(prefs_Language.getString("LanguageID",""));
+
     }
 
     private void initToolbar() {
@@ -235,8 +246,10 @@ public class VideoActivity extends AppCompatActivity {
                     editor.putString("LanguageArryList", json);
                     editor.apply();
 
+
                     if (GlobalClass.isNull(prefs_Language.getString("LanguageSelected", ""))) {
-                        showLanguageDialogList("Select Language", VideoLangArylist, tv_languageSelected, false);
+//                        showLanguageDialogList("Select Language", VideoLangArylist, tv_languageSelected, false);
+                        Setdata();
                         tv_noDatafound.setVisibility(View.GONE);
                     } else {
                         showLanguageDialogList("Select Language", VideoLangArylist, tv_languageSelected, true);
@@ -313,11 +326,11 @@ public class VideoActivity extends AppCompatActivity {
                                 }
                             }*/
 
-                            SharedPreferences pref = mActivity.getSharedPreferences("Video_lang_pref", 0);
+                            /*SharedPreferences pref = mActivity.getSharedPreferences("Video_lang_pref", 0);
                             SharedPreferences.Editor editor = pref.edit();
                             editor.putString("LanguageSelected", arrayAdapter.getItem(which).getLANGUAGE());
                             editor.putString("LanguageID", arrayAdapter.getItem(which).getIID_NEW());
-                            editor.apply();
+                            editor.apply();*/
 
                         } else {
                             GlobalClass.toastyError(VideoActivity.this, MessageConstants.CHECK_INTERNET_CONN, false);
@@ -346,7 +359,7 @@ public class VideoActivity extends AppCompatActivity {
         model.setLanguage(LanguageID);
         PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(mActivity, Api.LIVEAPI).create(PostAPIInteface.class);
         Call<VideosResponseModel> responseCall = apiInterface.getVideobasedOnLanguage(model);
-       // Log.e(TAG, "VIDEO LIST BODY ---->" + new GsonBuilder().create().toJson(model));
+        // Log.e(TAG, "VIDEO LIST BODY ---->" + new GsonBuilder().create().toJson(model));
         //Log.e(TAG, "VIDEO LIST URL ---->" + responseCall.request().url());
         global.showProgressDialog();
 
@@ -720,7 +733,6 @@ public class VideoActivity extends AppCompatActivity {
         super.onPause();
 
     }
-
 
     @Override
     public void onBackPressed() {

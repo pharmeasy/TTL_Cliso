@@ -21,6 +21,9 @@ import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.BookLeadPOSTModel;
 import com.example.e5322.thyrosoft.Models.GetLeadgerBalnce;
 import com.example.e5322.thyrosoft.Models.LeadBookingResponseModel;
+import com.example.e5322.thyrosoft.Models.PincodeMOdel.BundleConstants;
+import com.example.e5322.thyrosoft.Models.PostInclisionMaterial;
+import com.example.e5322.thyrosoft.Models.getInclusionMasterModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.startscreen.ConnectionDetector;
 import com.example.e5322.thyrosoft.startscreen.Login;
@@ -34,11 +37,13 @@ import com.payu.india.Payu.PayuConstants;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 import static com.example.e5322.thyrosoft.API.Constants.tab_flag;
 
 public class ConfirmbookDetail extends AppCompatActivity implements View.OnClickListener {
-    public TextView tv_toolname, tv_pname, tv_gender, tv_diabetics, tv_dob, tv_mobileno, tv_email, tv_city, tv_remarks, tv_servicetype, tv_avaibal, tv_paidamt, txt_appoint_dt, txt_age;
-    public String pname, gender, diabetics, dob, mobileno, emailId, city, remarks, sercicetype, availbal, paidamt, amt_coll, header, appoint_dt;
+    public TextView tv_toolname, tv_pname, tv_gender, tv_diabetics, tv_dob, tv_mobileno, tv_email, tv_city, tv_remarks, tv_servicetype, tv_avaibal, txt_inclusionmnt, tv_paidamt, txt_finalpaidamt, txt_appoint_dt, txt_age;
+    public String pname, gender, diabetics, dob, mobileno, emailId, city, remarks, sercicetype, availbal, scanAmount, finalTotalAmount, amt_coll, header, appoint_dt;
     public LinearLayout lin_email, lin_remarks, lin_age, lin_dob;
     public Button btn_confirm, btn_reset;
     public ProgressDialog progressDialog;
@@ -53,6 +58,8 @@ public class ConfirmbookDetail extends AppCompatActivity implements View.OnClick
     public PayuConfig payuConfig;
     String centerId, serviceId, calage, str_slot;
     private Gson gson;
+    private int fdupl_incl_Amnt = 0;
+    LinearLayout ll_inclusionamnt;
 
 
     @Override
@@ -115,7 +122,8 @@ public class ConfirmbookDetail extends AppCompatActivity implements View.OnClick
             remarks = bundle.getString(Constants.PREMARK, "");
             sercicetype = bundle.getString(Constants.SERVICETYPE, "");
             availbal = bundle.getString(Constants.AVAILBAL, "");
-            paidamt = bundle.getString(Constants.PAID_BAL, "");
+            scanAmount = bundle.getString(Constants.PAID_BAL, "");
+            finalTotalAmount = bundle.getString(Constants.PAID_FINALBAL, "");
             amt_coll = bundle.getString(Constants.AMT_Coll, "");
         }
 
@@ -133,11 +141,14 @@ public class ConfirmbookDetail extends AppCompatActivity implements View.OnClick
         tv_servicetype = findViewById(R.id.txt_servicetype);
         tv_avaibal = findViewById(R.id.txt_avaibal);
         tv_paidamt = findViewById(R.id.txt_paidamt);
+        txt_inclusionmnt = findViewById(R.id.txt_inclusionmnt);
+        txt_finalpaidamt = findViewById(R.id.txt_finalpaidamt);
         txt_appoint_dt = findViewById(R.id.txt_appoint_dt);
         txt_age = findViewById(R.id.txt_age);
 
         lin_dob = findViewById(R.id.lin_dob);
         lin_age = findViewById(R.id.lin_age);
+        ll_inclusionamnt = findViewById(R.id.ll_inclusionamnt);
 
         lin_email = findViewById(R.id.lin_email);
         lin_remarks = findViewById(R.id.lin_remarks);
@@ -195,11 +206,13 @@ public class ConfirmbookDetail extends AppCompatActivity implements View.OnClick
             txt_appoint_dt.setText(appoint_dt);
 
 
-            GlobalClass.SetText(tv_paidamt, GlobalClass.currencyFormat(paidamt));
+            GlobalClass.SetText(tv_paidamt, "Rs. " + GlobalClass.currencyFormat(scanAmount));
+            GlobalClass.SetText(txt_finalpaidamt, "Rs. " + GlobalClass.currencyFormat(finalTotalAmount));
+            setinClusionAmount();
             //  GlobalClass.SetText(tv_avaibal, GlobalClass.currencyFormat(availbal));
 
 
-            if (Integer.parseInt(availbal) >= Integer.parseInt(paidamt)) {
+            if (Integer.parseInt(availbal) >= Integer.parseInt(scanAmount)) {
                 //Booking Flow
                 btn_confirm.setVisibility(View.VISIBLE);
             } else {
@@ -209,6 +222,38 @@ public class ConfirmbookDetail extends AppCompatActivity implements View.OnClick
             e.printStackTrace();
         }
 
+    }
+
+    private void setinClusionAmount() {
+        int sl_itemmnt = setTotalDuplInclusionAmount();
+        if (sl_itemmnt == 0) {
+            GlobalClass.SetText(txt_inclusionmnt, "");
+            ll_inclusionamnt.setVisibility(View.GONE);
+        } else {
+            ll_inclusionamnt.setVisibility(View.VISIBLE);
+            GlobalClass.SetText(txt_inclusionmnt, "Rs. " + GlobalClass.currencyFormat(String.valueOf(sl_itemmnt)));
+        }
+    }
+
+    private int setTotalDuplInclusionAmount() {
+        try {
+            fdupl_incl_Amnt = 0;
+            if (BundleConstants.lists_incl_dupl != null) {
+                if (BundleConstants.lists_incl_dupl.size() != 0) {
+                    for (int i = 0; i < BundleConstants.lists_incl_dupl.size(); i++) {
+                        if (BundleConstants.lists_incl_dupl.get(i).isSelected()) {
+                            fdupl_incl_Amnt = fdupl_incl_Amnt + (GlobalClass.getIntVal(BundleConstants.lists_incl_dupl.get(i).getUnitCost()) * BundleConstants.lists_incl_dupl.get(i).getSelectedqty());
+                        } else {
+
+                        }
+                    }
+                }
+            }
+            return fdupl_incl_Amnt;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return fdupl_incl_Amnt;
     }
 
     @Override
@@ -252,7 +297,7 @@ public class ConfirmbookDetail extends AppCompatActivity implements View.OnClick
         BookLeadPOSTModel.setAge(calage);
         BookLeadPOSTModel.setAadharNo("");
         BookLeadPOSTModel.setAdditionalMob("");
-        BookLeadPOSTModel.setRemarks(remarks + " Booked From ThyrosoftLite  App");
+        BookLeadPOSTModel.setRemarks(remarks + " Booked From Cliso App");
         BookLeadPOSTModel.setApptDate(GlobalClass.formatDate(Constants.DATEFORMATE, Constants.YEARFORMATE, appoint_dt) + " " + str_slot);
         BookLeadPOSTModel.setDoctorId("");
         BookLeadPOSTModel.setCenterId(centerId);
@@ -300,6 +345,7 @@ public class ConfirmbookDetail extends AppCompatActivity implements View.OnClick
         LeadBookingResponseModel leadBookingResponseModel = gson.fromJson(response.toString(), LeadBookingResponseModel.class);
         if (leadBookingResponseModel.getRespId() != null) {
             if (leadBookingResponseModel.getRespId().equalsIgnoreCase(Constants.RES0000)) {
+                CallInclusionAPI(leadBookingResponseModel.getLeadId());
                 GlobalClass.toastySuccess(ConfirmbookDetail.this, leadBookingResponseModel.getResponseMessage(), false);
                 startActivity(new Intent(ConfirmbookDetail.this, ManagingTabsActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
                 tab_flag = "1";
@@ -307,6 +353,81 @@ public class ConfirmbookDetail extends AppCompatActivity implements View.OnClick
                 GlobalClass.toastyError(ConfirmbookDetail.this, leadBookingResponseModel.getResponseMessage(), false);
             }
         }
+    }
+
+    private void CallInclusionAPI(String leadId) {
+        if (getSelectedinClusionMaterialWithOther().size() != 0) {
+            CallgenerateInclusionModel(leadId);
+        }
+    }
+
+    private void CallgenerateInclusionModel(String leadId) {
+        try {
+            PostInclisionMaterial entity = new PostInclisionMaterial();
+            entity.setLeadId(leadId);
+            entity.setLstMaterial(getSelectedinClusionMaterialWithOther());
+
+
+            entity.setHasOtherCharges(false);
+            entity.setOtherRemarks("");
+            entity.setOtherAmount(0);
+
+            entity.setRefNo("");
+            entity.setAmount(setTotalDuplInclusionAmount());
+            entity.setRemarks("");
+            entity.setMode("" + 11);
+            entity.setThyrocare_Api_key(api_key);
+
+            CallAPIForSubmitInclusion(entity);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void CallAPIForSubmitInclusion(PostInclisionMaterial entity) {
+        try {
+            if (ControllersGlobalInitialiser.POSTBookLeadController != null) {
+                ControllersGlobalInitialiser.POSTBookLeadController = null;
+            }
+
+            if (cd.isConnectingToInternet()) {
+                ControllersGlobalInitialiser.POSTBookLeadController = new POSTBookLeadController(ConfirmbookDetail.this, ConfirmbookDetail.this, header);
+                ControllersGlobalInitialiser.POSTBookLeadController.CallSubMitInClusiondataAPI(entity);
+            } else {
+                GlobalClass.toastyError(ConfirmbookDetail.this, MessageConstants.CHECK_INTERNET_CONN, false);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private ArrayList<getInclusionMasterModel> getSelectedinClusionMaterialWithOther() {
+        ArrayList<getInclusionMasterModel> entity = new ArrayList<>();
+        try {
+            getInclusionMasterModel ent = null;
+
+            if (BundleConstants.lists_incl_dupl != null) {
+                if (BundleConstants.lists_incl_dupl.size() != 0) {
+                    for (int i = 0; i < BundleConstants.lists_incl_dupl.size(); i++) {
+                        if (BundleConstants.lists_incl_dupl.get(i).isSelected()) {
+                            if (!BundleConstants.lists_incl_dupl.get(i).getName().equalsIgnoreCase("OTHERS")) {
+                                ent = new getInclusionMasterModel();
+                                ent.setMCode(BundleConstants.lists_incl_dupl.get(i).getMCode());
+                                ent.setQty("" + BundleConstants.lists_incl_dupl.get(i).getSelectedqty());
+                                ent.setMaterial_name(BundleConstants.lists_incl_dupl.get(i).getName());
+
+                                entity.add(ent);
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return entity;
     }
 
 
@@ -329,12 +450,7 @@ public class ConfirmbookDetail extends AppCompatActivity implements View.OnClick
     }
 
 
-
-
     public void getLeaderDetails(GetLeadgerBalnce body) {
-
-        tv_avaibal.setText("" + body.getBalance());
-
-
+        tv_avaibal.setText("Rs. " + GlobalClass.currencyFormat(String.valueOf(body.getBalance())));
     }
 }

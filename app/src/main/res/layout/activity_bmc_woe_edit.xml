@@ -409,7 +409,7 @@
                 android:background="@drawable/border_curve_background"
                 android:backgroundTint="@color/maroon"
                 android:padding="5dp"
-                android:text="Done"
+                android:text="SUBMIT"
                 android:layout_gravity="center"
                 android:textAllCaps="true"
                 android:textColor="@color/colorWhite"

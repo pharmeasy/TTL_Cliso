@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -82,7 +83,8 @@ public class ExpandablenameListAdapter extends BaseExpandableListAdapter {
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = infalInflater.inflate(R.layout.billing_det_row_header, null);
         }
-
+        ExpandableListView eLV = (ExpandableListView) parent;
+        eLV.expandGroup(groupPosition);
         TextView lblListHeader = (TextView) convertView.findViewById(R.id.lblListHeader);
         ImageView expand_img = (ImageView) convertView.findViewById(R.id.expand_img);
         lblListHeader.setText(headerTitle);

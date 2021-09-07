@@ -282,7 +282,7 @@
                 android:layout_margin="5dp"
                 android:background="@drawable/next_button"
                 android:minEms="8"
-                android:text="DONE"
+                android:text="SUBMIT"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/value" />
 

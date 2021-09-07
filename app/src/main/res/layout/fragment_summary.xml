@@ -695,33 +695,35 @@
         android:layout_alignParentBottom="true"
         android:layout_gravity="center|bottom"
         android:layout_margin="3dp"
-        android:background="@drawable/maroon_border_white_bg"
         android:orientation="horizontal"
         android:weightSum="2">
 
         <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:id="@+id/tv_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="20dp"
             android:layout_weight="1"
-            android:background="@color/colorWhite"
             android:drawableLeft="@drawable/edt_woe_img"
-            android:gravity="right|center"
-            android:text="Edit "
+            android:text="Edit WOE"
             android:textAllCaps="true"
             android:textSize="@dimen/label"
             android:textColor="@color/maroon" />
 
         <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:id="@+id/tv_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="20dp"
             android:layout_weight="1"
-            android:background="@color/colorWhite"
-            android:drawableRight="@drawable/gray_delete"
-            android:gravity="left|center"
-            android:text="/ Delete"
-            android:textSize="@dimen/label"
+            android:drawableLeft="@drawable/gray_delete"
+            android:text="Delete"
             android:textAllCaps="true"
+            android:textSize="@dimen/label"
             android:textColor="@color/maroon" />
+
     </LinearLayout>
 
 </RelativeLayout>

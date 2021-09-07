@@ -29,6 +29,7 @@
         android:layout_weight="1"
         android:text="View Sample"
         android:textColor="@color/button_color"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
 
 </LinearLayout>

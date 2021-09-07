@@ -23,7 +23,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
@@ -42,6 +46,7 @@ import com.example.e5322.thyrosoft.ScannedBarcodeDetails;
 import com.example.e5322.thyrosoft.SpecialOffer.SpecialOffer_Activity;
 import com.example.e5322.thyrosoft.SqliteDb.DatabaseHelper;
 import com.example.e5322.thyrosoft.Summary_MainModel.Barcodelist;
+import com.example.e5322.thyrosoft.Summary_MainModel.Summary_model;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.gson.Gson;
 import com.sdsmdg.tastytoast.TastyToast;
@@ -133,6 +138,9 @@ public class SummaryActivity_New extends AppCompatActivity {
     private String location, fromcome;
     private LinearLayout ll_location;
     private TextView txt_setLocation;
+    String patientId;
+    RequestQueue requestQueuePatientDetails;
+    Summary_model summary_model;
 
     public static String Req_Date_Req(String time, String inputPattern, String outputPattern) {
 
@@ -194,7 +202,7 @@ public class SummaryActivity_New extends AppCompatActivity {
         linearLayoutManager = new LinearLayoutManager(SummaryActivity_New.this);
         sample_list.setLayoutManager(linearLayoutManager);
 
-
+        summary_model = new Summary_model();
 //        setHasOptionsMenu(true);
 
         context1 = SummaryActivity_New.this;
@@ -415,30 +423,36 @@ public class SummaryActivity_New extends AppCompatActivity {
             public void onClick(View v) {
 
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context1);
-                alertDialogBuilder.setTitle("Confirm delete !");
-                alertDialogBuilder.setMessage(ToastFile.wish_woe_dlt);
+                alertDialogBuilder.setTitle("EDIT WOE");
+                alertDialogBuilder.setMessage(ToastFile.wish_woe_edit);
                 alertDialogBuilder.setPositiveButton("Yes",
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface arg0, int arg1) {
-                                if (Global.isoffline || !GlobalClass.isNetworkAvailable(SummaryActivity_New.this)) {
-                                    boolean deletedRows = myDb.deleteData(getBarcodesOffline);
-                                    if (deletedRows == true)
-                                        TastyToast.makeText(SummaryActivity_New.this, ToastFile.woeDelete, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-                                    finish();
-                                    Constants.covidwoe_flag = "1";
-                                    Intent i = new Intent(SummaryActivity_New.this, ManagingTabsActivity.class);
-                                    startActivity(i);
-                                } else {
-                                    deleteWoe();
-                                }
+//                                if (Global.isoffline || !GlobalClass.isNetworkAvailable(SummaryActivity_New.this)) {
+//                                    boolean deletedRows = myDb.deleteData(getBarcodesOffline);
+//                                    if (deletedRows == true)
+//                                        TastyToast.makeText(SummaryActivity_New.this, ToastFile.woeDelete, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+//                                    finish();
+//                                    Constants.covidwoe_flag = "1";
+//
+//                                } else {
+//                                    deleteWoe();
+//                                }
+
+
+                                patientId = patient_id_to_delete_tests;
+                                GlobalClass.summary_models = new ArrayList<>();
+                                getPatientDetails();
+//                                GlobalClass.getPatientIdforDeleteDetails = patients.get(position).getPatient_id().toString();
+
                             }
                         });
 
                 alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                       dialog.dismiss();
+                        dialog.dismiss();
 
                     }
                 });
@@ -447,6 +461,49 @@ public class SummaryActivity_New extends AppCompatActivity {
                 alertDialog.show();
             }
         });
+    }
+
+    private void getPatientDetails() {
+        requestQueuePatientDetails = GlobalClass.setVolleyReq(context1);//2c=/TAM03/TAM03136166236000078/geteditdata
+        JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.Cloud_base + "" + api_key + "/" + "" + user + "/" + "" + patientId + "/" + "geteditdata", new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.e(TAG, "onResponse: response" + response);
+                Gson gson = new Gson();
+                summary_model = gson.fromJson(response.toString(), Summary_model.class);
+                GlobalClass.summary_models.add(summary_model);
+
+                try {
+                    if (!GlobalClass.isNull(summary_model.getRES_ID())) {
+                        if (summary_model.getRES_ID().equalsIgnoreCase(Constants.RES0000)) {
+                            Intent i = new Intent(context1, Woe_Edt_Activity.class);
+                            context1.startActivity(i);
+                        } else {
+                            TastyToast.makeText(context1, "" + summary_model.getResponse(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        }
+                    } else {
+                        TastyToast.makeText(context1, ToastFile.something_went_wrong, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error.networkResponse == null) {
+                    if (error.getClass().equals(TimeoutError.class)) {
+                        // Show timeout error message
+                    }
+                }
+            }
+        });
+        jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(
+                300000,
+                3,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        requestQueuePatientDetails.add(jsonObjectRequestPop);
+        Log.e(TAG, "getPatientDetails: URL" + jsonObjectRequestPop);
     }
 
     private void deleteWoe() {

@@ -6,12 +6,6 @@ import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -22,6 +16,13 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.ConnectionDetector;
@@ -129,6 +130,7 @@ public class ScanSummaryActivity extends Fragment {
 
 
     private String user;
+    private String SCANSOLOGIN_TYPE = "";
 
 
     @Nullable
@@ -145,6 +147,7 @@ public class ScanSummaryActivity extends Fragment {
         mActivity=getActivity();
         preferences = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
         user = preferences.getString("Username", null);
+        SCANSOLOGIN_TYPE = preferences.getString(Constants.SCANSOLOGINTYPE, "");
 
         cd = new ConnectionDetector(getContext());
         generateToken();
@@ -266,7 +269,11 @@ public class ScanSummaryActivity extends Fragment {
         if (cd.isConnectingToInternet()) {
             JSONObject jsonObject = new JSONObject();
             try {
-                jsonObject.put("Email", Constants.NHF_EMAIL);
+                if (!GlobalClass.isNull(SCANSOLOGIN_TYPE) && SCANSOLOGIN_TYPE.equalsIgnoreCase("NI")) {
+                    jsonObject.put("Email", Constants.NI_EMAIL);
+                } else {
+                    jsonObject.put("Email", Constants.NHF_EMAIL);
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }

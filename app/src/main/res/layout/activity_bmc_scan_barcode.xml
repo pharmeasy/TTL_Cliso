@@ -459,7 +459,7 @@
                 android:gravity="center"
                 android:paddingLeft="50dp"
                 android:paddingRight="50dp"
-                android:text="DONE"
+                android:text="SUBMIT"
                 android:backgroundTint="@color/maroon"
                 android:textSize="@dimen/label"
                 android:textColor="@color/white" />

@@ -48,7 +48,8 @@ public class CertificateApdater extends RecyclerView.Adapter<CertificateApdater.
         }*/
 
         if (!GlobalClass.isNull(certificate_array.get(position).getTitle())) {
-            holder.tv_title.setText(certificate_array.get(position).getTitle());
+            holder.tv_type.setText(certificate_array.get(position).getTitle());
+            holder.tv_title.setText(certificate_array.get(position).getName());
         }
         holder.ll_viewcertificate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,13 +69,13 @@ public class CertificateApdater extends RecyclerView.Adapter<CertificateApdater.
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView tv_title;
+        TextView tv_title, tv_type;
         LinearLayout ll_viewcertificate;
 
 
         public ViewHolder(View itemView) {
             super(itemView);
-
+            tv_type = itemView.findViewById(R.id.tv_type);
             tv_title = itemView.findViewById(R.id.tv_title);
             ll_viewcertificate = itemView.findViewById(R.id.ll_viewcertificate);
 

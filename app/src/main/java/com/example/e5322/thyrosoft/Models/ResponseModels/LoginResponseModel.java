@@ -1,7 +1,15 @@
 package com.example.e5322.thyrosoft.Models.ResponseModels;
 
 public class LoginResponseModel {
-    private String ACCESS_TYPE,API_KEY,CLIENT_TYPE,Category,EMAIL,EXISTS,MOBILE,NAME,RESPONSE,RES_ID,URL,USER_CODE,USER_TYPE,VERSION_NO,SOURCE_TYPE;
+    private String ACCESS_TYPE,API_KEY,CLIENT_TYPE,Category,EMAIL,EXISTS,MOBILE,NAME,RESPONSE,RES_ID,URL,USER_CODE,USER_TYPE,VERSION_NO,SOURCE_TYPE,USERFLAG;
+
+    public String getUSERFLAG() {
+        return USERFLAG;
+    }
+
+    public void setUSERFLAG(String USERFLAG) {
+        this.USERFLAG = USERFLAG;
+    }
 
     public String getSOURCE_TYPE() {
         return SOURCE_TYPE;

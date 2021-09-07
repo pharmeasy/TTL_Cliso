@@ -41,6 +41,9 @@ public class Constants {
 
     public static String APP_ID = "1";
 
+    public static String SCANSOLOGINTYPE = "SCANSOLOGIN_TYPE";
+    public static final String NI_EMAIL = "COMM_NIU";
+
     /*TODO * Screen IDs*/
     public static int PUSHAPPID = 6;// Pushnotication APP ID
     public static String IsFromNotification = "IsFromNotification";
@@ -53,7 +56,7 @@ public class Constants {
 
     public static String caps_invalidApikey = "INVALID API KEY";
     public static String small_invalidApikey = "Invalid API Key";
-
+    public static final String PAID_FINALBAL = "paidfinalbal";
     public static String APK_NAME = "CliSo.apk";
     public static String availcoupon = "Avail Coupon";
     public static String APKTYPE = "application/vnd.android.package-archive";

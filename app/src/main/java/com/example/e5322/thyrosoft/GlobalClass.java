@@ -1592,6 +1592,20 @@ public class GlobalClass {
         toast.show();
     }
 
+    public static int getIntVal(String val) {
+        int amnt = 0;
+        if (val != null) {
+            if (val.equalsIgnoreCase("null")) {
+                amnt = 0;
+            } else {
+                double d = Double.parseDouble(val);
+                amnt = (int) d;
+            }
+        }
+
+        return amnt;
+    }
+
     public static String currencyFormat(String amount) {
         DecimalFormat formatter = null;
         if (!GlobalClass.isNull(amount)) {
@@ -1756,21 +1770,28 @@ public class GlobalClass {
 
     public static void cropImageActivity(Activity activity, int flag) {
         if (flag == 1) {
-            ImagePicker.Companion.with(activity).crop(3f, 2f).start();
+            ImagePicker.Companion.with(activity).crop(3f, 2f).compress(Constants.MaxImageSize)
+                    .maxResultSize(Constants.MaxImageWidth, Constants.MaxImageHeight).start();
         } else if (flag == 0) {
-            ImagePicker.Companion.with(activity).crop(3f, 2f).cameraOnly().start();
+            ImagePicker.Companion.with(activity).crop(3f, 2f).cameraOnly().compress(Constants.MaxImageSize)
+                    .maxResultSize(Constants.MaxImageWidth, Constants.MaxImageHeight).start();
         } else if (flag == 2) {
-            ImagePicker.Companion.with(activity).crop(3f, 2f).galleryOnly().start();
+            ImagePicker.Companion.with(activity).crop(3f, 2f).galleryOnly().compress(Constants.MaxImageSize)
+                    .maxResultSize(Constants.MaxImageWidth, Constants.MaxImageHeight).start();
         }
     }
 
     public static void cropImageFragment(Fragment fragment, int flag) {
+
         if (flag == 1) {
-            ImagePicker.Companion.with(fragment).crop(3f, 2f).start();
+            ImagePicker.Companion.with(fragment).crop(3f, 2f).compress(Constants.MaxImageSize)
+                    .maxResultSize(Constants.MaxImageWidth, Constants.MaxImageHeight).start();
         } else if (flag == 0) {
-            ImagePicker.Companion.with(fragment).crop(3f, 2f).cameraOnly().start();
+            ImagePicker.Companion.with(fragment).crop(3f, 2f).compress(Constants.MaxImageSize)
+                    .maxResultSize(Constants.MaxImageWidth, Constants.MaxImageHeight).cameraOnly().start();
         } else if (flag == 2) {
-            ImagePicker.Companion.with(fragment).crop(3f, 2f).galleryOnly().start();
+            ImagePicker.Companion.with(fragment).crop(3f, 2f).compress(Constants.MaxImageSize)
+                    .maxResultSize(Constants.MaxImageWidth, Constants.MaxImageHeight).galleryOnly().start();
         }
     }
 }

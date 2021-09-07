@@ -5,6 +5,7 @@
     android:id="@+id/rel_mian"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:focusable="true"
     android:focusableInTouchMode="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -39,7 +40,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/dp_10"
-                    android:background="@android:drawable/dialog_holo_light_frame"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -76,11 +76,8 @@
                                 android:layout_centerVertical="true"
                                 android:layout_marginRight="@dimen/dp_5"
                                 android:src="@drawable/spnr_icon" />
-
                         </RelativeLayout>
-
                     </LinearLayout>
-
 
                     <LinearLayout
                         android:id="@+id/ll_scan_type_spinner"
@@ -117,9 +114,7 @@
                                 android:layout_centerVertical="true"
                                 android:layout_marginRight="@dimen/dp_5"
                                 android:src="@drawable/spnr_icon" />
-
                         </RelativeLayout>
-
                     </LinearLayout>
 
                     <LinearLayout
@@ -159,7 +154,6 @@
                                     android:textAllCaps="true"
                                     android:textSize="@dimen/value" />
                             </com.google.android.material.textfield.TextInputLayout>
-
                         </LinearLayout>
 
                         <LinearLayout
@@ -216,7 +210,6 @@
                                     android:singleLine="true"
                                     android:textSize="@dimen/value" />
                             </com.google.android.material.textfield.TextInputLayout>
-
                         </LinearLayout>
 
                         <LinearLayout
@@ -237,7 +230,6 @@
                                 android:textAllCaps="true"
                                 android:textColor="@color/grey"
                                 android:textSize="@dimen/value" />
-
 
                             <RadioGroup
                                 android:id="@+id/radioSex"
@@ -262,10 +254,7 @@
                                     android:text="@string/female"
                                     android:textAllCaps="true"
                                     android:textSize="@dimen/value" />
-
                             </RadioGroup>
-
-
                         </LinearLayout>
 
                         <LinearLayout
@@ -286,7 +275,6 @@
                                 android:textAllCaps="true"
                                 android:textColor="@color/grey"
                                 android:textSize="@dimen/value" />
-
 
                             <RadioGroup
                                 android:id="@+id/radio_diab"
@@ -311,11 +299,8 @@
                                     android:text="@string/no"
                                     android:textAllCaps="true"
                                     android:textSize="@dimen/value" />
-
                             </RadioGroup>
-
                         </LinearLayout>
-
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -330,7 +315,6 @@
                                 android:id="@+id/radio_age"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-
                                 android:orientation="horizontal">
 
                                 <RadioButton
@@ -347,7 +331,6 @@
                                     android:text="Age"
                                     android:textAllCaps="true"
                                     android:textSize="@dimen/value" />
-
                             </RadioGroup>
 
                             <RelativeLayout
@@ -370,7 +353,6 @@
                                     android:text="DOB :"
                                     android:textColor="@color/grey"
                                     android:textSize="@dimen/sp_14" />
-
 
                                 <TextView
                                     android:id="@+id/txt_date"
@@ -402,9 +384,7 @@
                                     android:textColor="@color/grey"
                                     android:textSize="@dimen/sp_14"
                                     tools:ignore="RtlCompat" />
-
                             </RelativeLayout>
-
 
                             <com.google.android.material.textfield.TextInputLayout
                                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -427,9 +407,7 @@
                                     android:textSize="@dimen/sp_14"
                                     android:visibility="gone" />
                             </com.google.android.material.textfield.TextInputLayout>
-
                         </LinearLayout>
-
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -444,11 +422,10 @@
                                 android:layout_height="wrap_content"
                                 android:padding="@dimen/dp_5"
                                 android:singleLine="true"
-                                android:text="Appointment Date* &amp; slot* :"
+                                android:text="Appointment Date*  slot* :"
                                 android:textAllCaps="true"
                                 android:textColor="@color/grey"
                                 android:textSize="@dimen/value" />
-
                         </LinearLayout>
 
                         <LinearLayout
@@ -497,7 +474,6 @@
                                     android:textColor="@color/grey"
                                     android:textSize="@dimen/value"
                                     tools:ignore="RtlCompat" />
-
                             </RelativeLayout>
 
                             <LinearLayout
@@ -515,12 +491,8 @@
                                     android:overlapAnchor="false"
                                     android:textAllCaps="true"
                                     android:textSize="@dimen/value" />
-
                             </LinearLayout>
-
-
                         </LinearLayout>
-
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -581,9 +553,7 @@
                                     android:singleLine="true"
                                     android:textSize="@dimen/value" />
                             </com.google.android.material.textfield.TextInputLayout>
-
                         </LinearLayout>
-
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -613,7 +583,6 @@
                                     android:textSize="@dimen/value" />
                             </com.google.android.material.textfield.TextInputLayout>
                         </LinearLayout>
-
 
                         <LinearLayout
                             android:id="@+id/ll_coupon"
@@ -665,17 +634,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/dp_10"
-                            android:layout_marginTop="@dimen/dp_4"
+                            android:layout_marginTop="@dimen/dp_8"
                             android:layout_marginRight="@dimen/dp_10"
                             android:orientation="horizontal">
-
-                            <!--<TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="@dimen/dp_10"
-                                android:text="Discount: "
-                                android:textColor="@color/black"
-                                android:textStyle="bold" />-->
 
                             <TextView
                                 android:id="@+id/tv_discount"
@@ -686,6 +647,106 @@
                                 android:justificationMode="inter_word"
                                 android:textColor="@color/toolbar"
                                 android:textSize="@dimen/sp_14" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_8sdp"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                            <Button
+                                android:id="@+id/btn_addconsumables"
+                                android:layout_width="wrap_content"
+                                android:layout_height="@dimen/dp_30"
+                                android:layout_marginLeft="@dimen/dp_10"
+                                android:layout_marginRight="@dimen/dp_10"
+                                android:background="@drawable/btn_bg"
+                                android:gravity="center"
+                                android:paddingLeft="@dimen/_10sdp"
+                                android:paddingRight="@dimen/_10sdp"
+                                android:text="@string/addconsumables"
+                                android:textAlignment="center"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/label" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/ll_scanamount"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:visibility="gone"
+                            android:weightSum="1">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/_12sdp"
+                                android:layout_weight="0.4"
+                                android:text="Scan Amount: "
+                                android:textColor="@color/black" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.6"
+                                android:gravity="right"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/txt_amntamnt"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="16dp"
+                                    android:layout_marginRight="16dp"
+                                    android:gravity="right"
+                                    android:text="" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recy_inclusion_dup"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_6sdp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:weightSum="1">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/_12sdp"
+                                android:layout_weight="0.4"
+                                android:text="Total Amount: "
+                                android:textColor="@color/black"
+                                android:textStyle="bold" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.6"
+                                android:gravity="right"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/txt_totalFinalamnt"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="16dp"
+                                    android:layout_marginRight="16dp"
+                                    android:gravity="right"
+                                    android:text="" />
+                            </LinearLayout>
                         </LinearLayout>
 
                         <LinearLayout
@@ -723,16 +784,10 @@
                                 android:text="@string/submit"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/label" />
-
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
-
-
         </RelativeLayout>
-
     </ScrollView>
-
-
 </RelativeLayout>

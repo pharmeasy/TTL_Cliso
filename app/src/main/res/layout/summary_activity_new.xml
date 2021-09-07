@@ -782,8 +782,8 @@
             android:layout_gravity="center"
             android:layout_marginLeft="20dp"
             android:layout_weight="1"
-            android:drawableLeft="@drawable/gray_delete"
-            android:text="Delete WOE"
+            android:drawableLeft="@drawable/edt_woe_img"
+            android:text="Edit WOE"
             android:textAllCaps="true"
             android:textSize="@dimen/label"
             android:textColor="@color/maroon" />

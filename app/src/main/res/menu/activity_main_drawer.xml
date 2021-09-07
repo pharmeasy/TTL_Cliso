@@ -146,7 +146,7 @@
         <item
             android:id="@+id/upload_document_navigation"
             android:icon="@drawable/upload_doc_d"
-            android:title="UPLOAD DOCUMENT" />
+            android:title="KYC UPLOAD" />
     </group>
 
     <group
@@ -155,7 +155,7 @@
         <item
             android:id="@+id/sgc_pgc_entry_data"
             android:icon="@drawable/sgc_pgc_d"
-            android:title="SGC PGC ENTRY" />
+            android:title="SGC/PGC REGISTRATION" />
     </group>
 
     <group
@@ -214,7 +214,8 @@
         <item
             android:id="@+id/otp_credit"
             android:icon="@drawable/ic_otp_credit_mis"
-            android:title="OTP CREDIT" />
+            android:title="OTP CREDIT"
+            android:visible="false"/>
 
     </group>
 
@@ -275,7 +276,8 @@
         <item
             android:id="@+id/thyroshop"
             android:icon="@drawable/cart"
-            android:title="DOWNLOAD THYROMART" />
+            android:title="DOWNLOAD THYROMART"
+            android:visible="false"/>
     </group>
 
 
@@ -294,7 +296,8 @@
         <item
             android:id="@+id/notification"
             android:icon="@drawable/notification"
-            android:title="NOTIFICATION" />
+            android:title="NOTIFICATION"
+            android:visible="false"/>
     </group>
 
 
@@ -304,7 +307,8 @@
         <item
             android:id="@+id/feedback"
             android:icon="@drawable/feedback"
-            android:title="FEEDBACK" />
+            android:title="FEEDBACK"
+            android:visible="false"/>
     </group>
 
     <group
@@ -313,7 +317,8 @@
         <item
             android:id="@+id/rbarcode"
             android:icon="@drawable/ic_report"
-            android:title="@string/rbarcode" />
+            android:title="@string/rbarcode"
+            android:visible="false"/>
     </group>
 
     <group
@@ -322,7 +327,8 @@
         <item
             android:id="@+id/profile"
             android:icon="@drawable/profile"
-            android:title="MY PROFILE" />
+            android:title="MY PROFILE"
+            android:visible="false"/>
     </group>
 
     <group
@@ -331,6 +337,7 @@
         <item
             android:id="@+id/phone"
             android:icon="@drawable/phone"
+            android:visible="false"
             android:title="PHONE" />
     </group>
 
@@ -340,6 +347,7 @@
         <item
             android:id="@+id/whatsapp"
             android:icon="@drawable/what"
+            android:visible="false"
             android:title="WHATSAPP" />
     </group>
 
@@ -358,7 +366,8 @@
         <item
             android:id="@+id/faq_data"
             android:icon="@drawable/questionandanswer"
-            android:title="FAQ" />
+            android:title="FAQ"
+            android:visible="false"/>
 
     </group>
 
@@ -392,7 +401,7 @@
             android:id="@+id/articles_data"
             android:icon="@drawable/health_article_icon"
             android:title="HEALTH ARTICLES"
-            android:visible="true" />
+            android:visible="false" />
 
     </group>
 

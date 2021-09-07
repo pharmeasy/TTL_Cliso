@@ -1,30 +1,37 @@
 package com.example.e5322.thyrosoft.Activity;
 
+import static com.example.e5322.thyrosoft.API.Constants.NHF;
+
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.example.e5322.thyrosoft.Controller.Log;
-
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
+import com.example.e5322.thyrosoft.Models.PincodeMOdel.AppPreferenceManager;
 import com.example.e5322.thyrosoft.Models.ResponseModels.ProfileDetailsResponseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
@@ -37,13 +44,17 @@ public class MyProfile_activity extends AppCompatActivity {
     TextView nametxt, dojtxt, source_codetxt, closing_bal, credit_lim;
     Button view_aadhar, pref;
     ProgressDialog barProgressDialog;
+    LinearLayout ll_whatsapp, ll_phone;
     ImageView aadhar;
     ImageView back, home;
     ImageView profimg;
     String prof = "", aadharimg;
     String aadhar_no = "";
+    String restoredText, CLIENT_TYPE;
     String URL = "";
     Bitmap decodedByte;
+    AppPreferenceManager appPreferenceManager;
+    SharedPreferences prefs;
     private SharedPreferences getshared;
     private String user;
     private String passwrd;
@@ -51,6 +62,8 @@ public class MyProfile_activity extends AppCompatActivity {
     private Global globalClass;
     private String access;
     private String TAG = MyProfile_activity.class.getSimpleName();
+    LinearLayout btn_ledger, btn_billing;
+
 
     @SuppressLint("NewApi")
     @Override
@@ -58,11 +71,20 @@ public class MyProfile_activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_my_profile);
 
+        appPreferenceManager = new AppPreferenceManager(this);
+        prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
+        CLIENT_TYPE = prefs.getString("CLIENT_TYPE", "");
+
         nametxt = (TextView) findViewById(R.id.name);
         dojtxt = (TextView) findViewById(R.id.doj);
         source_codetxt = (TextView) findViewById(R.id.source_code);
         closing_bal = (TextView) findViewById(R.id.closing_bal);
         credit_lim = (TextView) findViewById(R.id.credit_lim);
+
+        ll_phone = findViewById(R.id.phone);
+        ll_whatsapp = findViewById(R.id.whatsapp);
+        btn_ledger = findViewById(R.id.btn_ledger);
+        btn_billing = findViewById(R.id.btn_billing);
 
         back = (ImageView) findViewById(R.id.back);
         home = (ImageView) findViewById(R.id.home);
@@ -121,6 +143,81 @@ public class MyProfile_activity extends AppCompatActivity {
             GetData();
         }
 
+        initlistener();
+
+    }
+
+    private void initlistener() {
+
+
+        btn_ledger.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(MyProfile_activity.this, LedgerActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        btn_billing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MyProfile_activity.this, BillingActivity.class);
+                startActivity(intent);
+
+            }
+        });
+
+
+        ll_phone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(MyProfile_activity.this)
+                        .setMessage("Would you like to proceed with call?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                SharedPreferences prefs = getSharedPreferences("TspNumber", MODE_PRIVATE);
+                                restoredText = prefs.getString("TSPMobileNumber", null);
+
+                                Intent intent = new Intent(Intent.ACTION_DIAL);
+                                if (CLIENT_TYPE.equalsIgnoreCase(NHF)) {
+                                    intent.setData(Uri.parse("tel:" + Constants.NHF_Whatsapp));
+                                } else {
+                                    intent.setData(Uri.parse("tel:" + restoredText));
+                                }
+
+                                startActivity(intent);
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+
+            }
+        });
+
+        ll_whatsapp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(MyProfile_activity.this)
+                        .setMessage("Would you like to proceed with whatsapp?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                SharedPreferences prefs1 = getSharedPreferences("TspNumber", MODE_PRIVATE);
+                                restoredText = prefs1.getString("TSPMobileNumber", null);
+                                Intent httpIntent = new Intent(Intent.ACTION_VIEW);
+                                if (CLIENT_TYPE.equalsIgnoreCase(NHF)) {
+                                    httpIntent.setData(Uri.parse("https://api.whatsapp.com/send?phone=+91" + Constants.NHF_Whatsapp + "#"));
+                                } else {
+                                    httpIntent.setData(Uri.parse("https://api.whatsapp.com/send?phone=+91" + restoredText + "#"));
+                                }
+                                startActivity(httpIntent);
+
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+            }
+        });
     }
 
     private void GetData() {

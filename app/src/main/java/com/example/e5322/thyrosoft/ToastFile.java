@@ -15,6 +15,7 @@ public class ToastFile {
     public static String colAmt = "Enter collected Amount";
     public static String crt_brcd = "Please enter correct barcode";
     public static String pls_scn_br = "Please scan the barcode for ";
+    public static String wish_woe_edit = "Do you wish to edit this entry";
     public static String slt_tst_nm = "Please select test name";
     public static String passwd = "Please enter password";
     public static String crt_pwd = "Please enter correct password";

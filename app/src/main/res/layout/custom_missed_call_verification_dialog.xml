@@ -19,25 +19,35 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:src="@drawable/blackcross" />
-
-        <TextView
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="left"
+            android:orientation="horizontal"
             android:layout_marginTop="15dp"
-            android:text="To verify using SMS"
-            android:textColor="@color/maroon"
-            android:textSize="@dimen/_15sdp"
-            android:textStyle="bold" />
+            >
+            <TextView
+                android:id="@+id/id_sms_verify"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:text="@string/text_with_bullet"
+                android:textColor="@color/maroon"
+                android:textSize="@dimen/_15sdp"
+                android:textStyle="bold"
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:text="Send SMS:"
-            android:textColor="@color/maroon"
-            android:textSize="@dimen/_15sdp"
-            android:textStyle="bold" />
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:text=" To verify using SMS Send SMS:"
+                android:textColor="@color/maroon"
+                android:textSize="@dimen/_15sdp"
+                android:textStyle="bold"
+                android:layout_toRightOf="@+id/id_sms_verify"/>
+        </RelativeLayout>
+
 
         <TextView
             android:id="@+id/tv_sms"
@@ -47,9 +57,53 @@
             android:text=""
             android:layout_marginTop="@dimen/_2sdp"
             android:layout_marginBottom="@dimen/_20sdp"
+            android:layout_marginLeft="@dimen/_20sdp"
             android:textColor="@color/maroon"
             android:textSize="@dimen/_15sdp"
             android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/id_call_verify"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:text="@string/text_with_bullet"
+                android:textColor="@color/maroon"
+                android:textSize="@dimen/_15sdp"
+                android:textStyle="bold"
+                android:layout_marginRight="3dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:text="To verify using Missed Call give Missed Call on :"
+                android:textColor="@color/maroon"
+                android:textSize="@dimen/_15sdp"
+                android:textStyle="bold"
+                android:layout_toRightOf="@+id/id_call_verify"
+                />
+
+
+        </LinearLayout>
+        <TextView
+            android:id="@+id/tv_missed_call"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:text=""
+            android:layout_marginTop="@dimen/_2sdp"
+            android:layout_marginBottom="@dimen/_20sdp"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:textColor="@color/maroon"
+            android:textSize="@dimen/_15sdp"
+            android:textStyle="bold" />
+
+
 
 
     </LinearLayout>

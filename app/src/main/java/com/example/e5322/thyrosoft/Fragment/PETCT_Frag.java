@@ -37,6 +37,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -48,12 +50,16 @@ import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ConfirmbookDetail;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Activity.MessageConstants;
+import com.example.e5322.thyrosoft.Adapter.Dupl_InclusionAdapter;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
 import com.example.e5322.thyrosoft.Controller.GenerateTokenController;
 import com.example.e5322.thyrosoft.Controller.Log;
+import com.example.e5322.thyrosoft.Controller.POSTBookLeadController;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.BookTypesModel;
 import com.example.e5322.thyrosoft.Models.CenterList_Model;
+import com.example.e5322.thyrosoft.Models.InclusionMasterModel;
+import com.example.e5322.thyrosoft.Models.PincodeMOdel.BundleConstants;
 import com.example.e5322.thyrosoft.Models.ServiceModel;
 import com.example.e5322.thyrosoft.Models.SlotModel;
 import com.example.e5322.thyrosoft.Models.TokenModel;
@@ -88,7 +94,7 @@ public class PETCT_Frag extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    public String centerId = "", centerAddress, centerCity, centerName, price, patientName, mobile, email, remarks;
+    public String centerId = "", centerAddress, centerCity, centerName, selectedScanprice, patientName, mobile, email, remarks;
     public Button btn_submit, btn_reset;
     Calendar myCalendar;
     RadioButton rb_gender, rb_dib, rb_age;
@@ -106,6 +112,7 @@ public class PETCT_Frag extends Fragment {
     private EditText edt_name, edt_mname, edt_lname, edt_mobile, edt_email, edt_remarks, edt_coupon, edt_age;
     private Gson gson;
     private String CLIENT_TYPE;
+    private String SCANSOLOGIN_TYPE = "";
     private ConnectionDetector cd;
     private TextView tv_discount, enter;
     private boolean resultcheck = false;
@@ -127,6 +134,11 @@ public class PETCT_Frag extends Fragment {
     private String putDate, showDate;
     private SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
     private String getFormatDate, from_formateDate;
+    Dupl_InclusionAdapter adpter_inc;
+
+    // Add Inclusion
+    static PETCT_Frag fragment;
+    TextView txt_amntamnt, txt_totalFinalamnt;
 
     final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
@@ -169,9 +181,15 @@ public class PETCT_Frag extends Fragment {
     private String closingbal;
     private SharedPreferences prefs;
     private String api_key = "";
+    Button btn_addconsumables;
+    LinearLayout ll_scanamount;
+    private RecyclerView recy_inclusion_dup;
+    private int fdupl_incl_Amnt = 0;
+    private int finalAmount = 0;
+    private boolean fg_dataavailable = false;
 
     public static PETCT_Frag newInstance(String param1, String param2) {
-        PETCT_Frag fragment = new PETCT_Frag();
+        fragment = new PETCT_Frag();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -187,6 +205,7 @@ public class PETCT_Frag extends Fragment {
 
         context = getContext();
         activity = getActivity();
+        fragment = this;
         myCalendar = Calendar.getInstance();
 
         GsonBuilder gsonBuilder = new GsonBuilder();
@@ -207,6 +226,7 @@ public class PETCT_Frag extends Fragment {
         prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
         api_key = prefs.getString("API_KEY", null);
         CLIENT_TYPE = prefs.getString("CLIENT_TYPE", "");
+        SCANSOLOGIN_TYPE = prefs.getString(Constants.SCANSOLOGINTYPE, "");
     }
 
 
@@ -301,6 +321,15 @@ public class PETCT_Frag extends Fragment {
         edt_remarks = (EditText) v.findViewById(R.id.edt_remarks);
         edt_age = v.findViewById(R.id.edt_age);
         edt_coupon = v.findViewById(R.id.edt_coupon);
+
+        txt_amntamnt = v.findViewById(R.id.txt_amntamnt);
+        txt_totalFinalamnt = v.findViewById(R.id.txt_totalFinalamnt);
+        ll_scanamount = v.findViewById(R.id.ll_scanamount);
+        btn_addconsumables = (Button) v.findViewById(R.id.btn_addconsumables);
+        recy_inclusion_dup = (RecyclerView) v.findViewById(R.id.recy_inclusion_dup);
+        LinearLayoutManager lm1 = new LinearLayoutManager(activity);
+        recy_inclusion_dup.setLayoutManager(lm1);
+        recy_inclusion_dup.setHasFixedSize(true);
 
         btn_submit = (Button) v.findViewById(R.id.btn_submit);
         rel_dob = v.findViewById(R.id.rel_dob);
@@ -433,7 +462,12 @@ public class PETCT_Frag extends Fragment {
         if (cd.isConnectingToInternet()) {
             JSONObject jsonObject = new JSONObject();
             try {
-                jsonObject.put("Email", Constants.NHF_EMAIL);
+                if (!GlobalClass.isNull(SCANSOLOGIN_TYPE) && SCANSOLOGIN_TYPE.equalsIgnoreCase("NI")) {
+                    jsonObject.put("Email", Constants.NI_EMAIL);
+                } else {
+                    jsonObject.put("Email", Constants.NHF_EMAIL);
+                }
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -487,6 +521,8 @@ public class PETCT_Frag extends Fragment {
                     edt_age.setVisibility(View.VISIBLE);
                     rel_dob.setVisibility(View.GONE);
                     tv_date.setText("");
+//                    edt_age.setFocusableInTouchMode(true);
+                    edt_age.requestFocus();
                 }
 
             }
@@ -543,7 +579,7 @@ public class PETCT_Frag extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() > 1) {
                     patientName = edt_name.getText().toString().trim() + " " + edt_mname.getText().toString().trim() + " " + edt_lname.getText().toString().trim();
-                    displayDiscount(patientName, centerName, centerAddress, price);
+                    displayDiscount(patientName, centerName, centerAddress, "" + finalAmount);
                 } else {
                     tv_discount.setVisibility(View.GONE);
                     tv_discount.setText("");
@@ -562,42 +598,38 @@ public class PETCT_Frag extends Fragment {
                 if (checkValidation()) {
                     if (edt_email.getText().toString().length() > 0) {
                         if (emailValidation(edt_email.getText().toString()) == true) {
-                            if (cd.isConnectingToInternet()) {
-                                try {
-                                    if (Integer.parseInt(closingbal) >= Integer.parseInt(price)) {
-                                        gotoconfirmbooking();
-                                    } else {
-                                        showDialog(false);
-                                    }
-                                } catch (NumberFormatException e) {
-                                    e.printStackTrace();
-                                }
-
-                            } else {
-                                GlobalClass.toastyError(getActivity(), MessageConstants.CHECK_INTERNET_CONN, false);
-                            }
+                            CallSubMitAllData();
                         } else {
                             TastyToast.makeText(getContext(), "Enter valid email id !", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                         }
                     } else {
                         if (checkRemarksValidation()) {
-                            if (cd.isConnectingToInternet()) {
-                                try {
-                                    if (Integer.parseInt(closingbal) >= Integer.parseInt(price)) {
-                                        gotoconfirmbooking();
-                                    } else {
-                                        showDialog(false);
-                                    }
-                                } catch (NumberFormatException e) {
-                                    e.printStackTrace();
-                                }
-
-                            } else {
-                                GlobalClass.toastyError(getActivity(), MessageConstants.CHECK_INTERNET_CONN, false);
-                            }
+                            CallSubMitAllData();
                         }
                     }
                 }
+            }
+        });
+
+        edt_mobile.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.toString().trim().startsWith("5") || s.toString().trim().startsWith("4") || s.toString().trim().startsWith("3") || s.toString().trim().startsWith("2") || s.toString().trim().startsWith("1") || s.toString().trim().startsWith("0")) {
+                    edt_mobile.setText("");
+                    edt_mobile.setFocusable(true);
+                    TastyToast.makeText(getContext(), "Invalid mobile Number", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
 
@@ -609,6 +641,53 @@ public class PETCT_Frag extends Fragment {
             }
         });
 
+        btn_addconsumables.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!fg_dataavailable) {
+                    CallAddConsumableList();
+                }
+            }
+        });
+
+    }
+
+    private void CallSubMitAllData() {
+        if (cd.isConnectingToInternet()) {
+            try {
+                if (Integer.parseInt(closingbal) >= Integer.parseInt(selectedScanprice)) {
+                    if (Integer.parseInt(closingbal) >= finalAmount) {
+                        gotoconfirmbooking();
+                    } else {
+                        showDialog(false);
+                    }
+                } else {
+                    showDialog(false);
+                }
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            GlobalClass.toastyError(getActivity(), MessageConstants.CHECK_INTERNET_CONN, false);
+        }
+    }
+
+    private void CallAddConsumableList() {
+        CallInclusionMaster();
+    }
+
+    private void CallInclusionMaster() {
+        try {
+            if (ControllersGlobalInitialiser.POSTBookLeadController != null) {
+                ControllersGlobalInitialiser.POSTBookLeadController = null;
+            }
+
+            ControllersGlobalInitialiser.POSTBookLeadController = new POSTBookLeadController(fragment, activity, header);
+            ControllersGlobalInitialiser.POSTBookLeadController.CallMASTERInclusionAPI();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void gotoconfirmbooking() {
@@ -628,7 +707,8 @@ public class PETCT_Frag extends Fragment {
         intent.putExtra(Constants.PREMARK, edt_remarks.getText().toString());
         intent.putExtra(Constants.SERVICETYPE, spn_service.getSelectedItem().toString());
         intent.putExtra(Constants.AVAILBAL, closingbal);
-        intent.putExtra(Constants.PAID_BAL, price);
+        intent.putExtra(Constants.PAID_BAL, selectedScanprice);
+        intent.putExtra(Constants.PAID_FINALBAL, "" + finalAmount);
         intent.putExtra(Constants.HEADER, header);
         intent.putExtra(Constants.CENTERID, centerId);
         intent.putExtra(Constants.SERVICEID, serviceId);
@@ -736,6 +816,12 @@ public class PETCT_Frag extends Fragment {
         if (spn_slot.isShown())
             spn_slot.setSelection(0);
 
+
+        fg_dataavailable = false;
+        BundleConstants.lists_incl_dupl = null;
+        adpter_inc = null;
+        recy_inclusion_dup.setVisibility(View.GONE);
+        ll_scanamount.setVisibility(View.GONE);
     }
 
 
@@ -858,12 +944,15 @@ public class PETCT_Frag extends Fragment {
             }
         }
 
-        int conertage = Integer.parseInt(edt_age.getText().toString());
-        if (conertage > 120) {
-            Toast.makeText(getActivity(), ToastFile.invalidage, Toast.LENGTH_SHORT).show();
-            edt_age.requestFocus();
-            return false;
+        if (str_age.equalsIgnoreCase("DOB")) {
+        } else {
+            int conertage = Integer.parseInt(edt_age.getText().toString());
+            if (conertage > 120) {
+                Toast.makeText(getActivity(), ToastFile.invalidage, Toast.LENGTH_SHORT).show();
+                edt_age.requestFocus();
+                return false;
 
+            }
         }
 
         if (txt_appdate.getText().toString().equalsIgnoreCase("")) {
@@ -909,6 +998,7 @@ public class PETCT_Frag extends Fragment {
             public void onResponse(Call<List<ServiceModel>> call, Response<List<ServiceModel>> response) {
                 try {
                     if (response.body() != null) {
+                        String st = response.body().toString();
                         GlobalClass.hideProgress(getContext(), progressDialog);
                         ArrayList<String> servicelist = new ArrayList<>();
                         servicelist.add("Select Scan Type*");
@@ -917,11 +1007,8 @@ public class PETCT_Frag extends Fragment {
 
                         if (serviceListModels != null && serviceListModels.size() > 0) {
                             for (int i = 0; i < serviceListModels.size(); i++) {
-                                /* if (serviceListModels.get(i).getServiceId().toUpperCase().equalsIgnoreCase("F")) {*/
                                 serviceName = serviceListModels.get(i).getServiceName();
                                 servicelist.add(serviceName);
-
-                                /*    }*/
                             }
                         }
 
@@ -970,9 +1057,13 @@ public class PETCT_Frag extends Fragment {
                 if (serviceListModels != null) {
                     for (int i = 0; i < serviceListModels.size(); i++) {
                         if (serviceListModels.get(i).getServiceName().toUpperCase().equalsIgnoreCase(servicetype)) {
-                            price = "" + serviceListModels.get(i).getNHF_Rate();
+                            selectedScanprice = "" + serviceListModels.get(i).getNHF_Rate();
+                            finalAmount = serviceListModels.get(i).getNHF_Rate();
                             serviceId = serviceListModels.get(i).getServiceId();
                             serviceName = serviceListModels.get(i).getServiceName();
+                            GlobalClass.SetText(txt_totalFinalamnt, "Rs. " + decimalFormat.format(CalCulateFinalAmount(0)));
+                            callSelectedCategory(serviceListModels.get(i).getCategory());
+                            break;
                         }
                     }
 
@@ -986,7 +1077,7 @@ public class PETCT_Frag extends Fragment {
                             tv_discount.setText("");
                         } else {
                             try {
-                                if (Integer.parseInt(closingbal) < Integer.parseInt(price)) {
+                                if (Integer.parseInt(closingbal) < Integer.parseInt(selectedScanprice)) {
                                     showDialog(true);
                                     sub_lin.setVisibility(View.GONE);
                                 } else {
@@ -1012,6 +1103,23 @@ public class PETCT_Frag extends Fragment {
             }
         });
 
+    }
+
+    private void callSelectedCategory(String category) {
+        if (category != null) {
+            if (category.equalsIgnoreCase("CT")) {
+
+                if (!GlobalClass.isNull(SCANSOLOGIN_TYPE) && (SCANSOLOGIN_TYPE.equalsIgnoreCase("NI") || SCANSOLOGIN_TYPE.equalsIgnoreCase("NHF"))) {
+                    btn_addconsumables.setVisibility(View.VISIBLE);
+                } else {
+                    btn_addconsumables.setVisibility(View.GONE);
+                }
+            } else {
+                btn_addconsumables.setVisibility(View.GONE);
+                recy_inclusion_dup.setVisibility(View.GONE);
+                ll_scanamount.setVisibility(View.GONE);
+            }
+        }
     }
 
     private void showDialog(final boolean b) {
@@ -1060,7 +1168,7 @@ public class PETCT_Frag extends Fragment {
             builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    if (b == false) {
+                    if (!b) {
                         dialog.dismiss();
                     } else {
                         spn_service.setSelection(0);
@@ -1167,7 +1275,7 @@ public class PETCT_Frag extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1) {
             try {
-                if (Integer.parseInt(closingbal) < Integer.parseInt(price)) {
+                if (Integer.parseInt(closingbal) < Integer.parseInt(selectedScanprice)) {
                     spn_service.setSelection(0);
                     showDialog(false);
                 }
@@ -1190,5 +1298,68 @@ public class PETCT_Frag extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void APIMasterInclusionResult(ArrayList<InclusionMasterModel> res) {
+        try {
+            if (res != null) {
+                if (res.size() != 0) {
+                    fg_dataavailable = true;
+                    ll_scanamount.setVisibility(View.VISIBLE);
+                    GlobalClass.SetText(txt_amntamnt, "Rs. " + decimalFormat.format(Integer.parseInt(selectedScanprice)));
+                    GlobalClass.SetText(txt_totalFinalamnt, "Rs. " + decimalFormat.format(finalAmount));
+                    CallAddInclusioninView(res);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void CallAddInclusioninView(ArrayList<InclusionMasterModel> res) {
+        try {
+            setDuplinClusionAdapter(res);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setDuplinClusionAdapter(ArrayList<InclusionMasterModel> res) {
+        try {
+            BundleConstants.lists_incl_dupl = res;
+            adpter_inc = new Dupl_InclusionAdapter(fragment, activity);
+            recy_inclusion_dup.setAdapter(adpter_inc);
+            recy_inclusion_dup.setVisibility(View.VISIBLE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void CallAmountdataFromDuplInclusion() {
+        setTotalDuplInclusionAmount();
+    }
+
+    private void setTotalDuplInclusionAmount() {
+        try {
+            fdupl_incl_Amnt = 0;
+            if (BundleConstants.lists_incl_dupl != null) {
+                if (BundleConstants.lists_incl_dupl.size() != 0) {
+                    for (int i = 0; i < BundleConstants.lists_incl_dupl.size(); i++) {
+                        if (BundleConstants.lists_incl_dupl.get(i).isSelected()) {
+                            fdupl_incl_Amnt = fdupl_incl_Amnt + (GlobalClass.getIntVal(BundleConstants.lists_incl_dupl.get(i).getUnitCost()) * BundleConstants.lists_incl_dupl.get(i).getSelectedqty());
+                        }
+                    }
+                }
+            }
+            GlobalClass.SetText(txt_totalFinalamnt, "Rs. " + decimalFormat.format(CalCulateFinalAmount(fdupl_incl_Amnt)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private int CalCulateFinalAmount(int fdupl_incl_amnt) {
+        int famount = fdupl_incl_amnt + Integer.parseInt(selectedScanprice);
+        finalAmount = famount;
+        return famount;
     }
 }

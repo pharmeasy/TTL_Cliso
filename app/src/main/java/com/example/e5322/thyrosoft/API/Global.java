@@ -101,7 +101,9 @@ public class Global {
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(activity, R.style.BottomSheetTheme);
         View bottomSheet = LayoutInflater.from(activity).inflate(R.layout.custom_missed_call_verification_dialog, (ViewGroup) activity.findViewById(R.id.bottom_sheet_dialog_parent));
         TextView tv_sms = bottomSheet.findViewById(R.id.tv_sms);
+        TextView tv_missed_call = bottomSheet.findViewById(R.id.tv_missed_call);
         tv_sms.setText("" + usercode + " to 9870666333");
+        tv_missed_call.setText("9870666333");
         bottomSheet.findViewById(R.id.cross_dismiss).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

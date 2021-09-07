@@ -478,7 +478,7 @@ public class UploadDocument extends AbstractActivity {
         user = prefs.getString("Username", null);
         api_key = prefs.getString("API_KEY", null);
         APi_key = api_key;
-        title.setText("Upload Document");
+        title.setText("YOUR CLIENT KYC/FLEGO UPLOAD");
 
         finalsetfromdate = appPreferenceManager.getLeaveFromDate();
         try {

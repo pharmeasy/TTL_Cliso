@@ -803,6 +803,7 @@ public class Login extends Activity implements View.OnClickListener {
                                         editor.putString("USER_TYPE", loginResponseModel.getUSER_TYPE());
                                         editor.putString("VERSION_NO", loginResponseModel.getVERSION_NO());
                                         editor.putString("SOURCE_TYPE", loginResponseModel.getSOURCE_TYPE());
+                                        editor.putString(Constants.SCANSOLOGINTYPE, loginResponseModel.getUSERFLAG());
                                         editor.apply();
 
                                         SharedPreferences pref_versioncheck = activity.getSharedPreferences("pref_versioncheck", MODE_PRIVATE);
