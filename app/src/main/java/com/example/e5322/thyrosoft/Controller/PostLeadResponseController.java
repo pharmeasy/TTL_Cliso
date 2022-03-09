@@ -9,7 +9,7 @@ import com.example.e5322.thyrosoft.Activity.LeadGenerationActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.LeadDataResponseModel;
 import com.example.e5322.thyrosoft.Models.PostLeadDataModel;
-import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
+import com.example.e5322.thyrosoft.Retrofit.PostAPIInterface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 
 import retrofit2.Call;
@@ -37,7 +37,7 @@ public class PostLeadResponseController {
     public void CallAPI() {
         progress.show();
 
-        PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient((Activity)context, Api.THYROCARE).create(PostAPIInteface.class);
+        PostAPIInterface apiInterface = RetroFit_APIClient.getInstance().getClient((Activity)context, Api.THYROCARE).create(PostAPIInterface.class);
         Call<LeadDataResponseModel> responseCall = apiInterface.PostdataLead(postLeadDataModel);
 
         responseCall.enqueue(new Callback<LeadDataResponseModel>() {

@@ -41,9 +41,18 @@ Covidpostdata {
     File OTHER;
     File OTHER1;
     File SELFIE;
-
+    String REFBY;
     String TECHNICIAN;
     String APIKEY;
+    String PASSPORTNO;
+
+    public String getREFBY() {
+        return REFBY;
+    }
+
+    public void setREFBY(String REFBY) {
+        this.REFBY = REFBY;
+    }
 
     public String getTECHNICIAN() {
         return TECHNICIAN;
@@ -348,5 +357,13 @@ Covidpostdata {
 
     public void setAGETYPE(String AGETYPE) {
         this.AGETYPE = AGETYPE;
+    }
+
+    public String getPASSPORTNO() {
+        return PASSPORTNO;
+    }
+
+    public void setPASSPORTNO(String PASSPORTNO) {
+        this.PASSPORTNO = PASSPORTNO;
     }
 }

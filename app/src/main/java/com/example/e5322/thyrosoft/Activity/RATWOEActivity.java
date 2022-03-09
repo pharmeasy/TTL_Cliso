@@ -39,7 +39,7 @@ public class RATWOEActivity extends Fragment {
     private String mParam1;
     private String mParam2;
     private RATWOEActivity.OnFragmentInteractionListener mListener;
-    LinearLayout ll_mainCrat,ll_noauth;
+    LinearLayout ll_mainCrat, ll_noauth;
     AppPreferenceManager appPreferenceManager;
 
 
@@ -140,7 +140,6 @@ public class RATWOEActivity extends Fragment {
         } else {
             ll_mainCrat.setVisibility(View.GONE);
             ll_noauth.setVisibility(View.VISIBLE);
-
         }
     }
 

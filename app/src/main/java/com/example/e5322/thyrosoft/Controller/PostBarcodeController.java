@@ -10,7 +10,7 @@ import com.example.e5322.thyrosoft.Fragment.Next_Consignment_Entry;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.PostBarcodeModel;
 import com.example.e5322.thyrosoft.Models.PostBarcodeResponseModel;
-import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
+import com.example.e5322.thyrosoft.Retrofit.PostAPIInterface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.ToastFile;
 
@@ -43,7 +43,7 @@ public class PostBarcodeController {
         ProgressDialog progressDialog = null;
         try {
             progressDialog = GlobalClass.ShowprogressDialog(mactivity);
-            PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(mactivity, Api.LIVEAPI).create(PostAPIInteface.class);
+            PostAPIInterface apiInterface = RetroFit_APIClient.getInstance().getClient(mactivity, Api.LIVEAPI).create(PostAPIInterface.class);
             Call<PostBarcodeResponseModel> responseCall = apiInterface.postBarcodes(postBarcodeModel);
 
             final ProgressDialog finalProgressDialog = progressDialog;

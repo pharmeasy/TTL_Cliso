@@ -1,5 +1,11 @@
 package com.example.e5322.thyrosoft;
 
+import static android.Manifest.permission.RECORD_AUDIO;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static android.content.Context.MODE_PRIVATE;
+import static android.content.Context.TELEPHONY_SERVICE;
+import static com.example.e5322.thyrosoft.ToastFile.relogin;
+
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -133,12 +139,6 @@ import java.util.regex.Pattern;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import id.zelory.compressor.Compressor;
-
-import static android.Manifest.permission.RECORD_AUDIO;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-import static android.content.Context.MODE_PRIVATE;
-import static android.content.Context.TELEPHONY_SERVICE;
-import static com.example.e5322.thyrosoft.ToastFile.relogin;
 
 /**
  * Created by E5322 on 21-03-2018.
@@ -371,8 +371,6 @@ public class GlobalClass {
     }
 
     public static ProgressDialog progress(Context context, boolean autcancel) {
-
-
         ProgressDialog progress = new ProgressDialog(context);
         progress.setTitle("Kindly Wait..");
         progress.setMessage("Processing Request");
@@ -969,13 +967,25 @@ public class GlobalClass {
         builder.setCancelable(false);
         builder.setPositiveButton("Retry",
                 new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,
-                                        int id) {
-
+                    public void onClick(DialogInterface dialog, int id) {
                         Intent i = new Intent(activity, ManagingTabsActivity.class);
                     }
                 });
         alert = builder.create();
+        alert.show();
+    }
+
+    public static void showOkAlertDialog(final Activity activity, String msg) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setMessage(msg);
+        builder.setCancelable(false);
+        builder.setPositiveButton("OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+        AlertDialog alert = builder.create();
         alert.show();
     }
 
@@ -1411,6 +1421,10 @@ public class GlobalClass {
         return collection != null && collection.size() > 0;
     }
 
+    public static boolean isArrayNotNull(Object[] collection) {
+        return collection != null && collection.length > 0;
+    }
+
     public static String getIMEINo(Activity activity) {
         String imeiNo = "";
         try {
@@ -1734,8 +1748,12 @@ public class GlobalClass {
         return false;
     }
 
-    public static boolean CheckEqualIgnoreCase(String str1, String str2) {
+    public static boolean checkEqualIgnoreCase(String str1, String str2) {
         return !isNull(str1) && !isNull(str2) && str1.equalsIgnoreCase(str2);
+    }
+
+    public static String checkAndGetStringValue(String str1, String str2) {
+        return !isNull(str1) ? str1 : str2;
     }
 
     public static int getBSBPMinMaxValue(Activity activity, String valueType) {
@@ -1743,13 +1761,13 @@ public class GlobalClass {
         SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(activity);
         String json = appSharedPrefs.getString("MyObject", "");
         MainModel obj = new Gson().fromJson(json, MainModel.class);
-        if (CheckEqualIgnoreCase(valueType, Constants.BS_MIN)) {
+        if (checkEqualIgnoreCase(valueType, Constants.BS_MIN)) {
             returnFlag = obj != null ? obj.getBsmin() : 0;
-        } else if (CheckEqualIgnoreCase(valueType, Constants.BS_MAX)) {
+        } else if (checkEqualIgnoreCase(valueType, Constants.BS_MAX)) {
             returnFlag = obj != null ? obj.getBsmax() : 0;
-        } else if (CheckEqualIgnoreCase(valueType, Constants.BP_MIN)) {
+        } else if (checkEqualIgnoreCase(valueType, Constants.BP_MIN)) {
             returnFlag = obj != null ? obj.getBpmin() : 0;
-        } else if (CheckEqualIgnoreCase(valueType, Constants.BP_MAX)) {
+        } else if (checkEqualIgnoreCase(valueType, Constants.BP_MAX)) {
             returnFlag = obj != null ? obj.getBpmax() : 0;
         }
         return returnFlag;
@@ -1760,9 +1778,9 @@ public class GlobalClass {
         SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(activity);
         String json = appSharedPrefs.getString("MyObject", "");
         MainModel obj = new Gson().fromJson(json, MainModel.class);
-        if (CheckEqualIgnoreCase(valueType, Constants.BS_MSG)) {
+        if (checkEqualIgnoreCase(valueType, Constants.BS_MSG)) {
             returnFlag = obj != null && !isNull(obj.getBsmsg()) ? obj.getBsmsg() : MessageConstants.ABSURD_VALUE;
-        } else if (CheckEqualIgnoreCase(valueType, Constants.BP_MSG)) {
+        } else if (checkEqualIgnoreCase(valueType, Constants.BP_MSG)) {
             returnFlag = obj != null && !isNull(obj.getBpmsg()) ? obj.getBpmsg() : MessageConstants.ABSURD_VALUE;
         }
         return returnFlag;
@@ -1793,5 +1811,70 @@ public class GlobalClass {
             ImagePicker.Companion.with(fragment).crop(3f, 2f).compress(Constants.MaxImageSize)
                     .maxResultSize(Constants.MaxImageWidth, Constants.MaxImageHeight).galleryOnly().start();
         }
+    }
+
+    public static void cropImageFullScreenActivity(Activity activity, int flag) {
+        if (flag == 1) {
+            ImagePicker.Companion.with(activity).crop().compress(Constants.MaxImageSize)
+                    .maxResultSize(Constants.MaxImageWidth, Constants.MaxImageHeight).start();
+        } else if (flag == 0) {
+            ImagePicker.Companion.with(activity).crop().cameraOnly().compress(Constants.MaxImageSize)
+                    .maxResultSize(Constants.MaxImageWidth, Constants.MaxImageHeight).start();
+        } else if (flag == 2) {
+            ImagePicker.Companion.with(activity).crop().galleryOnly().compress(Constants.MaxImageSize)
+                    .maxResultSize(Constants.MaxImageWidth, Constants.MaxImageHeight).start();
+        }
+    }
+
+    public static void cropImageFullScreenFragment(Fragment fragment, int flag) {
+
+        if (flag == 1) {
+            ImagePicker.Companion.with(fragment).crop().compress(Constants.MaxImageSize)
+                    .maxResultSize(Constants.MaxImageWidth, Constants.MaxImageHeight).start();
+        } else if (flag == 0) {
+            ImagePicker.Companion.with(fragment).crop().compress(Constants.MaxImageSize)
+                    .maxResultSize(Constants.MaxImageWidth, Constants.MaxImageHeight).cameraOnly().start();
+        } else if (flag == 2) {
+            ImagePicker.Companion.with(fragment).crop().compress(Constants.MaxImageSize)
+                    .maxResultSize(Constants.MaxImageWidth, Constants.MaxImageHeight).galleryOnly().start();
+        }
+    }
+
+    public static boolean allowForOfflineUse(String user_code) {
+        return !isNull(user_code) && checkEqualIgnoreCase(user_code, "PUN52");
+    }
+
+    public static int LongestStringSequence(String message) {
+        int largestSequence = 0;
+        char longestChar = '\0';
+        int currentSequence = 1;
+        char current = '\0';
+        char next = '\0';
+
+        for (int i = 0; i < message.length() - 1; i++) {
+            current = message.charAt(i);
+            next = message.charAt(i + 1);
+
+            // If character's are in sequence , increase the counter
+            if (current == next) {
+                currentSequence += 1;
+            } else {
+                if (currentSequence > largestSequence) { // When sequence is
+                    // completed, check if
+                    // it is longest
+                    largestSequence = currentSequence;
+                    longestChar = current;
+                }
+                currentSequence = 1; // re-initialize counter
+            }
+        }
+        if (currentSequence > largestSequence) { // Check if last string
+            // sequence is longest
+            largestSequence = currentSequence;
+            longestChar = current;
+        }
+
+        return largestSequence;
+
     }
 }

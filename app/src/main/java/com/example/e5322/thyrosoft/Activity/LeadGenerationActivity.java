@@ -1,5 +1,7 @@
 package com.example.e5322.thyrosoft.Activity;
 
+import static android.Manifest.permission.CAMERA;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -60,6 +62,7 @@ import com.example.e5322.thyrosoft.Models.LeadResponseModel;
 import com.example.e5322.thyrosoft.Models.TestBookingResponseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
+import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mindorks.paracamera.Camera;
@@ -82,8 +85,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-
-import static android.Manifest.permission.CAMERA;
 
 public class LeadGenerationActivity extends AppCompatActivity {
 
@@ -210,7 +211,8 @@ public class LeadGenerationActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (checkCameraPermission()) {
-                    selectImage();
+//                    selectImage();
+                    GlobalClass.cropImageFullScreenActivity(LeadGenerationActivity.this, 1);
                 } else {
                     requestCameraPermission();
                 }
@@ -1130,6 +1132,15 @@ public class LeadGenerationActivity extends AppCompatActivity {
                 Toast.makeText(mActivity, "Failed to read image data!", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
+        } else if (requestCode == ImagePicker.REQUEST_CODE && resultCode == RESULT_OK) {
+            try {
+                img_tick.setVisibility(View.VISIBLE);
+                String imageurl = ImagePicker.Companion.getFile(data).toString();
+                imagefile = new File(imageurl);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
     }
 

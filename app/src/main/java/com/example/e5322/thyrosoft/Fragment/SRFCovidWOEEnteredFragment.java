@@ -35,7 +35,7 @@ import com.example.e5322.thyrosoft.Models.COVfiltermodel;
 import com.example.e5322.thyrosoft.Models.CovidMIS_req;
 import com.example.e5322.thyrosoft.Models.Covidmis_response;
 import com.example.e5322.thyrosoft.R;
-import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
+import com.example.e5322.thyrosoft.Retrofit.PostAPIInterface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.ToastFile;
 
@@ -235,8 +235,8 @@ public class SRFCovidWOEEnteredFragment extends Fragment {
 
     private void getfilterapilist() {
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
-        Call<COVfiltermodel> coVfiltermodelCall = postAPIInteface.getSRFCovidWOEStatus();
+        PostAPIInterface postAPIInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInterface.class);
+        Call<COVfiltermodel> coVfiltermodelCall = postAPIInterface.getSRFCovidWOEStatus();
         coVfiltermodelCall.enqueue(new Callback<COVfiltermodel>() {
             @Override
             public void onResponse(Call<COVfiltermodel> call, Response<COVfiltermodel> response) {
@@ -273,8 +273,8 @@ public class SRFCovidWOEEnteredFragment extends Fragment {
         CovidMIS_req covidMIS_req = new CovidMIS_req();
         covidMIS_req.setSdate(from_formateDate);
         covidMIS_req.setSourceCode(usercode);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
-        final Call<Covidmis_response> covidmis_responseCall = postAPIInteface.getSRFcovidWOEmis(covidMIS_req);
+        PostAPIInterface postAPIInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInterface.class);
+        final Call<Covidmis_response> covidmis_responseCall = postAPIInterface.getSRFcovidWOEmis(covidMIS_req);
         covidmis_responseCall.enqueue(new Callback<Covidmis_response>() {
             @Override
             public void onResponse(Call<Covidmis_response> call, Response<Covidmis_response> response) {

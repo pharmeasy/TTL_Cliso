@@ -91,13 +91,13 @@ public class NoticeBoard_Adapter extends RecyclerView.Adapter<NoticeBoard_Adapte
     @Override
     public void onBindViewHolder(@NonNull final NoticeBoard_Adapter.ViewHolder holder, final int position) {
 
-        if (position % 2 == 1) {
+   /*     if (position % 2 == 1) {
             holder.parent_ll.setBackgroundColor(Color.parseColor("#FFFFFF"));
             //  holder.imageView.setBackgroundColor(Color.parseColor("#FFFFFF"));
         } else {
             holder.parent_ll.setBackgroundColor(Color.parseColor("#F5D2D9"));
             //  holder.imageView.setBackgroundColor(Color.parseColor("#FFFAF8FD"));
-        }
+        }*/
 
         if (noticeboard_simple_models_list.get(0).getMessages()[position].getIsAcknowledged().equals("Y")) {
             holder.ack_id.setVisibility(View.GONE);

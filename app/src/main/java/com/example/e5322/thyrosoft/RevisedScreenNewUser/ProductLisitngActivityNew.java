@@ -1,5 +1,9 @@
 package com.example.e5322.thyrosoft.RevisedScreenNewUser;
 
+import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
+import static com.example.e5322.thyrosoft.GlobalClass.redirectToLogin;
+import static com.example.e5322.thyrosoft.ToastFile.invalid_brcd;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -81,10 +85,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
-import static com.example.e5322.thyrosoft.GlobalClass.redirectToLogin;
-import static com.example.e5322.thyrosoft.ToastFile.invalid_brcd;
 
 public class ProductLisitngActivityNew extends Activity implements RecyclerInterface {
 
@@ -236,8 +236,8 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
 
         SharedPreferences preferences = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
         patientName = preferences.getString("name", null);
-        patientYear = preferences.getString("age", null);
-        patientYearType = preferences.getString("ageType", null);
+        patientYear = preferences.getString("age", "0");
+        patientYearType = preferences.getString("ageType", "");
         patientGender = preferences.getString("gender", null);
         brandName = preferences.getString("WOEbrand", null);
         typeName = preferences.getString("woetype", null);
@@ -1273,61 +1273,64 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
             holder.parent_ll.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                     //on click of blank box
                     if (holder.check.getVisibility() == View.VISIBLE) {
-                        if (productList.get(position).getCode().equalsIgnoreCase(Constants.CATC)) {
-                            boolean isCAGCA = false;
-                            for (int i = 0; i < Selcted_Test.size(); i++) {
-                                if (Selcted_Test.get(i).getCode().equalsIgnoreCase(Constants.CAGCA)) {
-                                    isCAGCA = true;
-                                    break;
-                                }
-                            }
-                            if (isCAGCA) {
-                                BaseModel ProfileToSelect = null;
-                                for (int i = 0; i < AllProductArrayList.size(); i++) {
-                                    if (AllProductArrayList.get(i).getCode().equalsIgnoreCase(Constants.P690)) {
-                                        ProfileToSelect = AllProductArrayList.get(i);
-                                        break;
-                                    }
-                                }
-                                if (ProfileToSelect != null) {
-                                    CallCheckFunction(ProfileToSelect);
-                                } else {
-                                    CallCheckFunction(productList.get(position));
-                                }
-                            } else {
-                                CallCheckFunction(productList.get(position));
-                            }
-
-
-                        } else if (productList.get(position).getCode().equalsIgnoreCase(Constants.CAGCA)) {
-                            boolean isCATC = false;
-                            for (int i = 0; i < Selcted_Test.size(); i++) {
-                                if (Selcted_Test.get(i).getCode().equalsIgnoreCase(Constants.CATC)) {
-                                    isCATC = true;
-                                    break;
-                                }
-                            }
-                            if (isCATC) {
-                                BaseModel ProfileToSelect = null;
-                                for (int i = 0; i < AllProductArrayList.size(); i++) {
-                                    if (AllProductArrayList.get(i).getCode().equalsIgnoreCase(Constants.P690)) {
-                                        ProfileToSelect = AllProductArrayList.get(i);
-                                        break;
-                                    }
-                                }
-                                if (ProfileToSelect != null) {
-                                    CallCheckFunction(ProfileToSelect);
-                                } else {
-                                    CallCheckFunction(productList.get(position));
-                                }
-                            } else {
-                                CallCheckFunction(productList.get(position));
-                            }
+                        if (Global.testsNotAllowedBelow18(productList.get(position).getCode(), patientYear)) {
+                            GlobalClass.showOkAlertDialog(mActivity, "WOE not allowed if patient's age is <18 years");
                         } else {
-                            CallCheckFunction(productList.get(position));
+                            if (productList.get(position).getCode().equalsIgnoreCase(Constants.CATC)) {
+                                boolean isCAGCA = false;
+                                for (int i = 0; i < Selcted_Test.size(); i++) {
+                                    if (Selcted_Test.get(i).getCode().equalsIgnoreCase(Constants.CAGCA)) {
+                                        isCAGCA = true;
+                                        break;
+                                    }
+                                }
+                                if (isCAGCA) {
+                                    BaseModel ProfileToSelect = null;
+                                    for (int i = 0; i < AllProductArrayList.size(); i++) {
+                                        if (AllProductArrayList.get(i).getCode().equalsIgnoreCase(Constants.P690)) {
+                                            ProfileToSelect = AllProductArrayList.get(i);
+                                            break;
+                                        }
+                                    }
+                                    if (ProfileToSelect != null) {
+                                        CallCheckFunction(ProfileToSelect);
+                                    } else {
+                                        CallCheckFunction(productList.get(position));
+                                    }
+                                } else {
+                                    CallCheckFunction(productList.get(position));
+                                }
+
+
+                            } else if (productList.get(position).getCode().equalsIgnoreCase(Constants.CAGCA)) {
+                                boolean isCATC = false;
+                                for (int i = 0; i < Selcted_Test.size(); i++) {
+                                    if (Selcted_Test.get(i).getCode().equalsIgnoreCase(Constants.CATC)) {
+                                        isCATC = true;
+                                        break;
+                                    }
+                                }
+                                if (isCATC) {
+                                    BaseModel ProfileToSelect = null;
+                                    for (int i = 0; i < AllProductArrayList.size(); i++) {
+                                        if (AllProductArrayList.get(i).getCode().equalsIgnoreCase(Constants.P690)) {
+                                            ProfileToSelect = AllProductArrayList.get(i);
+                                            break;
+                                        }
+                                    }
+                                    if (ProfileToSelect != null) {
+                                        CallCheckFunction(ProfileToSelect);
+                                    } else {
+                                        CallCheckFunction(productList.get(position));
+                                    }
+                                } else {
+                                    CallCheckFunction(productList.get(position));
+                                }
+                            } else {
+                                CallCheckFunction(productList.get(position));
+                            }
                         }
                     } else if (holder.checked.getVisibility() == View.VISIBLE) {//on click of checked box
                         if (!isSelectedDueToParent) {

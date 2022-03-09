@@ -1,5 +1,12 @@
 package com.example.e5322.thyrosoft.Activity.frags;
 
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static android.app.Activity.RESULT_OK;
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -53,9 +60,10 @@ import com.example.e5322.thyrosoft.Models.OTPrequest;
 import com.example.e5322.thyrosoft.Models.RequestModels.GenerateOTPRequestModel;
 import com.example.e5322.thyrosoft.Models.Tokenresponse;
 import com.example.e5322.thyrosoft.R;
-import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
+import com.example.e5322.thyrosoft.Retrofit.PostAPIInterface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.ToastFile;
+import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mindorks.paracamera.Camera;
@@ -72,13 +80,6 @@ import java.util.regex.Pattern;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static android.Manifest.permission.CAMERA;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-import static android.app.Activity.RESULT_OK;
-import static android.content.Context.MODE_PRIVATE;
 
 public class BS_EntryFragment extends Fragment {
     public static String OTPAPPID = "9";
@@ -676,25 +677,31 @@ public class BS_EntryFragment extends Fragment {
     }
 
     private void selectImage() {
-        CharSequence[] items = new CharSequence[]{"Take Photo", "Choose from gallery", "Cancel"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle("Upload Image !");
-        final CharSequence[] finalItems = items;
-        builder.setItems(items, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int item) {
-                if (finalItems[item].equals("Take Photo")) {
-                    userChoosenTask = "Take Photo";
-                    openCamera();
-                } else if (finalItems[item].equals("Choose from gallery")) {
-                    userChoosenTask = "Choose from gallery";
-                    chooseFromGallery();
-                } else if (finalItems[item].equals("Cancel")) {
-                    dialog.dismiss();
-                }
-            }
-        });
-        builder.show();
+        ImagePicker.Companion.with(BS_EntryFragment.this)
+                .crop()
+                .compress(Constants.MaxImageSize)
+                .maxResultSize(Constants.MaxImageWidth, Constants.MaxImageHeight)
+                .start();
+
+//        CharSequence[] items = new CharSequence[]{"Take Photo", "Choose from gallery", "Cancel"};
+//        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+//        builder.setTitle("Upload Image !");
+//        final CharSequence[] finalItems = items;
+//        builder.setItems(items, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int item) {
+//                if (finalItems[item].equals("Take Photo")) {
+//                    userChoosenTask = "Take Photo";
+//                    openCamera();
+//                } else if (finalItems[item].equals("Choose from gallery")) {
+//                    userChoosenTask = "Choose from gallery";
+//                    chooseFromGallery();
+//                } else if (finalItems[item].equals("Cancel")) {
+//                    dialog.dismiss();
+//                }
+//            }
+//        });
+//        builder.show();
     }
 
     private void chooseFromGallery() {
@@ -768,6 +775,24 @@ public class BS_EntryFragment extends Fragment {
                 }
             } catch (IOException e) {
                 Global.showCustomToast(activity, "Failed to read image data!");
+                e.printStackTrace();
+            }
+        } else if (requestCode == ImagePicker.REQUEST_CODE && resultCode == RESULT_OK) {
+            try {
+                String imageurl = ImagePicker.Companion.getFile(data).toString();
+                imageFile = new File(imageurl);
+                Log.e(TAG, "" + String.format("ActualSize : %s", GlobalClass.getReadableFileSize(imageFile.length())));
+                if (imageFile != null && imageFile.exists()) {
+                    correct_img.setVisibility(View.VISIBLE);
+                    btn_choose_file.setText(getString(R.string.re_upload));
+                    tvUploadImageText.setHint(getString(R.string.image_uploaded));
+                    tvUploadImageText.setPaintFlags(tvUploadImageText.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                } else {
+                    correct_img.setVisibility(View.GONE);
+                    btn_choose_file.setText(getString(R.string.choose_file));
+                    tvUploadImageText.setHint(getString(R.string.img_upload));
+                }
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -975,7 +1000,7 @@ public class BS_EntryFragment extends Fragment {
 
         int versionCode = pInfo.versionCode;
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(getContext());
-        PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.THYROCARE).create(PostAPIInteface.class);
+        PostAPIInterface apiInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.THYROCARE).create(PostAPIInterface.class);
         OTPrequest otPrequest = new OTPrequest();
         otPrequest.setAppId(OTPAPPID);
         otPrequest.setPurpose("OTP");

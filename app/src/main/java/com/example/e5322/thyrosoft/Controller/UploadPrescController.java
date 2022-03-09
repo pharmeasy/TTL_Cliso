@@ -8,7 +8,7 @@ import com.example.e5322.thyrosoft.Activity.Scan_Barcode_Outlabs_Activity;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.RequestModels.UploadPrescRequestModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.UploadPrescResponseModel;
-import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
+import com.example.e5322.thyrosoft.Retrofit.PostAPIInterface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.RevisedScreenNewUser.Scan_Barcode_ILS_New;
 import com.example.e5322.thyrosoft.WOE.Scan_Barcode_Outlabs;
@@ -62,8 +62,8 @@ public class UploadPrescController {
             RequestBody DocType = RequestBody.create(MediaType.parse("multipart/form-data"), uploadPrescRequestModel.getDocType());
             RequestBody ENTRYBY = RequestBody.create(MediaType.parse("multipart/form-data"), uploadPrescRequestModel.getENTRYBY());
 
-            PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
-            Call<UploadPrescResponseModel> call = postAPIInteface.UploadPrescriptionAPI(ImgUrl, SourceCode, Patientid, DocType, ENTRYBY);
+            PostAPIInterface postAPIInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInterface.class);
+            Call<UploadPrescResponseModel> call = postAPIInterface.UploadPrescriptionAPI(ImgUrl, SourceCode, Patientid, DocType, ENTRYBY);
             call.enqueue(new Callback<UploadPrescResponseModel>() {
                 @Override
                 public void onResponse(Call<UploadPrescResponseModel> call, Response<UploadPrescResponseModel> response) {

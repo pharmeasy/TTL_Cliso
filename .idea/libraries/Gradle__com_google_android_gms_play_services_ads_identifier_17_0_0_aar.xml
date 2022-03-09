@@ -1,28 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.google.android.gms:play-services-ads-identifier:17.0.0@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-ads-identifier-17.0.0.aar/a1e7a3cd5ece564e968b0e417d04f267/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-ads-identifier-17.0.0.aar/a1e7a3cd5ece564e968b0e417d04f267/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-ads-identifier-17.0.0.aar/a1e7a3cd5ece564e968b0e417d04f267/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-ads-identifier-17.0.0.aar/ac58b1b9786c2994faabe78c27076e32/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-ads-identifier-17.0.0.aar/3a7c9094313901909c55978565d0c8b6/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-ads-identifier-17.0.0.aar/3a7c9094313901909c55978565d0c8b6/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-ads-identifier-17.0.0.aar/3a7c9094313901909c55978565d0c8b6/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-ads-identifier-17.0.0.aar/c01e555479b35b5555fb89247351ef0c/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-ads-identifier-17.0.0.aar/c37e8ff2b3e1454fd19198d69f434001/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-ads-identifier-17.0.0.aar/c37e8ff2b3e1454fd19198d69f434001/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-ads-identifier-17.0.0.aar/c37e8ff2b3e1454fd19198d69f434001/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-ads-identifier-17.0.0.aar/7a9225d3f87b1dc80e779451cd1a653f/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-ads-identifier-17.0.0.aar/9d1f2b5834bdcd1282d4d309fc17c43b/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8c87bd5882fb8916452b4c084b065745/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d05b55b7e10661b19b49f5c8e845b801/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f39323df18424740dc1abb46871b2544/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-ads-identifier-17.0.0.aar/274fc64cda3d784f58ff6bcc25dc35b1/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-ads-identifier-17.0.0.aar/9735f777550a9b3f08a5a64d8e993476/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/5415b61f36fb39630ee8069f08c1f5ce/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/adcd4f93e4c9928e74658cb50186df6b/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/adcd4f93e4c9928e74658cb50186df6b/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/adcd4f93e4c9928e74658cb50186df6b/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ebf17fd2b2286a88462d3ed5f3a6fa6d/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ebf17fd2b2286a88462d3ed5f3a6fa6d/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ebf17fd2b2286a88462d3ed5f3a6fa6d/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

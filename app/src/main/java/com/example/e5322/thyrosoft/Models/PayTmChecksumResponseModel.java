@@ -14,6 +14,7 @@ public class PayTmChecksumResponseModel {
     private String RES_ID;
     private Object TID;
     private String encCheckSum;
+    private String TransToken;
 
     public String getRESPONSE() {
         return RESPONSE;
@@ -45,5 +46,13 @@ public class PayTmChecksumResponseModel {
 
     public void setEncCheckSum(String encCheckSum) {
         this.encCheckSum = encCheckSum;
+    }
+
+    public String getTransToken() {
+        return TransToken;
+    }
+
+    public void setTransToken(String transToken) {
+        TransToken = transToken;
     }
 }

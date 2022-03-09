@@ -1,18 +1,16 @@
 package com.example.e5322.thyrosoft.Controller;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Build;
-import android.widget.Toast;
 
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
-import com.example.e5322.thyrosoft.Activity.MessageConstants;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.AppuserReq;
 import com.google.firebase.iid.FirebaseInstanceId;
-
-import static android.content.Context.MODE_PRIVATE;
 
 public class LogUserActivityTagging {
     String User, token, str_modType;
@@ -74,7 +72,7 @@ public class LogUserActivityTagging {
             requestModel.setIslogin(sharedPreferencesUserActivity.getString(Constants.SHR_ISLOGIN, ""));
             if (!GlobalClass.isNull(str_modType)) {
                 requestModel.setModType(str_modType);
-            } else if (!GlobalClass.isNull(str_modType) && GlobalClass.CheckEqualIgnoreCase(str_modType, Constants.REPORT_DOWNLOAD)) {
+            } else if (!GlobalClass.isNull(str_modType) && GlobalClass.checkEqualIgnoreCase(str_modType, Constants.REPORT_DOWNLOAD)) {
                 requestModel.setModType(Constants.REPORT_DOWNLOAD);
             } else {
                 requestModel.setModType(sharedPreferencesUserActivity.getString(Constants.SHR_MODTYPE, ""));
@@ -99,9 +97,9 @@ public class LogUserActivityTagging {
                 if (GlobalClass.isNetworkAvailable(activity)) {
                     ControllersGlobalInitialiser.logUserActivityController = new LogUserActivityController(activity);
                     ControllersGlobalInitialiser.logUserActivityController.updateUserActivity(requestModel);
-                } else {
+                }/* else {
                     Toast.makeText(activity, MessageConstants.CHECK_INTERNET_CONN, Toast.LENGTH_SHORT).show();
-                }
+                }*/
             } catch (Exception e) {
                 e.printStackTrace();
             }

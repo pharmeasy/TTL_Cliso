@@ -1,87 +1,9 @@
 package com.example.e5322.thyrosoft.RevisedScreenNewUser;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.text.Editable;
-import android.text.Html;
-import android.text.TextWatcher;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.example.e5322.thyrosoft.API.Api;
-import com.example.e5322.thyrosoft.API.Constants;
-import com.example.e5322.thyrosoft.API.Global;
-import com.example.e5322.thyrosoft.Controller.DynamicPaymentController;
-import com.example.e5322.thyrosoft.Controller.GeneratePayTMchecksum;
-import com.example.e5322.thyrosoft.Controller.Log;
-import com.example.e5322.thyrosoft.Controller.VerifyPayTmChecksumController;
-import com.example.e5322.thyrosoft.GlobalClass;
-import com.example.e5322.thyrosoft.Models.DyanamicPaymentReqModel;
-import com.example.e5322.thyrosoft.Models.DynamicPaymentResponseModel;
-import com.example.e5322.thyrosoft.Models.PayTmChecksumRequestModel;
-import com.example.e5322.thyrosoft.Models.PayTmChecksumResponseModel;
-import com.example.e5322.thyrosoft.Models.RequestModels.PaytmVerifyChecksumRequestModel;
-import com.example.e5322.thyrosoft.Models.ResponseModels.PaytmVerifyChecksumResponseModel;
-import com.example.e5322.thyrosoft.R;
-import com.example.e5322.thyrosoft.ToastFile;
-import com.example.e5322.thyrosoft.startscreen.ConnectionDetector;
-import com.google.gson.Gson;
-import com.paytm.pgsdk.PaytmOrder;
-import com.paytm.pgsdk.PaytmPGService;
-import com.paytm.pgsdk.PaytmPaymentTransactionCallback;
-import com.payu.india.Model.PaymentParams;
-import com.payu.india.Model.PayuConfig;
-import com.payu.india.Model.PayuHashes;
-import com.payu.india.Payu.Payu;
-import com.payu.india.Payu.PayuConstants;
-import com.payu.payuui.Activity.PayUBaseActivity;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
-import cn.pedant.SweetAlert.SweetAlertDialog;
-
 import static com.example.e5322.thyrosoft.API.Api.APIKEYFORPAYMENTGATEWAY_PAYU;
 import static com.example.e5322.thyrosoft.API.Api.BASE_URL_TOCHECK;
 import static com.example.e5322.thyrosoft.API.Constants.AMOUNT;
+import static com.example.e5322.thyrosoft.API.Constants.CALLBACK_URL;
 import static com.example.e5322.thyrosoft.API.Constants.CLIENT_STATUS;
 import static com.example.e5322.thyrosoft.API.Constants.CLIENT_TYPE;
 import static com.example.e5322.thyrosoft.API.Constants.DICTIONARY;
@@ -89,6 +11,7 @@ import static com.example.e5322.thyrosoft.API.Constants.DOMAIN;
 import static com.example.e5322.thyrosoft.API.Constants.FAILURE;
 import static com.example.e5322.thyrosoft.API.Constants.GATEWAY;
 import static com.example.e5322.thyrosoft.API.Constants.MOBILE;
+import static com.example.e5322.thyrosoft.API.Constants.M_ID;
 import static com.example.e5322.thyrosoft.API.Constants.NAME;
 import static com.example.e5322.thyrosoft.API.Constants.ORDERID;
 import static com.example.e5322.thyrosoft.API.Constants.ORDER_NO;
@@ -120,6 +43,86 @@ import static com.example.e5322.thyrosoft.API.Constants.PAYUMONEY_RESPONSE;
 import static com.example.e5322.thyrosoft.API.Constants.SUCCESS;
 import static com.example.e5322.thyrosoft.API.Constants.UPDATE_PAYMENT_URL;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.text.Editable;
+import android.text.Html;
+import android.text.TextWatcher;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.API.Constants;
+import com.example.e5322.thyrosoft.API.Global;
+import com.example.e5322.thyrosoft.Controller.DynamicPaymentController;
+import com.example.e5322.thyrosoft.Controller.GeneratePayTMchecksum;
+import com.example.e5322.thyrosoft.Controller.Log;
+import com.example.e5322.thyrosoft.Controller.VerifyPayTmChecksumController;
+import com.example.e5322.thyrosoft.GlobalClass;
+import com.example.e5322.thyrosoft.Models.DyanamicPaymentReqModel;
+import com.example.e5322.thyrosoft.Models.DynamicPaymentResponseModel;
+import com.example.e5322.thyrosoft.Models.PayTmChecksumRequestModel;
+import com.example.e5322.thyrosoft.Models.PayTmChecksumResponseModel;
+import com.example.e5322.thyrosoft.Models.RequestModels.PaytmVerifyChecksumRequestModel;
+import com.example.e5322.thyrosoft.Models.ResponseModels.PaytmVerifyChecksumResponseModel;
+import com.example.e5322.thyrosoft.R;
+import com.example.e5322.thyrosoft.ToastFile;
+import com.example.e5322.thyrosoft.startscreen.ConnectionDetector;
+import com.google.gson.Gson;
+import com.paytm.pgsdk.PaytmOrder;
+import com.paytm.pgsdk.PaytmPaymentTransactionCallback;
+import com.paytm.pgsdk.TransactionManager;
+import com.payu.india.Model.PaymentParams;
+import com.payu.india.Model.PayuConfig;
+import com.payu.india.Model.PayuHashes;
+import com.payu.india.Payu.Payu;
+import com.payu.india.Payu.PayuConstants;
+import com.payu.payuui.Activity.PayUBaseActivity;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 public class Payment_Activity extends AppCompatActivity {
 
     private Activity mActivity;
@@ -149,6 +152,7 @@ public class Payment_Activity extends AppCompatActivity {
     private String COME_FROM_SCREEN = "";
     private String unbillwoe, unbillmt, crd_amt;
     private String CLIENT_TYP = "";
+    private int PaytmrequestCode = 83745;
 
     @SuppressLint("NewApi")
     @Override
@@ -417,6 +421,8 @@ public class Payment_Activity extends AppCompatActivity {
             }
 
 
+        } else if (requestCode == PaytmrequestCode && data != null) {
+            Toast.makeText(this, data.getStringExtra("nativeSdkForMerchantMessage") + data.getStringExtra("response"), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -1167,9 +1173,10 @@ public class Payment_Activity extends AppCompatActivity {
                             String value = jObject.getString("Value");
                             String Key = jObject.getString("Key");
                             System.out.println("Response from server: " + value);
+    /*
                             if (!value.equalsIgnoreCase("SUCCESS")) {
                                 Toast.makeText(Payment_Activity.this, "Something went wrong - Response log failed", Toast.LENGTH_SHORT).show();
-                            }
+                            }*/
 
                             if (paymentstatus.equalsIgnoreCase(SUCCESS)) {
                                 Toast.makeText(Payment_Activity.this, "Transaction successful...", Toast.LENGTH_SHORT).show();
@@ -1206,9 +1213,9 @@ public class Payment_Activity extends AppCompatActivity {
             payTmChecksumRequestModel.setTxtCustID(mobile_pref);
             payTmChecksumRequestModel.setTxtEmail(email_id);
             if (Api.THYROCARE.contains("APIs")) {
-                payTmChecksumRequestModel.setTxtCallBack(Constants.CALLBACK_URL + ordno);
+                payTmChecksumRequestModel.setTxtCallBack(CALLBACK_URL + ordno);
             } else {
-                payTmChecksumRequestModel.setTxtCallBack(Constants.CALLBACK_URL);
+                payTmChecksumRequestModel.setTxtCallBack(CALLBACK_URL);
             }
             payTmChecksumRequestModel.setTxtWebsite(Constants.WEBSITE);
             payTmChecksumRequestModel.setTxtINDID(Constants.INDUSTRY_TYPE_ID);
@@ -1226,23 +1233,23 @@ public class Payment_Activity extends AppCompatActivity {
 
     public void getChecksumResponse(PayTmChecksumResponseModel responseModel, String txtAmount, String txtORDID) {
         if (!GlobalClass.isNull(responseModel.getRES_ID()) && responseModel.getRES_ID().equalsIgnoreCase(Constants.RES0001)) {
-            if (!GlobalClass.isNull(responseModel.getEncCheckSum())) {
-                start_paytm_transaction(responseModel.getEncCheckSum(), txtAmount, txtORDID, responseModel.getRESPONSE());
+            if (!GlobalClass.isNull(responseModel.getTransToken())) {
+                start_paytm_transaction(responseModel.getTransToken(), txtAmount, txtORDID, responseModel.getRESPONSE());
             } else {
-                GlobalClass.showCustomToast(Payment_Activity.this, "Checksum generation failed", 0);
+                GlobalClass.showCustomToast(Payment_Activity.this, "Checksum token generation failed", 0);
             }
         } else {
-            GlobalClass.printLog(Constants.ERROR, TAG, "PayTm Checksum", responseModel.getRESPONSE());
+            GlobalClass.printLog(Constants.ERROR, TAG, "PayTm Checksum token", responseModel.getRESPONSE());
         }
     }
 
-    private void start_paytm_transaction(String Checksum, String orderamount, String orderno, String response) {
-        PaytmPGService Service;
+    private void start_paytm_transaction(String Checksum_token, String orderamount, String orderno, String response) {
+       /* PaytmPGService Service;
         if (Api.THYROCARE.contains("APIs")) {
             Service = PaytmPGService.getProductionService();//live ---
         } else {
             Service = PaytmPGService.getStagingService();//Staging-----
-        }
+        }*/
 
         //Kindly create complete Map and checksum on your server side and then put it here in paramMap.
 
@@ -1251,7 +1258,7 @@ public class Payment_Activity extends AppCompatActivity {
         if (CLIENT_TYP.equalsIgnoreCase(Constants.NHF)) {
             paramMap.put("MID", Constants.M_ID_NHL);
         } else {
-            paramMap.put("MID", Constants.M_ID);
+            paramMap.put("MID", M_ID);
         }
 
         paramMap.put("ORDER_ID", orderno);
@@ -1261,19 +1268,19 @@ public class Payment_Activity extends AppCompatActivity {
         paramMap.put("TXN_AMOUNT", orderamount);
         paramMap.put("WEBSITE", Constants.WEBSITE);
         if (Api.THYROCARE.contains("APIs")) {
-            paramMap.put("CALLBACK_URL", Constants.CALLBACK_URL + orderno);//live ---
+            paramMap.put("CALLBACK_URL", CALLBACK_URL + orderno);//live ---
         } else {
-            paramMap.put("CALLBACK_URL", Constants.CALLBACK_URL);//Staging-----
+            paramMap.put("CALLBACK_URL", CALLBACK_URL);//Staging-----
         }
         paramMap.put("EMAIL", email_id);
         paramMap.put("MOBILE_NO", mobile_pref);
-        paramMap.put("CHECKSUMHASH", Checksum);
-        PaytmOrder Order = new PaytmOrder(paramMap);
+        paramMap.put("CHECKSUMHASH", Checksum_token);
+//        PaytmOrder Order = new PaytmOrder(paramMap);
         try {
             if (cd.isConnectingToInternet()) {
                 JSONObject jobj1 = new JSONObject();
                 jobj1.put(PAYUMONEYKEY_APIKEY, api_key);
-                jobj1.put(PAYUMONEYKEY_REQUEST_CHECKSUM, Checksum);
+                jobj1.put(PAYUMONEYKEY_REQUEST_CHECKSUM, Checksum_token);
                 JSONObject postdata = new JSONObject();
                 postdata.put(DICTIONARY, jobj1.toString());
                 postdata.put(ORDER_NO, orderno);
@@ -1291,7 +1298,7 @@ public class Payment_Activity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        try {
+       /* try {
             Service.initialize(Order, null);
             GlobalClass.showCustomToast(mActivity, ToastFile.PAYTM_REDITECTION, 0);
 
@@ -1369,6 +1376,78 @@ public class Payment_Activity extends AppCompatActivity {
                     });
         } catch (Exception e) {
             e.printStackTrace();
+        }*/
+
+        try {
+            PaytmOrder paytmOrder = new PaytmOrder(orderno, M_ID, Checksum_token, orderamount, CALLBACK_URL + orderno);
+            TransactionManager transactionManager = new TransactionManager(paytmOrder, new PaytmPaymentTransactionCallback() {
+                @Override
+                public void onTransactionResponse(@Nullable @org.jetbrains.annotations.Nullable Bundle inResponse) {
+                    // Toast.makeText(getApplicationContext(), "Payment Transaction response " + inResponse.toString(), Toast.LENGTH_LONG).show();
+
+                    String STATUS, CHECKSUMHASH, BANKNAME, ORDERID, TXNAMOUNT, TXNDATE, MID, TXNID, RESPCODE, PAYMENTMODE, BANKTXNID, CURRENCY, GATEWAYNAME, RESPMSG;
+                    STATUS = inResponse.getString("STATUS");
+                    CHECKSUMHASH = inResponse.getString("CHECKSUMHASH");
+                    BANKNAME = inResponse.getString("BANKNAME");
+                    ORDERID = inResponse.getString("ORDERID");
+                    TXNAMOUNT = inResponse.getString("TXNAMOUNT");
+                    TXNDATE = inResponse.getString("TXNDATE");
+                    MID = inResponse.getString("MID");
+                    TXNID = inResponse.getString("TXNID");
+                    RESPCODE = inResponse.getString("RESPCODE");
+                    PAYMENTMODE = inResponse.getString("PAYMENTMODE");
+                    BANKTXNID = inResponse.getString("BANKTXNID");
+                    CURRENCY = inResponse.getString("CURRENCY");
+                    GATEWAYNAME = inResponse.getString("GATEWAYNAME");
+                    RESPMSG = inResponse.getString("RESPMSG");
+
+                    callVerifyPayTmChecksum(MID, ORDERID);
+                }
+
+                @Override
+                public void networkNotAvailable() {
+                    GlobalClass.showCustomToast(mActivity, ToastFile.NETWORK_NOT_AVAILABLE, 0);
+                }
+
+                @Override
+                public void onErrorProceed(String s) {
+                    System.out.println("PayTM Res >> " + s);
+                }
+
+                @Override
+                public void clientAuthenticationFailed(String s) {
+                    GlobalClass.showCustomToast(mActivity, "clientAuthenticationFailed : " + s, 0);
+                }
+
+                @Override
+                public void someUIErrorOccurred(String s) {
+                    GlobalClass.showCustomToast(mActivity, s, 0);
+                }
+
+                @Override
+                public void onErrorLoadingWebPage(int i, String s, String s1) {
+                    System.out.println("PayTM Res >> " + s + " >> " + s1 + " >> " + i);
+                    GlobalClass.showCustomToast(mActivity, "onErrorLoadingWebPage : " + s, 0);
+                }
+
+                @Override
+                public void onBackPressedCancelTransaction() {
+                    System.out.println("PayTM Res >> onBackPressedCancelTransaction");
+                    Global.showCustomToast(mActivity, ToastFile.TRANSACTION_CANCELLED);
+                }
+
+                @Override
+                public void onTransactionCancel(String s, Bundle bundle) {
+                    System.out.println("PayTM Res >> " + s);
+                    Global.showCustomToast(mActivity, ToastFile.PAYMENT_TRANSACTION_FAILED);
+                }
+            });
+
+            transactionManager.setShowPaymentUrl(Constants.CALLBACK_URLPAYTM + "/theia/api/v1/showPaymentPage");
+            transactionManager.setAppInvokeEnabled(false);
+            transactionManager.startTransaction(this, PaytmrequestCode);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -1380,7 +1459,7 @@ public class Payment_Activity extends AppCompatActivity {
             requestModel.setORDERID(ORDERID);
             if (CLIENT_TYP.equalsIgnoreCase(Constants.NHF)) {
                 requestModel.setCompany("NHL");
-            }else {
+            } else {
                 requestModel.setCompany("TTL");
             }
 

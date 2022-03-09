@@ -44,7 +44,7 @@ public class GetClientDetail_Controller {
                         }
                     }
                 } else {
-                    globalClass.showcenterCustomToast(specialOffer_activity, "Something went wrong please try after sometime.");
+                    GlobalClass.showTastyToast(specialOffer_activity, "Something went wrong please try after sometime.",2);
                 }
             }
 

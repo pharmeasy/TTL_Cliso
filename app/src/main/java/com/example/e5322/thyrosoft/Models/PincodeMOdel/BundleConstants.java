@@ -115,4 +115,8 @@ public class BundleConstants {
     public static String selectbtechtransactionText = "SELECT BTS Code";
 
     public static final String ID = "ID";
+
+    public static String REPORT = "Report";
+    public static String RECEIPT= "Receipt";
+
 }

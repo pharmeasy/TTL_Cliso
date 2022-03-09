@@ -1,5 +1,11 @@
 package com.example.e5322.thyrosoft.Fragment;
 
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static android.app.Activity.RESULT_OK;
+import static android.content.Context.MODE_PRIVATE;
+import static com.example.e5322.thyrosoft.ToastFile.invalid_brcd;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -34,6 +40,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -61,6 +68,7 @@ import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Activity.MessageConstants;
 import com.example.e5322.thyrosoft.Adapter.SCollectionPAdapter;
 import com.example.e5322.thyrosoft.Adapter.ViewPagerAdapter;
+import com.example.e5322.thyrosoft.BuildConfig;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
 import com.example.e5322.thyrosoft.Controller.Covidmultipart_controller;
 import com.example.e5322.thyrosoft.Controller.Log;
@@ -83,7 +91,7 @@ import com.example.e5322.thyrosoft.Models.ResponseModels.WOEResponseModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.getSCPTechnicianModel;
 import com.example.e5322.thyrosoft.Models.WOERequestModel;
 import com.example.e5322.thyrosoft.R;
-import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
+import com.example.e5322.thyrosoft.Retrofit.PostAPIInterface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.github.dhaval2404.imagepicker.ImagePicker;
@@ -121,12 +129,6 @@ import java.util.regex.Pattern;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static android.Manifest.permission.CAMERA;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-import static android.app.Activity.RESULT_OK;
-import static android.content.Context.MODE_PRIVATE;
-import static com.example.e5322.thyrosoft.ToastFile.invalid_brcd;
 
 
 public class RATEnterFrag extends Fragment {
@@ -179,11 +181,14 @@ public class RATEnterFrag extends Fragment {
     AppPreferenceManager appPreferenceManager;
 
     TextView tv_help;
+    boolean OTPAccess;
+    RadioGroup radiogrp2;
 
     TextView samplecollectionponit;
     private getSCPTechnicianModel.getTechnicianlist selectedSCT;
     private ArrayList<getSCPTechnicianModel.getTechnicianlist> filterPatientsArrayList;
     private boolean isgetDOB = false;
+
     public RATEnterFrag() {
         // Required empty public constructor
     }
@@ -192,6 +197,7 @@ public class RATEnterFrag extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
     }
 
@@ -204,8 +210,17 @@ public class RATEnterFrag extends Fragment {
         activity = getActivity();
         cd = new ConnectionDetector(activity);
         appPreferenceManager = new AppPreferenceManager(activity);
+
+        try {
+            if (appPreferenceManager != null && appPreferenceManager.getCovidAccessResponseModel() != null) {
+                OTPAccess = appPreferenceManager.getCovidAccessResponseModel().isCovidOtpAllow();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         initui(root);
         initlistner();
+
 
         if (cd.isConnectingToInternet()) {
             GetHospitalList();
@@ -219,8 +234,8 @@ public class RATEnterFrag extends Fragment {
         hospital_req.setApiKey(apikey);
         hospital_req.setUserCode(usercode);
 
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
-        Call<Hospital_model> covidratemodelCall = postAPIInteface.GetWOEHospital(hospital_req);
+        PostAPIInterface postAPIInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInterface.class);
+        Call<Hospital_model> covidratemodelCall = postAPIInterface.GetWOEHospital(hospital_req);
 
         covidratemodelCall.enqueue(new Callback<Hospital_model>() {
             @Override
@@ -492,9 +507,11 @@ public class RATEnterFrag extends Fragment {
         txt_barcode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                IntentIntegrator.forSupportFragment(RATEnterFrag.this).initiateScan();
-
+                if (BuildConfig.DEBUG) {
+                    txt_barcode.setText("" + Global.randomBarcodeString(8));
+                }else {
+                    IntentIntegrator.forSupportFragment(RATEnterFrag.this).initiateScan();
+                }
             }
         });
 
@@ -587,14 +604,18 @@ public class RATEnterFrag extends Fragment {
         edt_age.setText("");
         edt_amtcollected.setText("");
 
+        if (!OTPAccess) {
+            ll_enterView.setVisibility(View.GONE);
+            lin_by_missed.setVisibility(View.VISIBLE);
+            lin_generate_verify.setVisibility(View.GONE);
+            btn_generate.setVisibility(View.VISIBLE);
+            btn_generate.setEnabled(true);
+        } else {
+            ll_enterView.setVisibility(View.VISIBLE);
+        }
         spr_gender.setSelection(0);
         txt_barcode.setText("Barcode*");
-        ll_enterView.setVisibility(View.GONE);
-        lin_by_missed.setVisibility(View.VISIBLE);
-        lin_generate_verify.setVisibility(View.GONE);
         edt_missed_mobile.setEnabled(true);
-        btn_generate.setVisibility(View.VISIBLE);
-        btn_generate.setEnabled(true);
         rel_verify_mobile.setVisibility(View.GONE);
         tv_resetno.setVisibility(View.GONE);
         edt_verifycc.getText().clear();
@@ -610,16 +631,15 @@ public class RATEnterFrag extends Fragment {
         }
 
 
-        if ( Global.isKYC){
+        if (Global.isKYC) {
             by_sendsms.setVisibility(View.VISIBLE);
             by_generate.setVisibility(View.GONE);
             by_missed.setVisibility(View.GONE);
-        }else {
+        } else {
             by_missed.setVisibility(View.VISIBLE);
             by_generate.setVisibility(View.VISIBLE);
             by_sendsms.setVisibility(View.VISIBLE);
         }
-
 
 
         if (appPreferenceManager.getCovidAccessResponseModel().isDRC()) {
@@ -637,6 +657,22 @@ public class RATEnterFrag extends Fragment {
     }
 
     private boolean Validate() {
+
+        if (edt_missed_mobile.getText().toString().length() == 0) {
+            Global.showCustomToast(getActivity(), ToastFile.ENTER_MOBILE);
+            edt_missed_mobile.requestFocus();
+            return false;
+        }
+        if (edt_missed_mobile.getText().toString().length() < 10) {
+            Global.showCustomToast(getActivity(), ToastFile.MOBILE_10_DIGITS);
+            edt_missed_mobile.requestFocus();
+            return false;
+        }
+        if (edt_missed_mobile.getText().toString().length() > 10) {
+            Global.showCustomToast(getActivity(), ToastFile.MOBILE_10_DIGITS);
+            edt_missed_mobile.requestFocus();
+            return false;
+        }
 
         if (edt_firstname.getText().toString().length() == 0) {
             Toast.makeText(activity, "" + ToastFile.ENTER_FNAME, Toast.LENGTH_SHORT).show();
@@ -711,7 +747,6 @@ public class RATEnterFrag extends Fragment {
             }
         }
 
-
         try {
             int amt = Integer.parseInt(edt_amtcollected.getText().toString());
             if (!GlobalClass.isNull(Global.B2C)) {
@@ -762,6 +797,7 @@ public class RATEnterFrag extends Fragment {
 
         ImagePicker.Companion.with(RATEnterFrag.this)
                 .galleryOnly()
+                .crop()
                 .compress(Constants.MaxImageSize)
                 .maxResultSize(Constants.MaxImageWidth, Constants.MaxImageHeight)
                 .start();
@@ -882,6 +918,7 @@ public class RATEnterFrag extends Fragment {
         txt_barcode = root.findViewById(R.id.txt_barcode);
         rd_home = root.findViewById(R.id.rd_home);
         rd_dps = root.findViewById(R.id.rd_dps);
+        radiogrp2 = root.findViewById(R.id.radiogrp2);
 
         if (appPreferenceManager.getCovidAccessResponseModel().isDRC()) {
             edt_email.setHint("EMAIL ID*");
@@ -893,14 +930,25 @@ public class RATEnterFrag extends Fragment {
         samplecollectionponit.setText(Constants.setSCPmsg);
 
 
-        if ( Global.isKYC){
+        if (Global.isKYC) {
             by_sendsms.setVisibility(View.VISIBLE);
             by_generate.setVisibility(View.GONE);
             by_missed.setVisibility(View.GONE);
-        }else {
+        } else {
             by_missed.setVisibility(View.VISIBLE);
             by_generate.setVisibility(View.VISIBLE);
             by_sendsms.setVisibility(View.VISIBLE);
+        }
+
+        if (!OTPAccess) {
+            radiogrp2.setVisibility(View.VISIBLE);
+            tv_help.setVisibility(View.VISIBLE);
+            btn_generate.setVisibility(View.VISIBLE);
+        } else {
+            radiogrp2.setVisibility(View.GONE);
+            tv_help.setVisibility(View.GONE);
+            btn_generate.setVisibility(View.GONE);
+            ll_enterView.setVisibility(View.VISIBLE);
         }
 
 
@@ -976,13 +1024,13 @@ public class RATEnterFrag extends Fragment {
     private void mobileverify(String mobileno) {
 
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
+        PostAPIInterface postAPIInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInterface.class);
         CoVerifyMobReq coVerifyMobReq = new CoVerifyMobReq();
         coVerifyMobReq.setApi_key(apikey);
         coVerifyMobReq.setMobile(mobileno);
         coVerifyMobReq.setScode(usercode);
 
-        final Call<COVerifyMobileResponse> covidmis_responseCall = postAPIInteface.covmobileVerification(coVerifyMobReq);
+        final Call<COVerifyMobileResponse> covidmis_responseCall = postAPIInterface.covmobileVerification(coVerifyMobReq);
         Log.e(TAG, "MOB VERIFY URL--->" + covidmis_responseCall.request().url());
         Log.e(TAG, "MOB VERIFY BODY--->" + new GsonBuilder().create().toJson(coVerifyMobReq));
         covidmis_responseCall.enqueue(new Callback<COVerifyMobileResponse>() {
@@ -1023,14 +1071,14 @@ public class RATEnterFrag extends Fragment {
 
     private void generateOtP(String mobileno) {
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
+        PostAPIInterface postAPIInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInterface.class);
 
         COVIDgetotp_req coviDgetotp_req = new COVIDgetotp_req();
         coviDgetotp_req.setApi_key(apikey);
         coviDgetotp_req.setMobile(mobileno);
         coviDgetotp_req.setScode(usercode);
 
-        Call<Covidotpresponse> covidotpresponseCall = postAPIInteface.generateotp(coviDgetotp_req);
+        Call<Covidotpresponse> covidotpresponseCall = postAPIInterface.generateotp(coviDgetotp_req);
         covidotpresponseCall.enqueue(new Callback<Covidotpresponse>() {
             @Override
             public void onResponse(Call<Covidotpresponse> call, Response<Covidotpresponse> response) {
@@ -1100,14 +1148,14 @@ public class RATEnterFrag extends Fragment {
     private void validateotp() {
 
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
+        PostAPIInterface postAPIInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInterface.class);
         Covid_validateotp_req covid_validateotp_req = new Covid_validateotp_req();
         covid_validateotp_req.setApi_key(apikey);
         covid_validateotp_req.setMobile(edt_missed_mobile.getText().toString());
         covid_validateotp_req.setOtp(edt_verifycc.getText().toString());
         covid_validateotp_req.setScode(usercode);
 
-        Call<Covid_validateotp_res> covidotpresponseCall = postAPIInteface.validateotp(covid_validateotp_req);
+        Call<Covid_validateotp_res> covidotpresponseCall = postAPIInterface.validateotp(covid_validateotp_req);
         covidotpresponseCall.enqueue(new Callback<Covid_validateotp_res>() {
             @Override
             public void onResponse(Call<Covid_validateotp_res> call, Response<Covid_validateotp_res> response) {
@@ -1384,7 +1432,7 @@ public class RATEnterFrag extends Fragment {
             final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(getContext());
             progressDialog.show();
 
-            PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(getActivity(), Api.BASE_URL_TOCHECK).create(PostAPIInteface.class);
+            PostAPIInterface apiInterface = RetroFit_APIClient.getInstance().getClient(getActivity(), Api.BASE_URL_TOCHECK).create(PostAPIInterface.class);
             Call<WOEResponseModel> responseModelCall = apiInterface.PostUserLog(requestModel);
             responseModelCall.enqueue(new Callback<WOEResponseModel>() {
                 @Override
@@ -1638,7 +1686,7 @@ public class RATEnterFrag extends Fragment {
         maindialog.show();
     }
 
-    public void getUploadResponse(String response,String mobileno) {
+    public void getUploadResponse(String response, String mobileno) {
         JSONObject jsonObject = null;
         try {
             jsonObject = new JSONObject(response);
@@ -1647,7 +1695,7 @@ public class RATEnterFrag extends Fragment {
 
             if (RESPONSEID.equalsIgnoreCase(Constants.RES0000)) {
                 Global.showCustomToast(activity, RESPONSE);
-                new LogUserActivityTagging(activity,"WOE-NOVID",mobileno);
+                new LogUserActivityTagging(activity, "WOE-NOVID", mobileno);
                 ClearFields();
                 Constants.universal = 1;
                 Intent i = new Intent(activity, ManagingTabsActivity.class);

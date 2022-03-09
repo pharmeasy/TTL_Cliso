@@ -20,7 +20,6 @@
             android:visibility="gone"
             android:weightSum="3">
 
-
             <RadioButton
                 android:id="@+id/by_sendsms"
                 android:layout_width="0dp"
@@ -357,6 +356,27 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/edt_passport_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5sdp"
+                android:background="@drawable/corner_curve_maroon"
+                android:drawablePadding="@dimen/_2sdp"
+                android:digits="@string/alphanumeric_digits"
+                android:hint="PASSPORT NUMBER"
+                android:inputType="textCapCharacters"
+                android:maxLength="12"
+                android:padding="@dimen/_5sdp"
+                android:textSize="@dimen/value" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:weightSum="2">
 
@@ -370,7 +390,7 @@
                 android:digits="@string/alphabetsandnumber"
                 android:drawablePadding="@dimen/_5sdp"
                 android:hint="FIRST NAME*"
-                android:inputType="textCapCharacters"
+                android:inputType="textVisiblePassword|textNoSuggestions"
                 android:maxLength="16"
                 android:padding="@dimen/_5sdp"
                 android:textSize="@dimen/value" />
@@ -385,7 +405,7 @@
                 android:digits="@string/alphabetsandnumber"
                 android:drawablePadding="@dimen/_5sdp"
                 android:hint="LAST NAME*"
-                android:inputType="textCapCharacters"
+                android:inputType="textVisiblePassword|textNoSuggestions"
                 android:maxLength="16"
                 android:padding="@dimen/_5sdp"
                 android:textSize="@dimen/value" />
@@ -396,8 +416,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/_5sdp"
-            android:padding="@dimen/_4sdp"
-            android:background="@drawable/corner_curve_maroon">
+            android:background="@drawable/corner_curve_maroon"
+            android:padding="@dimen/_4sdp">
 
             <Spinner
                 android:id="@+id/spr_test"
@@ -484,8 +504,20 @@
                 android:padding="@dimen/_5sdp"
                 android:textSize="@dimen/value" />
 
-
         </LinearLayout>
+
+        <EditText
+            android:id="@+id/edt_refer_by"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_5sdp"
+            android:background="@drawable/corner_curve_maroon"
+            android:digits="@string/alphabets"
+            android:drawablePadding="@dimen/_2sdp"
+            android:hint="REFER BY*"
+            android:maxLength="50"
+            android:padding="@dimen/_5sdp"
+            android:textSize="@dimen/value" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -505,16 +537,37 @@
                 android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz .,:"
                 android:drawableRight="@drawable/down_arrow_woe"
                 android:ems="10"
-                android:padding="3dp"
                 android:gravity="center|left"
                 android:hint="SEARCH SAMPLE COLLECTION POINT"
+                android:padding="3dp"
                 android:textAllCaps="true"
                 android:textColor="@color/DARKGray"
                 android:textColorHint="@color/black"
                 android:textSize="@dimen/value" />
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
 
+            <EditText
+                android:id="@+id/edt_srfid"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5sdp"
+                android:layout_weight="1"
+                android:background="@drawable/corner_curve_maroon"
+                android:digits="@string/number_digits"
+                android:hint="SRF ID"
+                android:inputType="number"
+                android:maxLength="13"
+                android:padding="@dimen/_5sdp"
+                android:textSize="@dimen/value" />
+
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -561,6 +614,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/button_bg"
                 android:gravity="center"
+                android:text=""
                 android:textAllCaps="true"
                 android:textColor="@color/white"
                 android:textSize="@dimen/value"
@@ -675,6 +729,7 @@
 
         </LinearLayout>
 
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -686,10 +741,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_margin="@dimen/_5sdp"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginRight="@dimen/_2sdp"
+                android:layout_marginBottom="@dimen/_5sdp"
                 android:layout_weight="0.8"
                 android:drawablePadding="@dimen/_2sdp"
-                android:text="@string/trf"
+                android:text="SRF PDF*"
                 android:textAllCaps="true"
                 android:textColor="@color/black"
                 android:textSize="@dimen/value"
@@ -703,7 +761,8 @@
                 android:background="@drawable/border_background_maroon"
                 android:gravity="center"
                 android:orientation="horizontal"
-                android:padding="@dimen/dp_5">
+                android:padding="@dimen/dp_5"
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/img_camera_trf"
@@ -740,8 +799,7 @@
                 android:text="@string/upload"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="@dimen/value"
-                android:visibility="gone" />
+                android:textSize="@dimen/value" />
 
             <TextView
                 android:id="@+id/txt_nofiletrf"

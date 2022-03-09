@@ -1,28 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.google.firebase:firebase-iid-interop:17.0.0@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-iid-interop-17.0.0.aar/3dbada3faeec88422f7db415865e63ad/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-iid-interop-17.0.0.aar/3dbada3faeec88422f7db415865e63ad/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-iid-interop-17.0.0.aar/3dbada3faeec88422f7db415865e63ad/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-iid-interop-17.0.0.aar/c8df023a2ecda17e225f013c55870873/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-iid-interop-17.0.0.aar/35f1bc974d19b394051358d853ef62c4/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-iid-interop-17.0.0.aar/35f1bc974d19b394051358d853ef62c4/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-iid-interop-17.0.0.aar/35f1bc974d19b394051358d853ef62c4/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-iid-interop-17.0.0.aar/e2b78a8369242df4254b2f85b6156f24/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-iid-interop-17.0.0.aar/1af3301950c3c45f685d976e144de7a0/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-iid-interop-17.0.0.aar/1af3301950c3c45f685d976e144de7a0/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-iid-interop-17.0.0.aar/1af3301950c3c45f685d976e144de7a0/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-iid-interop-17.0.0.aar/b2c241a2b6793c59475b02274991f0f9/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-iid-interop-17.0.0.aar/fe95148179fe11b5cb871baf5c215889/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6d620657a53843fd7fc1c4ba5da3ee6b/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/940826aaaf8de8b5bf64c34adc797baf/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d72ae5085a6cf26452391175c57f0c04/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-iid-interop-17.0.0.aar/3008c05af084eeb292821d10d343282c/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-iid-interop-17.0.0.aar/1cc597b3fe98284b71fa19bbfb70d0a7/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cdec9a0349bf306834020ecdf79fc4a7/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ae12f53563bafa3628a3f91714095de3/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ae12f53563bafa3628a3f91714095de3/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ae12f53563bafa3628a3f91714095de3/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/1440ce24e12e911746b0f05c12c370eb/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/1440ce24e12e911746b0f05c12c370eb/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/1440ce24e12e911746b0f05c12c370eb/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

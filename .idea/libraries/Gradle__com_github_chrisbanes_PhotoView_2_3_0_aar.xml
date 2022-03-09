@@ -1,34 +1,11 @@
 <component name="libraryTable">
   <library name="Gradle: com.github.chrisbanes:PhotoView:2.3.0@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/PhotoView-2.3.0.aar/0657e506bc80c630c2a82d4badc8862f/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/PhotoView-2.3.0.aar/0657e506bc80c630c2a82d4badc8862f/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/PhotoView-2.3.0.aar/0657e506bc80c630c2a82d4badc8862f/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/PhotoView-2.3.0.aar/20f0793009ab04c77f855ac88d816104/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/PhotoView-2.3.0.aar/b9fd27b903901e96d5e497427aa11d64/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/PhotoView-2.3.0.aar/b9fd27b903901e96d5e497427aa11d64/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/PhotoView-2.3.0.aar/b9fd27b903901e96d5e497427aa11d64/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/PhotoView-2.3.0.aar/ab00ad73b1ac83dbd9ec5a4fb4b916dc/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/PhotoView-2.3.0.aar/4456223560e80fe29b8c343319492b97/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/PhotoView-2.3.0.aar/4456223560e80fe29b8c343319492b97/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/PhotoView-2.3.0.aar/4456223560e80fe29b8c343319492b97/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/PhotoView-2.3.0.aar/6f2f1a5306b104df4bf1efc91d093db4/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/PhotoView-2.3.0.aar/4fdc594a007212335259a985f845b5d7/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0acd1e86d17c6b6716d539bc6fea2766/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/36dfddf4291249acac0f6107162572e7/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2e68c233890339a91e5a03525adf9ffc/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/PhotoView-2.3.0.aar/1ab40a941b81a62bde93b9b230ca7adf/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/PhotoView-2.3.0.aar/35a6f9b0dca3548e3cf1f3de7d1fbc18/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/789cab0a1a4496d1db8561170b1497d6/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/5d4039f21d8377aaf2af782a858a62a2/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/5d4039f21d8377aaf2af782a858a62a2/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/5d4039f21d8377aaf2af782a858a62a2/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/17996edee9eaf02e466890817c3a7377/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/17996edee9eaf02e466890817c3a7377/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/17996edee9eaf02e466890817c3a7377/AndroidManifest.xml" />
     </CLASSES>
-    <JAVADOC>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.chrisbanes/PhotoView/2.3.0/d8422d470ae4cb6b59ba36da3186028a9be71151/PhotoView-2.3.0-javadoc.jar!/" />
-    </JAVADOC>
-    <SOURCES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.chrisbanes/PhotoView/2.3.0/b14c949b5aab64ffeaf699a67a71a8bf89a12c8/PhotoView-2.3.0-sources.jar!/" />
-    </SOURCES>
+    <JAVADOC />
+    <SOURCES />
   </library>
 </component>

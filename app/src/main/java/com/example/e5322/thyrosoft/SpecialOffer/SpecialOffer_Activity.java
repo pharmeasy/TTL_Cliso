@@ -65,7 +65,7 @@ import com.example.e5322.thyrosoft.Models.Tokenresponse;
 import com.example.e5322.thyrosoft.Models.ValidateOTPmodel;
 import com.example.e5322.thyrosoft.Models.VerifyotpModel;
 import com.example.e5322.thyrosoft.R;
-import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
+import com.example.e5322.thyrosoft.Retrofit.PostAPIInterface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.SourceILSModel.REF_DR;
 import com.example.e5322.thyrosoft.SourceILSModel.SourceILSMainModel;
@@ -833,7 +833,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
         int versionCode = pInfo.versionCode;
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
-        PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.THYROCARE).create(PostAPIInteface.class);
+        PostAPIInterface apiInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.THYROCARE).create(PostAPIInterface.class);
         OTPrequest otPrequest = new OTPrequest();
         otPrequest.setAppId(OTPAPPID);
         otPrequest.setPurpose("OTP");

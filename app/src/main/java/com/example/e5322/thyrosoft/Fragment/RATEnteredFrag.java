@@ -1,5 +1,7 @@
 package com.example.e5322.thyrosoft.Fragment;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -67,8 +69,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-
-import static android.app.Activity.RESULT_OK;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -247,7 +247,7 @@ public class RATEnteredFrag extends Fragment {
                 } else {
                     timespan = 240;
                 }
-                ratEnteredAdapter = new RATEnteredAdapter(this, patientDETAILSBeans, body.getCurrentTIME(),timespan);
+                ratEnteredAdapter = new RATEnteredAdapter(this, patientDETAILSBeans, body.getCurrentTIME(), timespan);
                 ratEnteredAdapter.Click(new RATEnteredAdapter.Passdata() {
                     @Override
                     public void pass(RATEnteredResponseModel.PatientDETAILSBean postmaterial) {
@@ -455,23 +455,21 @@ public class RATEnteredFrag extends Fragment {
                 builder.addPart("KEY", new StringBody("" + apikey));
                 builder.addPart("SOURCECODE", new StringBody("" + usercode));
                 builder.addPart("PATIENTID", new StringBody("" + patientid));
+                String type = "";
                 if (flag == 0) {
-                    builder.addPart("TYPE", new StringBody("SII"));
+                    type = "SII";
                 } else if (flag == 1) {
-                    builder.addPart("TYPE", new StringBody("RESULT"));
+                    type = "RESULT";
                     builder.addPart("VALUE", new StringBody(Value));
                 }
-
-
+                builder.addPart("TYPE", new StringBody(type));
                 builder.addPart("MODE", new StringBody("CLISO APP COVID"));
                 builder.addBinaryBody("SLL", sll_file);
 
-
-                Log.e(TAG, "Post params:- " + "KEY" + ":" + apikey + "\n" + "SOURCECODE" + ":" + usercode + "\n" + "PATIENTID" + ":" + patientid + "\n" + "TYPE:SII" + "\n" + "MODE:CLISO COVID APP" + "\n"
-                        + "\"TRF_UPLOAD_SIZE\"" + ":\"" + sll_file + "\"");
+                Log.e(TAG, "Post params:- \nKEY:" + apikey + "\nSOURCECODE:" + usercode + "\nPATIENTID:" + patientid + "\nTYPE:" + type + "\nVALUE:" + Value + "\nMODE:CLISO COVID APP" + "\nSLL:" + sll_file);
 
                 httpPost.setEntity(builder.build());
-                httpPost.setHeader(Constants.HEADER_USER_AGENT,  GlobalClass.getHeaderValue(activity));
+                httpPost.setHeader(Constants.HEADER_USER_AGENT, GlobalClass.getHeaderValue(activity));
                 HttpResponse httpResponse = httpclient.execute(httpPost);
                 inputStream = httpResponse.getEntity().getContent();
                 Log.e(TAG, "Status Line: " + httpResponse.getStatusLine());

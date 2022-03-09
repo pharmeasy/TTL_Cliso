@@ -1,16 +1,11 @@
 <component name="libraryTable">
   <library name="Gradle: com.github.dhaval2404:imagepicker:1.7.5@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/imagepicker-1.7.5.aar/1af2ddda5328561bb4112b29754f573d/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/imagepicker-1.7.5.aar/1af2ddda5328561bb4112b29754f573d/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/imagepicker-1.7.5.aar/1af2ddda5328561bb4112b29754f573d/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/3a70ee36c20aba0ccdb64cb73009d980/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/3a70ee36c20aba0ccdb64cb73009d980/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/3a70ee36c20aba0ccdb64cb73009d980/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d28931f0c1fd624a3ab5ad5e66f4780d/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d28931f0c1fd624a3ab5ad5e66f4780d/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d28931f0c1fd624a3ab5ad5e66f4780d/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.dhaval2404/imagepicker/1.7.5/a1869955c81d118d1cda700c86a2b744012e8c04/imagepicker-1.7.5-sources.jar!/" />
-    </SOURCES>
+    <SOURCES />
   </library>
 </component>

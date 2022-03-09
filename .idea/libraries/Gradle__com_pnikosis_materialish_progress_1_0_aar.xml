@@ -1,22 +1,11 @@
 <component name="libraryTable">
   <library name="Gradle: com.pnikosis:materialish-progress:1.0@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/materialish-progress-1.0.aar/502223e64607b1db1362aabb08fac3b3/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/materialish-progress-1.0.aar/502223e64607b1db1362aabb08fac3b3/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/materialish-progress-1.0.aar/502223e64607b1db1362aabb08fac3b3/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/materialish-progress-1.0.aar/4fbe8d3007dc0c6e7579400a29a69960/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/materialish-progress-1.0.aar/4fbe8d3007dc0c6e7579400a29a69960/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/materialish-progress-1.0.aar/4fbe8d3007dc0c6e7579400a29a69960/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/materialish-progress-1.0.aar/3ddfdd6537da0fb05ae3853d75145039/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/materialish-progress-1.0.aar/3ddfdd6537da0fb05ae3853d75145039/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/materialish-progress-1.0.aar/3ddfdd6537da0fb05ae3853d75145039/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/23cb05ffaeba5cbf885d787c66f7f5fd/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/23cb05ffaeba5cbf885d787c66f7f5fd/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/23cb05ffaeba5cbf885d787c66f7f5fd/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ad79085e1e4285b6a962c52326e0069c/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ad79085e1e4285b6a962c52326e0069c/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ad79085e1e4285b6a962c52326e0069c/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.pnikosis/materialish-progress/1.0/27fea1adaf2e3fca647208c0f5c65dff96eed495/materialish-progress-1.0-sources.jar!/" />
-    </SOURCES>
+    <SOURCES />
   </library>
 </component>

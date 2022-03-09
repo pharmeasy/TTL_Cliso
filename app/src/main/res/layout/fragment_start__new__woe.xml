@@ -12,9 +12,21 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/tv_baseline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:fadingEdge="horizontal"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:padding="@dimen/_2sdp"
+            android:singleLine="true"
+            android:textColor="@color/black"
+            android:textSize="@dimen/label"
+            android:textStyle="bold" />
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="45dp"
-            android:layout_marginBottom="10dp"
             android:background="@color/cement_light"
             android:gravity="center"
             android:text="PATIENT DETAILS"
@@ -22,6 +34,7 @@
             android:textColor="@color/maroon"
             android:textSize="@dimen/label"
             android:textStyle="bold" />
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -115,8 +128,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginBottom="5dp"
-                android:orientation="vertical"
-                >
+                android:orientation="vertical">
 
 
                 <LinearLayout
@@ -124,8 +136,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="5dp"
-                    android:padding="5dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:padding="5dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -141,11 +153,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
-                            android:padding="5dp"
                             android:background="@color/transparent"
                             android:backgroundTint="@color/maroon"
                             android:ems="10"
                             android:hint="TTL"
+                            android:padding="5dp"
                             android:textColor="@color/DARKGray"
                             android:textSize="@dimen/value" />
                     </LinearLayout>
@@ -163,12 +175,12 @@
                             style="@style/medium_text"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:padding="5dp"
                             android:layout_gravity="center"
                             android:layout_marginRight="5dp"
-                            android:paddingLeft="5dp"
                             android:background="@color/transparent"
                             android:hint="ILS"
+                            android:padding="5dp"
+                            android:paddingLeft="5dp"
                             android:textSize="@dimen/value" />
                     </LinearLayout>
 
@@ -176,10 +188,10 @@
                         android:id="@+id/vial_number"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_gravity="center"
                         android:layout_weight="1"
                         android:background="@drawable/corner_curve_maroon"
                         android:digits="0123456789"
-                        android:layout_gravity="center"
                         android:gravity="center|left"
                         android:hint="VIAL NO.*"
                         android:inputType="number"
@@ -278,13 +290,132 @@
 
                 </LinearLayout>
 
+                <LinearLayout
+                    android:id="@+id/ll_communication_main"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/corner_curve_maroon"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_5sdp"
+                        android:layout_marginTop="@dimen/_2sdp"
+                        android:layout_marginBottom="@dimen/_2sdp"
+                        android:text="Select Communication:"
+                        android:textAllCaps="true"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/value" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="horizontal">
+
+                        <CheckBox
+                            android:id="@+id/cb_report"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/_1sdp"
+                            android:layout_weight="1"
+                            android:text="Report"
+                            android:textAllCaps="true"
+                            android:textSize="@dimen/note1" />
+
+                        <CheckBox
+                            android:id="@+id/cb_receipt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/_1sdp"
+                            android:layout_weight="1"
+                            android:text="Receipt"
+                            android:textAllCaps="true"
+                            android:textSize="@dimen/note1" />
+
+                        <CheckBox
+                            android:id="@+id/cb_comm"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_margin="@dimen/_1sdp"
+                            android:layout_weight="1"
+                            android:visibility="gone"
+                            android:text="Communication"
+                            android:textAllCaps="true"
+                            android:textSize="@dimen/note1" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/LL_main2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginTop="@dimen/_2sdp"
+                            android:layout_marginBottom="@dimen/_2sdp"
+                            android:text="Select Communication Mode*:"
+                            android:textAllCaps="true"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/value" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center">
+
+                            <CheckBox
+                                android:id="@+id/cb_sms"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="@dimen/_1sdp"
+                                android:layout_weight="1"
+                                android:text="SMS"
+                                android:textSize="@dimen/note1" />
+
+                            <CheckBox
+                                android:id="@+id/cb_email"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="@dimen/_1sdp"
+                                android:layout_weight="1"
+                                android:text="E-mail"
+                                android:textAllCaps="true"
+                                android:textSize="@dimen/note1" />
+
+                            <CheckBox
+                                android:id="@+id/cb_wa"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="@dimen/_1sdp"
+                                android:layout_weight="1"
+                                android:text="WhatsApp"
+                                android:textAllCaps="true"
+                                android:textSize="@dimen/note1" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </LinearLayout>
+
                 <CheckBox
                     android:id="@+id/cb_kyc_verification"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Select KYC Verification"
                     android:buttonTint="@color/maroon"
-                    />
+                    android:text="Select KYC Verification"
+                    android:visibility="gone" />
                 <!--TODO Missed OTP-->
                 <LinearLayout
                     android:id="@+id/ll_miscallotp"
@@ -299,8 +430,8 @@
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:layout_margin="@dimen/_5sdp"
-                        android:checkedButton="@+id/by_sendsms"
                         android:layout_weight="3"
+                        android:checkedButton="@+id/by_sendsms"
                         android:orientation="horizontal">
 
                         <RadioButton
@@ -309,11 +440,11 @@
                             android:layout_height="match_parent"
                             android:layout_marginStart="@dimen/dp_5"
                             android:layout_weight="1"
-                            android:visibility="gone"
                             android:buttonTint="@color/maroon"
                             android:text="OTP"
                             android:textAllCaps="true"
-                            android:textSize="@dimen/value" />
+                            android:textSize="@dimen/value"
+                            android:visibility="gone" />
 
                         <RadioButton
                             android:id="@+id/by_missed"
@@ -322,9 +453,9 @@
                             android:layout_weight="1"
                             android:buttonTint="@color/maroon"
                             android:text="Missed Call"
-                            android:visibility="gone"
                             android:textAllCaps="false"
-                            android:textSize="@dimen/value" />
+                            android:textSize="@dimen/value"
+                            android:visibility="gone" />
 
                         <RadioButton
                             android:id="@+id/by_sendsms"
@@ -336,8 +467,6 @@
                             android:checked="true"
                             android:text="Send SMS"
                             android:textSize="@dimen/_12sdp" />
-
-
 
 
                     </RadioGroup>
@@ -384,8 +513,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:gravity="center"
                             android:layout_margin="@dimen/_4sdp"
+                            android:gravity="center"
                             android:text="Help"
                             android:textColor="@color/colorPrimary"
                             android:textSize="@dimen/_12sdp" />
@@ -626,11 +755,11 @@
                     <ImageView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:padding="4dp"
                         android:layout_margin="1dp"
                         android:layout_weight="0.6"
                         android:background="@color/maroon"
                         android:backgroundTint="@color/white"
+                        android:padding="4dp"
                         android:src="@drawable/person" />
 
                     <AutoCompleteTextView
@@ -686,12 +815,12 @@
                         android:layout_marginRight="1dp"
                         android:layout_weight="1"
                         android:background="@drawable/corner_curve_maroon"
+                        android:gravity="center|left"
                         android:hint="AGE*"
                         android:inputType="number"
                         android:maxLength="3"
-                        android:paddingLeft="8dp"
                         android:nextFocusForward="@+id/referedby"
-                        android:gravity="center|left"
+                        android:paddingLeft="8dp"
                         android:singleLine="true"
                         android:textSize="@dimen/value" />
 
@@ -805,12 +934,12 @@
                         android:layout_gravity="center"
                         android:layout_marginRight="2dp"
                         android:layout_weight="1.8"
-                        android:paddingLeft="2dp"
-                        android:text="31/12/2022"
                         android:background="@drawable/corner_curve_maroon"
                         android:drawableRight="@drawable/red_small_cal"
                         android:gravity="center"
                         android:nextFocusForward="@+id/timehr"
+                        android:paddingLeft="2dp"
+                        android:text="31/12/2022"
                         android:textSize="@dimen/value" />
 
 
@@ -863,10 +992,10 @@
                         android:layout_gravity="center"
                         android:layout_marginLeft="2dp"
                         android:layout_weight="1.06"
-                        android:visibility="gone"
                         android:background="@drawable/corner_curve_maroon"
                         android:gravity="center"
-                        android:textSize="@dimen/value" />
+                        android:textSize="@dimen/value"
+                        android:visibility="gone" />
 
 
                 </LinearLayout>
@@ -1180,15 +1309,15 @@
                         style="@style/medium_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
                         android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz .,:"
                         android:ems="10"
-                        android:padding="3dp"
                         android:gravity="center|left"
                         android:hint="SEARCH SAMPLE COLLECTION POINT*"
+                        android:padding="3dp"
                         android:textColor="@color/DARKGray"
                         android:textColorHint="@color/black"
-                        android:textSize="@dimen/value"
-                        android:background="@android:color/transparent"/>
+                        android:textSize="@dimen/value" />
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -1197,8 +1326,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:background="@drawable/border_background"
-                    android:visibility="gone"/>
-
+                    android:visibility="gone" />
 
 
                 <LinearLayout
@@ -1248,8 +1376,8 @@
                         android:hint="TYPE/SEARCH REF BY*"
                         android:inputType="textCapCharacters"
                         android:maxLength="50"
-                        android:paddingLeft="5dp"
                         android:nextFocusForward="@+id/uncheck_ref"
+                        android:paddingLeft="5dp"
                         android:singleLine="true"
                         android:textAllCaps="true"
                         android:textColor="@color/DARKGray"
@@ -1323,7 +1451,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_margin="1dp"
-                        android:paddingLeft="5dp"
                         android:layout_marginLeft="10dp"
                         android:background="@drawable/background_edt"
                         android:digits="0123456789"
@@ -1333,6 +1460,7 @@
                         android:maxLength="10"
                         android:maxLines="1"
                         android:nextFocusForward="@+id/home_kyc_format"
+                        android:paddingLeft="5dp"
                         android:singleLine="true"
                         android:textSize="@dimen/value" />
                 </LinearLayout>
@@ -1371,8 +1499,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"
                     android:layout_marginBottom="@dimen/_10sdp"
+                    android:layout_weight="2"
                     android:orientation="horizontal">
 
                     <Button

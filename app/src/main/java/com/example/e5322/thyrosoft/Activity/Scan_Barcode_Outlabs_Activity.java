@@ -1,5 +1,10 @@
 package com.example.e5322.thyrosoft.Activity;
 
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
+import static com.example.e5322.thyrosoft.ToastFile.invalid_brcd;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -102,11 +107,6 @@ import java.util.Locale;
 import in.galaxyofandroid.spinerdialog.OnSpinerItemClick;
 import in.galaxyofandroid.spinerdialog.SpinnerDialog;
 
-import static android.Manifest.permission.CAMERA;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
-import static com.example.e5322.thyrosoft.ToastFile.invalid_brcd;
-
 public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements RecyclerInterface {
     private static final int REQUEST_CAMERA = 1;
     private static final int SELECT_FILE = 0;
@@ -197,9 +197,9 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
     TextView txt_fileupload;
     Bitmap vialbitmap;
     List<String> imagelist = new ArrayList<>();
-    ConnectionDetector connectionDetector;
+    ConnectionDetector cd;
 
-    LinearLayout ll_letterhead;
+    LinearLayout ll_letterhead, ll_location_note;
     EditText edt_confirm_amt;
     MainModel mainModel;
     private String EMAIL_ID;
@@ -215,7 +215,7 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
     private String ADDITIONAL1 = "";
     TextView tv_location, tv_lab;
     RecyclerView recy_brand;
-    private String getBrand_name="";
+    private String getBrand_name = "";
 
 
     @SuppressLint("NewApi")
@@ -224,7 +224,7 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan__barcode__ils);
         mActivity = Scan_Barcode_Outlabs_Activity.this;
-        connectionDetector = new ConnectionDetector(mActivity);
+        cd = new ConnectionDetector(mActivity);
         if (Global.checkForApi21()) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -315,7 +315,7 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                 e.printStackTrace();
             }
 
-            if (connectionDetector.isConnectingToInternet()) {
+            if (cd.isConnectingToInternet()) {
                 GetLocationReqModel getLocationReqModel = new GetLocationReqModel();
                 getLocationReqModel.setTest("" + TextUtils.join(",", getTestCode));
                 getLocationReqModel.setTSP("" + user);
@@ -359,8 +359,6 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                 lab_alert_spin.setText(s);
             }
         });
-
-
 
 
         SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
@@ -634,12 +632,16 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
         lin_preview_pres = findViewById(R.id.lin_preview_pres);
         txt_fileupload_pres = findViewById(R.id.txt_fileupload_pres);
 
+        ll_location_note = findViewById(R.id.ll_location_note);
+        ll_location_note.setVisibility(cd.isConnectingToInternet() ? View.VISIBLE : View.GONE);
+
         btn_choosefile_presc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 ImagePicker.Companion.with(Scan_Barcode_Outlabs_Activity.this)
                         .compress(Constants.MaxImageSize)
+                        .crop()
                         .maxResultSize(Constants.MaxImageWidth, Constants.MaxImageHeight)
                         .start();
                 ispresc = true;
@@ -971,6 +973,18 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
     }
 
     public void checklistData() {
+        if (GlobalClass.allowForOfflineUse(user)) {
+            checkAndProceed();
+        } else {
+            if (cd.isConnectingToInternet()) {
+                checkAndProceed();
+            } else {
+                GlobalClass.showCustomToast(mActivity, ToastFile.intConnection, 1);
+            }
+        }
+    }
+
+    private void checkAndProceed() {
         if (trflist.size() > 0) {
             for (int i = 0; i < trflist.size(); i++) {
                 if (trflist.get(i).getTrf_image() == null)
@@ -1107,12 +1121,9 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                     } else {
                         WOE();
                     }
-
-
                 } else {
                     WOE();
                 }
-
             }
         } else {
             GlobalClass.showShortToast(mActivity, ToastFile.scan_barcode_all);
@@ -1263,7 +1274,6 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
             myPojoWoe.setVialimage(vialimg_file);
         }
 
-
         Gson gson = new GsonBuilder().create();
         String json = gson.toJson(myPojoWoe);
         JSONObject jsonObj = null;
@@ -1307,7 +1317,7 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                                 if (woeResponseModel != null) {
                                     if (!GlobalClass.isNull(woeResponseModel.getStatus()) && woeResponseModel.getStatus().equalsIgnoreCase("SUCCESS")) {
                                         GlobalClass.transID = "";
-                                        new LogUserActivityTagging(mActivity,"WOE-NOVID",barcode_patient_id);
+                                        new LogUserActivityTagging(mActivity, "WOE-NOVID", barcode_patient_id);
 
                                         Log.e(TAG, "onResponse message --->: " + message);
                                         //                                                if (trflist.size() > 0)

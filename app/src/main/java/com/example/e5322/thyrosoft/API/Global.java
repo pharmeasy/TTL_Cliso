@@ -26,6 +26,7 @@ import org.apache.http.conn.util.InetAddressUtils;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.security.SecureRandom;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -33,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 /**
  * Created by e5426@thyrocare.com on 12/1/18.
@@ -40,6 +42,7 @@ import java.util.Locale;
 
 public class Global {
 
+    public static boolean ToShowRewards = true;
     public static int OTP = 0;
     public static String type = "";
     public static String Username = "";
@@ -76,6 +79,8 @@ public class Global {
 
     public static ArrayList<String> tabname_home = new ArrayList<>();
 
+    public static String Communication = "";
+    public static String CommModes = "";
 
     ProgressDialog progressDialog;
 
@@ -382,5 +387,22 @@ public class Global {
             ex.printStackTrace();
         }
         return "";
+    }
+
+    public static String randomBarcodeString(int length) {
+
+        char[] characterSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toCharArray();
+        Random random = new SecureRandom();
+        char[] result = new char[length];
+        for (int i = 0; i < result.length; i++) {
+            // picks a random index out of character set > random character
+            int randomCharIndex = random.nextInt(characterSet.length);
+            result[i] = characterSet[randomCharIndex];
+        }
+        return new String(result);
+    }
+
+    public static boolean testsNotAllowedBelow18(String code, String age) {
+        return Integer.parseInt(age) < 18 && GlobalClass.checkEqualIgnoreCase(code, Constants.TEST_CODE_EGFR);
     }
 }

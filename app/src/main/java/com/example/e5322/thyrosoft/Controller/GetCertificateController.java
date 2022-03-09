@@ -8,7 +8,7 @@ import com.example.e5322.thyrosoft.Activity.Certificate_activity;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.CertificateRequestModel;
 import com.example.e5322.thyrosoft.Models.CertificateResponseModel;
-import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
+import com.example.e5322.thyrosoft.Retrofit.PostAPIInterface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.ToastFile;
 
@@ -30,7 +30,7 @@ public class GetCertificateController {
         ProgressDialog progressDialog = null;
         try {
             progressDialog = GlobalClass.ShowprogressDialog(mactivity);
-            PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(mactivity, Api.LIVEAPI).create(PostAPIInteface.class);
+            PostAPIInterface apiInterface = RetroFit_APIClient.getInstance().getClient(mactivity, Api.LIVEAPI).create(PostAPIInterface.class);
             Call<CertificateResponseModel> responseCall = apiInterface.getCertificates(certificateRequestModel);
 
 

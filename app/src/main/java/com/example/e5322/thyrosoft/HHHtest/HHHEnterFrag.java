@@ -74,7 +74,7 @@ import com.example.e5322.thyrosoft.Models.PincodeMOdel.AppPreferenceManager;
 import com.example.e5322.thyrosoft.MultiSelectSpinner;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.Retrofit.APIInteface;
-import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
+import com.example.e5322.thyrosoft.Retrofit.PostAPIInterface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.example.e5322.thyrosoft.Utility;
@@ -1846,14 +1846,14 @@ public class HHHEnterFrag extends Fragment implements MultiSelectSpinner.OnMulti
     private void validateotp() {
 
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
+        PostAPIInterface postAPIInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInterface.class);
         Covid_validateotp_req covid_validateotp_req = new Covid_validateotp_req();
         covid_validateotp_req.setApi_key(apikey);
         covid_validateotp_req.setMobile(edt_missed_mobile.getText().toString());
         covid_validateotp_req.setOtp(edt_verifycc.getText().toString());
         covid_validateotp_req.setScode(usercode);
 
-        Call<Covid_validateotp_res> covidotpresponseCall = postAPIInteface.validateotp(covid_validateotp_req);
+        Call<Covid_validateotp_res> covidotpresponseCall = postAPIInterface.validateotp(covid_validateotp_req);
         covidotpresponseCall.enqueue(new Callback<Covid_validateotp_res>() {
             @Override
             public void onResponse(Call<Covid_validateotp_res> call, Response<Covid_validateotp_res> response) {
@@ -1941,13 +1941,13 @@ public class HHHEnterFrag extends Fragment implements MultiSelectSpinner.OnMulti
     private void mobileverify(String mobileno) {
 
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
+        PostAPIInterface postAPIInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInterface.class);
         CoVerifyMobReq coVerifyMobReq = new CoVerifyMobReq();
         coVerifyMobReq.setApi_key(apikey);
         coVerifyMobReq.setMobile(mobileno);
         coVerifyMobReq.setScode(usercode);
 
-        final Call<COVerifyMobileResponse> covidmis_responseCall = postAPIInteface.covmobileVerification(coVerifyMobReq);
+        final Call<COVerifyMobileResponse> covidmis_responseCall = postAPIInterface.covmobileVerification(coVerifyMobReq);
         covidmis_responseCall.enqueue(new Callback<COVerifyMobileResponse>() {
             @Override
             public void onResponse(Call<COVerifyMobileResponse> call, Response<COVerifyMobileResponse> response) {
@@ -1985,14 +1985,14 @@ public class HHHEnterFrag extends Fragment implements MultiSelectSpinner.OnMulti
 
     private void generateOtP(String mobileno) {
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
+        PostAPIInterface postAPIInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInterface.class);
 
         COVIDgetotp_req coviDgetotp_req = new COVIDgetotp_req();
         coviDgetotp_req.setApi_key(apikey);
         coviDgetotp_req.setMobile(mobileno);
         coviDgetotp_req.setScode(usercode);
 
-        Call<Covidotpresponse> covidotpresponseCall = postAPIInteface.generateotp(coviDgetotp_req);
+        Call<Covidotpresponse> covidotpresponseCall = postAPIInterface.generateotp(coviDgetotp_req);
         covidotpresponseCall.enqueue(new Callback<Covidotpresponse>() {
             @Override
             public void onResponse(Call<Covidotpresponse> call, Response<Covidotpresponse> response) {
@@ -2027,8 +2027,8 @@ public class HHHEnterFrag extends Fragment implements MultiSelectSpinner.OnMulti
         hospital_req.setApiKey(apikey);
         hospital_req.setUserCode(usercode);
 
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
-        Call<Hospital_model> covidratemodelCall = postAPIInteface.GetWOEHospital(hospital_req);
+        PostAPIInterface postAPIInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInterface.class);
+        Call<Hospital_model> covidratemodelCall = postAPIInterface.GetWOEHospital(hospital_req);
 
         covidratemodelCall.enqueue(new Callback<Hospital_model>() {
             @Override

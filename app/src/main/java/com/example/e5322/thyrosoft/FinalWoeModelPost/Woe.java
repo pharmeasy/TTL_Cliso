@@ -59,6 +59,8 @@ public class Woe implements Parcelable {
         AMOUNT_DUE = in.readString();
         BS_VALUE = in.readString();
         BP_VALUE = in.readString();
+        Communication1 = in.readString();
+        CommModes = in.readString();
     }
 
     @Override
@@ -110,6 +112,8 @@ public class Woe implements Parcelable {
         dest.writeString(AMOUNT_DUE);
         dest.writeString(BS_VALUE);
         dest.writeString(BP_VALUE);
+        dest.writeString(Communication1);
+        dest.writeString(CommModes);
     }
 
     @Override
@@ -232,11 +236,24 @@ public class Woe implements Parcelable {
     private String BS_VALUE;
     private String BP_VALUE;
 
+    private String Communication1;
+    private String CommModes;
 
+    public String getCommunication1() {
+        return Communication1;
+    }
 
+    public void setCommunication1(String communication1) {
+        Communication1 = communication1;
+    }
 
+    public String getCommModes() {
+        return CommModes;
+    }
 
-
+    public void setCommModes(String commModes) {
+        CommModes = commModes;
+    }
 
     public String getBS_VALUE() {
         return BS_VALUE;

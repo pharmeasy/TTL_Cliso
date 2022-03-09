@@ -165,4 +165,5 @@
     <dimen name="label">16sp</dimen>
     <dimen name="value">14sp</dimen>
     <dimen name="note">12sp</dimen>
+    <dimen name="note1">13sp</dimen>
 </resources>

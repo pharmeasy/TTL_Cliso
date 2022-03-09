@@ -7,7 +7,7 @@ import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.RequestModels.PaytmVerifyChecksumRequestModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.PaytmVerifyChecksumResponseModel;
-import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
+import com.example.e5322.thyrosoft.Retrofit.PostAPIInterface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.RevisedScreenNewUser.Payment_Activity;
 import com.example.e5322.thyrosoft.ToastFile;
@@ -30,7 +30,7 @@ public class VerifyPayTmChecksumController {
     public void verifyChecksum(final PaytmVerifyChecksumRequestModel requestModel) {
         try {
             progress.show();
-            PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(mActivity, Api.THYROCARE).create(PostAPIInteface.class);
+            PostAPIInterface apiInterface = RetroFit_APIClient.getInstance().getClient(mActivity, Api.THYROCARE).create(PostAPIInterface.class);
             Call<PaytmVerifyChecksumResponseModel> responseModelCall = apiInterface.callPaytmVerifyChecksumAPI(requestModel);
             responseModelCall.enqueue(new Callback<PaytmVerifyChecksumResponseModel>() {
                 @Override

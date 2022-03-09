@@ -1,5 +1,10 @@
 package com.example.e5322.thyrosoft.WOE;
 
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
+import static com.example.e5322.thyrosoft.ToastFile.invalid_brcd;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -113,11 +118,6 @@ import java.util.Set;
 import in.galaxyofandroid.spinerdialog.OnSpinerItemClick;
 import in.galaxyofandroid.spinerdialog.SpinnerDialog;
 
-import static android.Manifest.permission.CAMERA;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
-import static com.example.e5322.thyrosoft.ToastFile.invalid_brcd;
-
 
 public class Scan_Barcode_Outlabs extends AppCompatActivity {
     private static final int REQUEST_CAMERA = 1;
@@ -230,8 +230,8 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
     Bitmap vialbitmap;
     List<String> imagelist = new ArrayList<>();
 
-    LinearLayout ll_letterhead;
-    ConnectionDetector connectionDetector;
+    LinearLayout ll_letterhead, ll_location_note;
+    ConnectionDetector cd;
     RecyclerView recy_brand;
     private String getBrand_name;
     private String EMAIL_ID;
@@ -301,7 +301,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan__barcode__ils);
         mActivity = Scan_Barcode_Outlabs.this;
-        connectionDetector = new ConnectionDetector(mActivity);
+        cd = new ConnectionDetector(mActivity);
 
         SharedPreferences prefs = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
         brandName = prefs.getString("WOEbrand", "");
@@ -351,6 +351,9 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         txt_fileupload_pres = findViewById(R.id.txt_fileupload_pres);
         tv_location = findViewById(R.id.tv_location);
         tv_lab = findViewById(R.id.tv_lab);
+        ll_location_note = findViewById(R.id.ll_location_note);
+
+        ll_location_note.setVisibility(cd.isConnectingToInternet() ? View.VISIBLE : View.GONE);
 
         btn_choosefile_presc.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -358,6 +361,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
 
                 ImagePicker.Companion.with(Scan_Barcode_Outlabs.this)
                         .compress(Constants.MaxImageSize)
+                        .crop()
                         .maxResultSize(Constants.MaxImageWidth, Constants.MaxImageHeight)
                         .start();
                 ispresc = true;
@@ -497,7 +501,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
             }
 
 
-            if (connectionDetector.isConnectingToInternet()) {
+            if (cd.isConnectingToInternet()) {
                 GetLocationReqModel getLocationReqModel = new GetLocationReqModel();
                 getLocationReqModel.setTest("" + TextUtils.join(",", getTestCode));
                 getLocationReqModel.setTSP("" + user);
@@ -509,8 +513,6 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         } else {
             Log.e(TAG, "onCreate: null");
         }
-
-
 
 
         SetBrandLetterValues();
@@ -1204,63 +1206,56 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
     }
 
     private void passBarcodeData(final String barcodeDetails) {
-        if (connectionDetector.isConnectingToInternet()) {
-            Log.e(TAG, "passBarcodeData: getBarcode details" + barcodeDetails);
-            //   checkBarcode(barcodeDetails);
-
-            if (!GlobalClass.isNetworkAvailable(Scan_Barcode_Outlabs.this)) {
-                outlab_barcode.setText("Barcode:" + barcodeDetails);
-            } else {
-                barcodeDetailsdata = GlobalClass.setVolleyReq(Scan_Barcode_Outlabs.this);
-                JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.scanBarcodeWithValidation + api_key + "/" + barcodeDetails + "/getcheckbarcode"
-                        , new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.v(TAG, "barcode respponse" + response);
-                        try {
-                            Gson gson = new Gson();
-                            VerifyBarcodeResponseModel responseModel = gson.fromJson(String.valueOf(response), VerifyBarcodeResponseModel.class);
-
-                            if (responseModel != null) {
-                                if (!GlobalClass.isNull(responseModel.getResponse()) && responseModel.getResponse().equalsIgnoreCase("BARCODE DOES NOT EXIST")) {
-                                    outlab_barcode.setText("Barcode:" + barcodeDetails);
-                                    for (int i = 0; i < GlobalClass.finalspecimenttypewiselist.size(); i++) {
-                                        GlobalClass.finalspecimenttypewiselist.get(i).setBarcode(barcodeDetails);
-                                    }
-                                } else if (!GlobalClass.isNull(responseModel.getERROR()) && responseModel.getERROR().equalsIgnoreCase(caps_invalidApikey)) {
-                                    GlobalClass.redirectToLogin(Scan_Barcode_Outlabs.this);
-                                } else {
-                                    outlab_barcode.setText("");
-                                    Toast.makeText(Scan_Barcode_Outlabs.this, "" + responseModel.getResponse(), Toast.LENGTH_SHORT).show();
-                                }
-                            } else {
-                                TastyToast.makeText(Scan_Barcode_Outlabs.this, ToastFile.something_went_wrong, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                            }
-                        } catch (JsonSyntaxException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        if (error.networkResponse == null) {
-                            if (error.getClass().equals(TimeoutError.class)) {
-                                // Show timeout error message
-                            }
-                        }
-                    }
-                });
-                jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(
-                        300000,
-                        3,
-                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-                barcodeDetailsdata.add(jsonObjectRequestPop);
-                Log.e(TAG, "passBarcodeData: url" + jsonObjectRequestPop);
-            }
+        Log.e(TAG, "passBarcodeData: getBarcode details" + barcodeDetails);
+        if (!GlobalClass.isNetworkAvailable(Scan_Barcode_Outlabs.this)) {
+            outlab_barcode.setText("Barcode:" + barcodeDetails);
         } else {
-            GlobalClass.showCustomToast(mActivity, ToastFile.intConnection, 1);
-        }
+            barcodeDetailsdata = GlobalClass.setVolleyReq(Scan_Barcode_Outlabs.this);
+            JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.scanBarcodeWithValidation + api_key + "/" + barcodeDetails + "/getcheckbarcode"
+                    , new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    Log.v(TAG, "barcode respponse" + response);
+                    try {
+                        Gson gson = new Gson();
+                        VerifyBarcodeResponseModel responseModel = gson.fromJson(String.valueOf(response), VerifyBarcodeResponseModel.class);
 
+                        if (responseModel != null) {
+                            if (!GlobalClass.isNull(responseModel.getResponse()) && responseModel.getResponse().equalsIgnoreCase("BARCODE DOES NOT EXIST")) {
+                                outlab_barcode.setText("Barcode:" + barcodeDetails);
+                                for (int i = 0; i < GlobalClass.finalspecimenttypewiselist.size(); i++) {
+                                    GlobalClass.finalspecimenttypewiselist.get(i).setBarcode(barcodeDetails);
+                                }
+                            } else if (!GlobalClass.isNull(responseModel.getERROR()) && responseModel.getERROR().equalsIgnoreCase(caps_invalidApikey)) {
+                                GlobalClass.redirectToLogin(Scan_Barcode_Outlabs.this);
+                            } else {
+                                outlab_barcode.setText("");
+                                Toast.makeText(Scan_Barcode_Outlabs.this, "" + responseModel.getResponse(), Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            TastyToast.makeText(Scan_Barcode_Outlabs.this, ToastFile.something_went_wrong, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        }
+                    } catch (JsonSyntaxException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    if (error.networkResponse == null) {
+                        if (error.getClass().equals(TimeoutError.class)) {
+                            // Show timeout error message
+                        }
+                    }
+                }
+            });
+            jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(
+                    300000,
+                    3,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            barcodeDetailsdata.add(jsonObjectRequestPop);
+            Log.e(TAG, "passBarcodeData: url" + jsonObjectRequestPop);
+        }
     }
 
 
@@ -1430,7 +1425,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
 
     public void getUploadFileResponse() {
         TastyToast.makeText(Scan_Barcode_Outlabs.this, message, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-        if (isprescition){
+        if (isprescition) {
             UploadPrescRequestModel uploadPrescRequestModel = new UploadPrescRequestModel();
             uploadPrescRequestModel.setENTRYBY(user);
             uploadPrescRequestModel.setDocType("DCPRESCRIPTION");
@@ -1439,7 +1434,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
             uploadPrescRequestModel.setSourceCode(user);
             UploadPrescController uploadPrescController = new UploadPrescController(this);
             uploadPrescController.UploadPrescAPICall(uploadPrescRequestModel);
-        }else {
+        } else {
             Intent intent = new Intent(Scan_Barcode_Outlabs.this, SummaryActivity.class);
             Bundle bundle = new Bundle();
             bundle.putString("payment", getWrittenAmt);
@@ -1466,26 +1461,32 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
     }
 
     public void checklistData() {
-        if (connectionDetector.isConnectingToInternet()) {
-            if (trflist.size() > 0) {
-                for (int i = 0; i < trflist.size(); i++) {
-                    if (trflist.get(i).getTrf_image() == null)
-                        trfCheckFlag = true;
-                }
-                if (trfCheckFlag) {
-                    trfCheckFlag = false;
-                    Toast.makeText(mActivity, ToastFile.TRF_UPLOAD_CHECK, Toast.LENGTH_SHORT).show();
-                } else {
-                    doFinalWoe();
-                }
+        if (GlobalClass.allowForOfflineUse(user)) {
+            checkAndProceed();
+        } else {
+            if (cd.isConnectingToInternet()) {
+                checkAndProceed();
+            } else {
+                GlobalClass.showCustomToast(mActivity, ToastFile.intConnection, 1);
+            }
+        }
+    }
+
+    private void checkAndProceed() {
+        if (trflist.size() > 0) {
+            for (int i = 0; i < trflist.size(); i++) {
+                if (trflist.get(i).getTrf_image() == null)
+                    trfCheckFlag = true;
+            }
+            if (trfCheckFlag) {
+                trfCheckFlag = false;
+                Toast.makeText(mActivity, ToastFile.TRF_UPLOAD_CHECK, Toast.LENGTH_SHORT).show();
             } else {
                 doFinalWoe();
             }
         } else {
-            GlobalClass.showCustomToast(mActivity, ToastFile.intConnection, 1);
+            doFinalWoe();
         }
-
-
     }
 
     private void doFinalWoe() {
@@ -1544,8 +1545,6 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
             } else {
                 WOE();
             }
-
-
         } else {
             WOE();
         }
@@ -1764,7 +1763,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                                 if (woeResponseModel != null) {
                                     if (!GlobalClass.isNull(woeResponseModel.getStatus()) && woeResponseModel.getStatus().equalsIgnoreCase("SUCCESS")) {
                                         // if (trflist.size() > 0)
-                                        new LogUserActivityTagging(mActivity,"WOE-NOVID",barcode_patient_id);
+                                        new LogUserActivityTagging(mActivity, "WOE-NOVID", barcode_patient_id);
 
                                         Global.OTPVERIFIED = false;
                                         GlobalClass.transID = "";
@@ -1911,7 +1910,6 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
 
     }

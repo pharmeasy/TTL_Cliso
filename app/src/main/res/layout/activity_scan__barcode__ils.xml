@@ -788,30 +788,30 @@
             </LinearLayout>
 
 
-<!--            <LinearLayout-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginLeft="@dimen/_5sdp"-->
-<!--                android:layout_marginTop="@dimen/_5sdp"-->
-<!--                android:layout_marginBottom="@dimen/_5sdp"-->
-<!--                android:orientation="horizontal">-->
+            <!--            <LinearLayout-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_marginLeft="@dimen/_5sdp"-->
+            <!--                android:layout_marginTop="@dimen/_5sdp"-->
+            <!--                android:layout_marginBottom="@dimen/_5sdp"-->
+            <!--                android:orientation="horizontal">-->
 
-<!--                <TextView-->
-<!--                    android:id="@+id/tv_location"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:text=""-->
-<!--                    android:textColor="@color/black" />-->
+            <!--                <TextView-->
+            <!--                    android:id="@+id/tv_location"-->
+            <!--                    android:layout_width="wrap_content"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:text=""-->
+            <!--                    android:textColor="@color/black" />-->
 
-<!--                <TextView-->
-<!--                    android:id="@+id/tv_lab"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:text=""-->
-<!--                    android:textColor="@color/black"-->
-<!--                    android:textStyle="bold" />-->
+            <!--                <TextView-->
+            <!--                    android:id="@+id/tv_lab"-->
+            <!--                    android:layout_width="wrap_content"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:text=""-->
+            <!--                    android:textColor="@color/black"-->
+            <!--                    android:textStyle="bold" />-->
 
-<!--            </LinearLayout>-->
+            <!--            </LinearLayout>-->
 
 
             <Button
@@ -819,171 +819,177 @@
                 android:layout_width="180dp"
                 android:layout_height="@dimen/_28sdp"
                 android:layout_gravity="center"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginBottom="@dimen/_5sdp"
                 android:background="@drawable/next_button"
                 android:gravity="center"
                 android:text="Submit"
                 android:textColor="@color/white"
-                android:textSize="@dimen/label"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:layout_marginBottom="@dimen/_5sdp"/>
+                android:textSize="@dimen/label" />
 
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Note:"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:layout_marginLeft="@dimen/_5sdp"
-        android:layout_marginRight="@dimen/_5sdp"
-        android:layout_marginTop="@dimen/_5sdp"
-        />
-
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:id="@+id/ll_location_note"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/_5sdp"
-        android:layout_marginTop="@dimen/_5sdp"
-        android:layout_marginRight="@dimen/_5sdp"
-        android:orientation="horizontal">
+        android:visibility="gone"
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/id_note1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:text="@string/text_with_bullet"
-            android:textColor="@color/black"
-            android:textSize="@dimen/_15sdp"
-            android:textStyle="bold"
-            android:layout_marginRight="@dimen/_5sdp"
-            android:gravity="start"
-            />
-
-        <TextView
-            android:id="@+id/tv_location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:textColor="@color/black"
-            android:layout_toRightOf="@+id/id_note1"
+            android:layout_marginLeft="@dimen/_5sdp"
             android:layout_marginTop="@dimen/_5sdp"
-            />
+            android:layout_marginRight="@dimen/_5sdp"
+            android:text="Note:"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/tv_lab"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=""
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:layout_marginTop="@dimen/_5sdp"/>
+            android:layout_marginLeft="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginRight="@dimen/_5sdp"
+            android:orientation="horizontal">
 
-    </LinearLayout>
-  <LinearLayout
+            <TextView
+                android:id="@+id/id_note1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginRight="@dimen/_5sdp"
+                android:gravity="start"
+                android:text="@string/text_with_bullet"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_15sdp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_toRightOf="@+id/id_note1"
+                android:text=""
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/tv_lab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:text=""
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
+
             <TextView
                 android:id="@+id/id_note2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:layout_marginRight="@dimen/_5sdp"
                 android:text="@string/text_with_bullet"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_15sdp"
-                android:textStyle="bold"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
                 android:layout_marginRight="@dimen/_5sdp"
-                android:layout_marginLeft="@dimen/_5sdp"
-                />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TTL brand report will be generated in TTL LH and Nueclear brand report will be generated in Nueclear brand."
-        android:textColor="@color/black"
-        android:layout_marginTop="@dimen/_5sdp"
-        android:layout_marginBottom="@dimen/_10sdp"
-        android:layout_marginRight="@dimen/_5sdp"
-        android:layout_toRightOf="@+id/id_note2"
-        />
-  </LinearLayout>
-
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:weightSum="3">
-
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:gravity="center">
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/circle"
-                android:tint="@color/colorred" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="  - CPL "
-                android:textColor="@color/colorBlack" />
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:gravity="center">
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/circle"
-                android:tint="@color/tabindicatorColor" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="  - ZPL "
-                android:textColor="@color/colorBlack" />
-
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:layout_toRightOf="@+id/id_note2"
+                android:text="TTL brand report will be generated in TTL LH and Nueclear brand report will be generated in Nueclear brand."
+                android:textColor="@color/black" />
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:gravity="center">
+            android:layout_margin="5dp"
+            android:weightSum="3">
 
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/circle"
-                android:tint="@color/colorPrimary" />
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="  - RPL "
-                android:textColor="@color/colorBlack" />
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/circle"
+                    android:tint="@color/colorred" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="  - CPL "
+                    android:textColor="@color/colorBlack" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/circle"
+                    android:tint="@color/tabindicatorColor" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="  - ZPL "
+                    android:textColor="@color/colorBlack" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/circle"
+                    android:tint="@color/colorPrimary" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="  - RPL "
+                    android:textColor="@color/colorBlack" />
+
+            </LinearLayout>
+
 
         </LinearLayout>
-
 
     </LinearLayout>
 

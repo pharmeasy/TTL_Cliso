@@ -1,22 +1,11 @@
 <component name="libraryTable">
   <library name="Gradle: com.github.tcking:ijkplayer-java:0.8.8@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/ijkplayer-java-0.8.8.aar/e78b6ccf0fc07f791653772f33aa9717/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/ijkplayer-java-0.8.8.aar/e78b6ccf0fc07f791653772f33aa9717/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/ijkplayer-java-0.8.8.aar/e78b6ccf0fc07f791653772f33aa9717/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/ijkplayer-java-0.8.8.aar/47bfbc5fa2641a7929a08b1aad90f36e/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/ijkplayer-java-0.8.8.aar/47bfbc5fa2641a7929a08b1aad90f36e/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/ijkplayer-java-0.8.8.aar/47bfbc5fa2641a7929a08b1aad90f36e/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/ijkplayer-java-0.8.8.aar/5b9234813bc22865cb6a02a332839a51/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/ijkplayer-java-0.8.8.aar/5b9234813bc22865cb6a02a332839a51/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/ijkplayer-java-0.8.8.aar/5b9234813bc22865cb6a02a332839a51/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b47784f45a2bb2450b85fab6ff73531c/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b47784f45a2bb2450b85fab6ff73531c/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b47784f45a2bb2450b85fab6ff73531c/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/3df039b18751575a2b849e3b6d997766/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/3df039b18751575a2b849e3b6d997766/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/3df039b18751575a2b849e3b6d997766/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.tcking/ijkplayer-java/0.8.8/11f4c937ff5dba0f4824e91a684e7a8eee9c8bf9/ijkplayer-java-0.8.8-sources.jar!/" />
-    </SOURCES>
+    <SOURCES />
   </library>
 </component>

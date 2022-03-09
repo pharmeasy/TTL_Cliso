@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.example.e5322.thyrosoft.HHHtest.Model.GetTestResponseModel;
 import com.example.e5322.thyrosoft.Models.CovidAccessResponseModel;
+import com.example.e5322.thyrosoft.Models.ResponseModels.GetBaselineDetailsResponseModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.VersionResponseModel;
 import com.google.gson.Gson;
 
@@ -16,8 +17,15 @@ public class AppPreferenceManager {
     private String isAppInBackground = "isAppInBackground";
     private String versionresponse = "versionresponse";
     private String pocttest = "pocttest";
-    private String synProductCount="synProductCount";
-    private String CovidAcess="CovidAccess";
+    private String synProductCount = "synProductCount";
+    private String CovidAcess = "CovidAccess";
+    private String BaseLine = "BaseLine";
+    private String Reward = "Reward";
+    private String Terms = "Terms";
+    private String TermsURL = "TermsURL";
+    private String TermsFlag = "TermsFlag";
+    private String BaselineSync = "BaselineSync";
+    private String WoMasterSync = "WoMasterSync";
 
 
     public AppPreferenceManager(Activity activity) {
@@ -30,6 +38,63 @@ public class AppPreferenceManager {
     }
 
 
+    public String getWoMasterSyncDate() {
+        return appPreference.getString(WoMasterSync, "");
+    }
+
+    public void setWoMasterSyncDate(String date) {
+        appPreference.putString(WoMasterSync, date);
+    }
+
+    public String getRewardPopUpDate() {
+        return appPreference.getString(Reward, "");
+    }
+
+    public void setRewardPopUpDate(String date) {
+        appPreference.putString(Reward, date);
+    }
+
+    public String getTermsSyncDate() {
+        return appPreference.getString(Terms, "");
+    }
+
+    public void setTermsSyncDate(String date) {
+        appPreference.putString(Terms, date);
+    }
+
+    public String getTermsUrl() {
+        return appPreference.getString(TermsURL, "");
+    }
+
+    public void setTermsUrl(String date) {
+        appPreference.putString(TermsURL, date);
+    }
+
+    public Boolean getTermsFlag() {
+        return appPreference.getBoolean(TermsFlag, true);
+    }
+
+    public void setTermsFlag(Boolean value) {
+        appPreference.putBoolean(TermsFlag, value);
+    }
+
+    public String getBaseLineSyncDate() {
+        return appPreference.getString(BaselineSync, "");
+    }
+
+    public void setBaseLineSyncDate(String date) {
+        appPreference.putString(BaselineSync, date);
+    }
+
+    public GetBaselineDetailsResponseModel getBaselineDetailsResponse() {
+        String value = appPreference.getString(BaseLine, "");
+        return new Gson().fromJson(value, GetBaselineDetailsResponseModel.class);
+    }
+
+    public void setBaselineDetailsResponse(GetBaselineDetailsResponseModel responseModel) {
+        appPreference.putString(BaseLine, new Gson().toJson(responseModel));
+    }
+
     public CovidAccessResponseModel getCovidAccessResponseModel() {
         String value = appPreference.getString(this.CovidAcess, "");
         return new Gson().fromJson(value, CovidAccessResponseModel.class);
@@ -39,7 +104,6 @@ public class AppPreferenceManager {
     public void setCovidAccessResponseModel(CovidAccessResponseModel responseModel) {
         appPreference.putString(this.CovidAcess, new Gson().toJson(responseModel));
     }
-
 
 
     public GetTestResponseModel getTestResponseModel() {
@@ -65,11 +129,11 @@ public class AppPreferenceManager {
 
 
     public int getSynProductCount() {
-        return appPreference.getInt(synProductCount,0);
+        return appPreference.getInt(synProductCount, 0);
     }
 
     public void setSynProductCount(int count) {
-        appPreference.putInt(synProductCount,count);
+        appPreference.putInt(synProductCount, count);
     }
 
 
@@ -92,10 +156,6 @@ public class AppPreferenceManager {
     public void clearAllPreferences() {
         appPreference.clearPreferences();
     }
-
-
-
-
 
 
 }

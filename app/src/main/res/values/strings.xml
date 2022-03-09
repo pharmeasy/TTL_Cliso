@@ -12,7 +12,7 @@
     <string name="No">No</string>
     <string name="dghandbill">DIGITAL HANDBILLS</string>
     <string name="dg_template">Templates</string>
-    <string name="nodatafound">No records</string>
+    <string name="str_no_record_found">No records found</string>
     <string name="fill_user">Fill the details</string>
     <string name="name_digits">abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
     <string name="bs_name">NAME*</string>
@@ -297,5 +297,12 @@
     <string name="value">VALUE</string>
     <string name="ssp_barcode">SSP BARCODE</string>
     <string name="notauth">Not Authorized</string>
+
+    <string name="feedback_note"><font color="#941010"><b>Note: </b></font>Please rate parameter where 1 star is lowest and 5 start is highest.
+    </string>
+    <string name="str_escalation_matrix">ESCALATION MATRIX</string>
+    <string name="offline_woe">OFFLINE WOE</string>
+    <string name="str_whatsapp_support">(24X7 Whatsapp Support)</string>
+    <string name="str_covid_result_guidelines">NOTE: COVID POSITIVE REPORTS WILL BE SHARED AS PER THE LOCAL MUNICIPAL CORPORATION GUIDELINES.</string>
 
 </resources>

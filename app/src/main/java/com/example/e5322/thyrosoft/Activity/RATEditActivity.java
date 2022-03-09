@@ -1,5 +1,8 @@
 package com.example.e5322.thyrosoft.Activity;
 
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -51,9 +54,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.Manifest.permission.CAMERA;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class RATEditActivity extends AppCompatActivity {
 
@@ -373,6 +373,7 @@ public class RATEditActivity extends AppCompatActivity {
     private void selectImage() {
         ImagePicker.Companion.with(RATEditActivity.this)
                 .galleryOnly()
+                .crop()
                 .compress(Constants.MaxImageSize)
                 .maxResultSize(Constants.MaxImageWidth, Constants.MaxImageHeight)
                 .start();

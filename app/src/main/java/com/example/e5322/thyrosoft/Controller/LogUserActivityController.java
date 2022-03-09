@@ -5,7 +5,7 @@ import android.app.Activity;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.Models.AppuserReq;
 import com.example.e5322.thyrosoft.Models.AppuserResponse;
-import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
+import com.example.e5322.thyrosoft.Retrofit.PostAPIInterface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.google.gson.GsonBuilder;
 
@@ -23,7 +23,7 @@ public class LogUserActivityController {
 
     public void updateUserActivity(AppuserReq requestModel) {
         try {
-            PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(mActivity, Api.Velso).create(PostAPIInteface.class);
+            PostAPIInterface apiInterface = RetroFit_APIClient.getInstance().getClient(mActivity, Api.Velso).create(PostAPIInterface.class);
             Call<AppuserResponse> responseModelCall = apiInterface.PostUserLog(requestModel);
             Log.e("TAG", "API REQ--->" + responseModelCall.request().url());
             Log.e("TAG", "API BODY--->" + new GsonBuilder().create().toJson(requestModel));

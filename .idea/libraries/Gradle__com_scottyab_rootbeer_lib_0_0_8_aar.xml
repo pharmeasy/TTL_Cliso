@@ -1,22 +1,11 @@
 <component name="libraryTable">
   <library name="Gradle: com.scottyab:rootbeer-lib:0.0.8@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/rootbeer-lib-0.0.8.aar/63bc8c99f8d1b12785f022c3a175438c/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/rootbeer-lib-0.0.8.aar/63bc8c99f8d1b12785f022c3a175438c/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/rootbeer-lib-0.0.8.aar/63bc8c99f8d1b12785f022c3a175438c/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/rootbeer-lib-0.0.8.aar/3cd3842192b412824742738e4d476caa/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/rootbeer-lib-0.0.8.aar/3cd3842192b412824742738e4d476caa/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/rootbeer-lib-0.0.8.aar/3cd3842192b412824742738e4d476caa/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/rootbeer-lib-0.0.8.aar/79965f767f6c8741dceaae1a7e436ad6/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/rootbeer-lib-0.0.8.aar/79965f767f6c8741dceaae1a7e436ad6/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/rootbeer-lib-0.0.8.aar/79965f767f6c8741dceaae1a7e436ad6/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9fb9f6904e5174133cb68b85b83db815/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9fb9f6904e5174133cb68b85b83db815/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9fb9f6904e5174133cb68b85b83db815/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b89c6b0a621bb77da53085df6530b0f0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b89c6b0a621bb77da53085df6530b0f0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b89c6b0a621bb77da53085df6530b0f0/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.scottyab/rootbeer-lib/0.0.8/e020395350d11dd623b7a8985ac7ad9d8311f422/rootbeer-lib-0.0.8-sources.jar!/" />
-    </SOURCES>
+    <SOURCES />
   </library>
 </component>

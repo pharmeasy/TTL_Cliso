@@ -39,6 +39,7 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
     Covidenter_Frag covidenter_frag;
     RATEnterFrag ratEnterFrag;
     int flag = 0;
+    int topdf = 0;
     Covidpostdata covidpostdata;
     CovidEditActivity covidEditActivity;
     AntiBodyEnterFrag antiBodyEnterFrag;
@@ -49,6 +50,7 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
         this.mActivity = activity;
         status_code = 0;
         flag = 1;
+        topdf = 1;
         this.covidpostdata = covidpostdata;
     }
 
@@ -57,6 +59,7 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
         this.mActivity = activity;
         status_code = 0;
         flag = 2;
+        topdf = 1;
         this.covidpostdata = covidpostdata;
     }
 
@@ -167,7 +170,8 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
                         + "\nTRF:" + covidpostdata.getTRF()
                         + "\nTRF1:" + covidpostdata.getTRF1()
                         + "\nVIALIMAGE:" + covidpostdata.getVIAIMAGE()
-                        + "\nOTHER:" + covidpostdata.getOTHER() + "\nOTHER1:" + covidpostdata.getOTHER1());
+                        + "\nOTHER:" + covidpostdata.getOTHER() + "\nOTHER1:" + covidpostdata.getOTHER1()
+                        + "\nTechnician Name: " + covidpostdata.getTECHNICIAN());
 
             } else if (flag == 4) {
                 builder.addPart("SOURCECODE", new StringBody("" + covidpostdata.getSOURCECODE()));
@@ -225,18 +229,26 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
                 if (flag == 2) {
                     builder.addPart("UNIQUEID", new StringBody("" + covidpostdata.getUNIQUEID()));
                 }
+
                 builder.addPart("SOURCECODE", new StringBody("" + covidpostdata.getSOURCECODE()));
                 builder.addPart("MOBILE", new StringBody("" + covidpostdata.getMOBILE()));
                 builder.addPart("NAME", new StringBody("" + covidpostdata.getNAME()));
                 builder.addPart("AMOUNTCOLLECTED", new StringBody("" + covidpostdata.getAMOUNTCOLLECTED()));
                 builder.addPart("TESTCODE", new StringBody("" + covidpostdata.getTESTCODE()));
                 builder.addPart("PPEBARCODE", new StringBody("" + covidpostdata.getPPEBARCODE()));
+//                builder.addPart("BARCODE", new StringBody("" + covidpostdata.getBARCODE()));
                 builder.addPart("EMAIL", new StringBody("" + covidpostdata.getEMAIL()));
                 builder.addPart("APIKEY", new StringBody("" + covidpostdata.getAPIKEY()));
+                builder.addPart("SRFID", new StringBody("" + covidpostdata.getSRFID()));
 
                 if (flag == 1) {
                     builder.addPart("TECHNICIAN", new StringBody("" + covidpostdata.getTECHNICIAN()));
                     Log.e(TAG, "\"Post params:- " + "" + "\nTECHNICIAN:" + covidpostdata.getTECHNICIAN());
+
+                    builder.addPart("REFBY", new StringBody("" + covidpostdata.getREFBY()));
+                    Log.e(TAG, "\"Post params:- " + "" + "\nREF BY:" + covidpostdata.getREFBY());
+                    builder.addPart("PASSPORTNO", new StringBody("" + covidpostdata.getPASSPORTNO()));
+                    Log.e(TAG, "\"Post params:- " + "" + "\nPASSPORTNO:" + covidpostdata.getPASSPORTNO());
                 }
 
                 if (covidpostdata.getPRESCRIPTION() != null) {
@@ -252,14 +264,17 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
                     builder.addPart("ADHAR1", new InputStreamBody(adharfilestream1, "image/jpeg", "file_name.jpg"));
                 }
 
-
-                FileInputStream trffilestream = new FileInputStream(covidpostdata.getTRF());
-                builder.addPart("TRF", new InputStreamBody(trffilestream, "image/jpeg", "file_name.jpg"));
+                if (topdf == 1) {
+                    FileInputStream trffilestream = new FileInputStream(covidpostdata.getTRF());
+                    builder.addPart("TRF", new InputStreamBody(trffilestream, "application/pdf", "file_name.pdf"));
+                } else {
+                    FileInputStream trffilestream = new FileInputStream(covidpostdata.getTRF());
+                    builder.addPart("TRF", new InputStreamBody(trffilestream, "image/jpeg", "file_name.jpg"));
+                }
 
                 if (covidpostdata.getTRF1() != null) {
                     FileInputStream trffilestream1 = new FileInputStream(covidpostdata.getTRF1());
                     builder.addPart("TRF1", new InputStreamBody(trffilestream1, "image/jpeg", "file_name.jpg"));
-
                 }
 
                 FileInputStream vial_InputStream = new FileInputStream(covidpostdata.getVIAIMAGE());
@@ -280,7 +295,6 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
                 if (covidpostdata.getSELFIE() != null) {
                     FileInputStream otherfilestream1 = new FileInputStream(covidpostdata.getSELFIE());
                     builder.addPart("SELFIE", new InputStreamBody(otherfilestream1, "image/jpeg", "file_name.jpg"));
-
                 }
             }
 
@@ -304,7 +318,9 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
                     + "\nEMAIL:" + covidpostdata.getEMAIL()
                     + "\nVIALIMAGE:" + covidpostdata.getVIAIMAGE()
                     + "\nOTHER:" + covidpostdata.getOTHER()
-                    + "\nOTHER1:" + covidpostdata.getOTHER1());
+                    + "\nOTHER1:" + covidpostdata.getOTHER1()
+                    + "\nSRFID:" + covidpostdata.getSRFID());
+
             httpPost.setEntity(builder.build());
             httpPost.setHeader(Constants.HEADER_USER_AGENT, GlobalClass.getHeaderValue(mActivity));
             HttpResponse httpResponse = httpclient.execute(httpPost);
@@ -333,15 +349,15 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
         if (status_code == 200) {
             if (response != null && !response.isEmpty()) {
                 if (flag == 1) {
-                    covidenter_frag.getUploadResponse(response,covidpostdata.getMOBILE());
+                    covidenter_frag.getUploadResponse(response, covidpostdata.getMOBILE());
                 } else if (flag == 2) {
-                    covidEditActivity.getUploadResponse(response,covidpostdata.getMOBILE());
+                    covidEditActivity.getUploadResponse(response, covidpostdata.getMOBILE());
                 } else if (flag == 3) {
-                    ratEnterFrag.getUploadResponse(response,covidpostdata.getMOBILE());
+                    ratEnterFrag.getUploadResponse(response, covidpostdata.getMOBILE());
                 } else if (flag == 4) {
-                    antiBodyEnterFrag.getUploadResponse(response,covidpostdata.getMOBILE());
+                    antiBodyEnterFrag.getUploadResponse(response, covidpostdata.getMOBILE());
                 } else if (flag == 5) {
-                    ratEditActivity.getUploadResponse(response,covidpostdata.getMOBILE());
+                    ratEditActivity.getUploadResponse(response, covidpostdata.getMOBILE());
                 }
 
             } else {

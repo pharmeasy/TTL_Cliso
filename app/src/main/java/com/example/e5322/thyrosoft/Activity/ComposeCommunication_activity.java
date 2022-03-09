@@ -1,5 +1,9 @@
 package com.example.e5322.thyrosoft.Activity;
 
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.RECORD_AUDIO;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -48,6 +52,7 @@ import com.example.e5322.thyrosoft.Models.ComposeCommPOSTModel;
 import com.example.e5322.thyrosoft.Models.FileUtil;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
+import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.mindorks.paracamera.Camera;
 import com.sdsmdg.tastytoast.TastyToast;
 
@@ -57,10 +62,6 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-
-import static android.Manifest.permission.CAMERA;
-import static android.Manifest.permission.RECORD_AUDIO;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 
 public class ComposeCommunication_activity extends AppCompatActivity {
@@ -309,7 +310,8 @@ public class ComposeCommunication_activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (checkPermission()) {
-                    selectImage();
+//                    selectImage();
+                    GlobalClass.cropImageFullScreenActivity(ComposeCommunication_activity.this, 1);
                 } else {
                     requestPermission();
                 }
@@ -534,6 +536,14 @@ public class ComposeCommunication_activity extends AppCompatActivity {
                 manageImageView(selectedFile);
             } catch (IOException e) {
                 Toast.makeText(mActivity, "Failed to read image data!", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            }
+        } else if (requestCode == ImagePicker.REQUEST_CODE && resultCode == RESULT_OK) {
+            try {
+                String imageurl = ImagePicker.Companion.getFile(data).toString();
+                selectedFile = new File(imageurl);
+                manageImageView(selectedFile);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

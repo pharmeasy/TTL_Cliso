@@ -1,5 +1,7 @@
 package com.example.e5322.thyrosoft.Activity;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -19,8 +21,6 @@ import com.example.e5322.thyrosoft.Models.PincodeMOdel.AppPreferenceManager;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.StaffCovidadapter;
 import com.google.android.material.tabs.TabLayout;
-
-import static android.content.Context.MODE_PRIVATE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -127,7 +127,6 @@ public class CarouselFragment extends Fragment {
             pager.setAdapter(adminCovidAdapter);
         } else {
             if (access.equalsIgnoreCase(Constants.STAFF)) {
-
                 if (covidacc) {
                     covidadapter = new StaffCovidadapter(getResources(), getChildFragmentManager());
                     pager.setAdapter(covidadapter);
@@ -136,7 +135,6 @@ public class CarouselFragment extends Fragment {
                     pager.setAdapter(adapterStafff);
                 }
             } else {
-
                 if (covidacc) {
                     adminCovidAdapter = new AdminCovidAdapter(getResources(), getChildFragmentManager());
                     pager.setAdapter(adminCovidAdapter);

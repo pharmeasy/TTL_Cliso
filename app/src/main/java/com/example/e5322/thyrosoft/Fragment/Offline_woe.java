@@ -1,5 +1,7 @@
 package com.example.e5322.thyrosoft.Fragment;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -23,6 +25,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -66,8 +69,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
-import static android.content.Context.MODE_PRIVATE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -114,7 +115,7 @@ public class Offline_woe extends Fragment {
     ProgressDialog barProgressDialog;
     ArrayList<String> getBarcodeArrList;
     BarcodelistModel barcodelist;
-    String  RES_ID, barcode_patient_id, getCityName, getStateName, getCountryName;
+    String RES_ID, barcode_patient_id, getCityName, getStateName, getCountryName;
     String latitudePassTOAPI;
     String longitudePassTOAPI;
     SharedPreferences prefs;
@@ -122,7 +123,6 @@ public class Offline_woe extends Fragment {
     ArrayList<MyPojoWoe> resultList;
     ArrayList<TRFModel> trflist;
     String blockCharacterSet = "~#^|$%&*!+:`";
-    Activity mActivity;
     TextView tv_total;
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -146,6 +146,8 @@ public class Offline_woe extends Fragment {
     private String barcode_id;
     private String barcodeCompare;
     RequestQueue sendGPSDetails;
+    ImageView back, home;
+
     private InputFilter filter = new InputFilter() {
 
         @Override
@@ -206,6 +208,24 @@ public class Offline_woe extends Fragment {
         sendwoe_ll = (LinearLayout) viewMain.findViewById(R.id.sendwoe_ll);
         parent_ll = (LinearLayout) viewMain.findViewById(R.id.parent_ll);
         tv_total = (TextView) viewMain.findViewById(R.id.tv_total);
+
+        back = viewMain.findViewById(R.id.back);
+        home = viewMain.findViewById(R.id.home);
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GlobalClass.goToHome(activity);
+            }
+        });
+
+        home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GlobalClass.goToHome(activity);
+            }
+        });
+
         linearLayoutManager = new LinearLayoutManager(this.getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
 
@@ -352,7 +372,7 @@ public class Offline_woe extends Fragment {
             sendwoe_ll.setVisibility(View.VISIBLE);
             tvNoDataFound.setVisibility(View.GONE);
         }
-            tv_total.setText("Total Count : "+resultList.size());
+        tv_total.setText("Total Count : " + resultList.size());
         offline_woe_adapter = new Offline_Woe_Adapter(mContext, resultList, fragment, errorList, Offline_woe.this, activity);
         offline_woe_adapter.onClickDeleteOffWoe(new RefreshOfflineWoe() {
             @Override
@@ -524,6 +544,7 @@ public class Offline_woe extends Fragment {
                                                     } else {
                                                         boolean isUpdated = myDb.updateDataeRROR(barcode_id, message);
                                                         TastyToast.makeText(mContext, message, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                                        refreshList();
                                                        /* Offline_woe fragment1 = new Offline_woe();
                                                         try {
                                                             mContext.getSupportFragmentManager().beginTransaction()
@@ -533,7 +554,8 @@ public class Offline_woe extends Fragment {
                                                         }*/
                                                     }
                                                 } else {
-                                                    TastyToast.makeText(mActivity, ToastFile.something_went_wrong, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                                    TastyToast.makeText(activity, ToastFile.something_went_wrong, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                                    refreshList();
                                                 }
                                             } catch (Exception e) {
                                                 e.printStackTrace();
@@ -584,7 +606,7 @@ public class Offline_woe extends Fragment {
 
     private void uploadTRf(ArrayList<TRFModel> trflist, File vialimage) {
         //    if (trflist.size() > 0)
-        new AsyncTaskPost_uploadfile(Offline_woe.this, activity, api_key, user, barcode_patient_id, trflist,vialimage).execute();
+        new AsyncTaskPost_uploadfile(Offline_woe.this, activity, api_key, user, barcode_patient_id, trflist, vialimage).execute();
 
     }
 
@@ -600,6 +622,10 @@ public class Offline_woe extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        refreshList();
+    }
+
+    private void refreshList() {
         resultList = getResults();
         //trflist = getTRFlist();
         offline_woe_adapter = new Offline_Woe_Adapter(mContext, resultList, fragment, errorList, Offline_woe.this, activity);
@@ -657,7 +683,7 @@ public class Offline_woe extends Fragment {
         try {
             GeoLocationRequestModel requestModel = new GeoLocationRequestModel();
             requestModel.setUsername(user);
-            requestModel.setIMEI(GlobalClass.getIMEINo(mActivity));
+            requestModel.setIMEI(GlobalClass.getIMEINo(activity));
             requestModel.setCity(getCityName);
             requestModel.setState(getStateName);
             requestModel.setCountry(getCountryName);
@@ -679,37 +705,25 @@ public class Offline_woe extends Fragment {
                     Log.e(TAG, "onResponse: " + response);
                     String finalJson = response.toString();
                     JSONObject parentObjectOtp = new JSONObject(finalJson);
-
-                    String Response = parentObjectOtp.getString("Response");
                     String resId = parentObjectOtp.getString("resId");
-
-
-                    if (resId.equals("RES0000")) {
+                    if (GlobalClass.checkEqualIgnoreCase(resId, "RES0000")) {
                         //after sending the woe succrssfully
-                        resultList = getResults();
-                        offline_woe_adapter = new Offline_Woe_Adapter(mContext, resultList, fragment, errorList, Offline_woe.this, activity);
-                        recyclerView.setAdapter(offline_woe_adapter);
+                        refreshList();
                         TastyToast.makeText(mContext, "" + message, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                         mContext.getSupportFragmentManager().beginTransaction().remove(new Offline_woe()).commitAllowingStateLoss();
-
                     } else {
-                        resultList = getResults();
-                        offline_woe_adapter = new Offline_Woe_Adapter(mContext, resultList, fragment, errorList, Offline_woe.this, activity);
-                        recyclerView.setAdapter(offline_woe_adapter);
+                        refreshList();
                     }
-
                 } catch (JSONException e) {
-                    TastyToast.makeText(mContext, "", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    TastyToast.makeText(mContext, ToastFile.something_went_wrong, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     e.printStackTrace();
                 }
             }
         }, new com.android.volley.Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                if (error != null) {
-                } else {
-                    System.out.println(error);
-                }
+                refreshList();
+                System.out.println("" + error);
             }
         });
         sendGPSDetails.add(jsonObjectRequest1);
@@ -740,7 +754,6 @@ public class Offline_woe extends Fragment {
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
-
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
@@ -750,13 +763,10 @@ public class Offline_woe extends Fragment {
         Intent intent = new Intent(mContext, ManagingTabsActivity.class);
         GlobalClass.setFlagBackToWoe = true;
         mContext.startActivity(intent);
+    }
 
-//        try {
-//            getActivity().getSupportFragmentManager().beginTransaction().detach(fragment).attach(Offline_woe.this).commitAllowingStateLoss();
-//        } catch (IllegalStateException ignored) {
-//            // There's no way to avoid getting this if saveInstanceState has already been called.
-//        }
-//        adapter.notifyDataSetChanged();
+    public void getUploadFileResponse() {
+        refreshList();
     }
 
     /**

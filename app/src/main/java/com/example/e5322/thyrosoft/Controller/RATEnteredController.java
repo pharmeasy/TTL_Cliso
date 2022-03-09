@@ -10,7 +10,7 @@ import com.example.e5322.thyrosoft.Fragment.RATEnteredFrag;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.RATEnteredRequestModel;
 import com.example.e5322.thyrosoft.Models.RATEnteredResponseModel;
-import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
+import com.example.e5322.thyrosoft.Retrofit.PostAPIInterface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 
 import retrofit2.Call;
@@ -45,7 +45,7 @@ public class RATEnteredController {
 
     public void CallAPI() {
         progress.show();
-        PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient((Activity) context, Api.Cloud_base).create(PostAPIInteface.class);
+        PostAPIInterface apiInterface = RetroFit_APIClient.getInstance().getClient((Activity) context, Api.Cloud_base).create(PostAPIInterface.class);
         Call<RATEnteredResponseModel> responseCall = apiInterface.GetEnteredResponse(ratEnteredRequestModel);
 
         responseCall.enqueue(new Callback<RATEnteredResponseModel>() {

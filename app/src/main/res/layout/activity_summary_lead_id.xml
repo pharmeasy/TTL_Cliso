@@ -39,9 +39,9 @@
             android:background="@color/cement_light"
             android:gravity="center"
             android:text="Summary"
-            android:textSize="@dimen/header"
             android:textAllCaps="true"
             android:textColor="@color/maroon"
+            android:textSize="@dimen/header"
             android:textStyle="bold" />
 
         <ImageView
@@ -56,543 +56,69 @@
             android:textColor="@color/colorBlack" />
     </LinearLayout>
 
-
-    <LinearLayout
-        android:id="@+id/main_lin"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/linear_layout"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/corner_curve_cement_bg"
-        android:orientation="vertical"
-        android:paddingBottom="10dp">
+        android:layout_below="@+id/linear_layout">
 
-        <TextView
-            android:id="@+id/patient_info"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/main_lin"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="5dp"
-            android:background="@drawable/underline_grey"
-            android:gravity="center"
-            android:text="Patient info"
-            android:textAllCaps="true"
-            android:textColor="@color/Graytoolbar"
-            android:textSize="@dimen/label"
-            android:textStyle="bold" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="7dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginBottom="5dp"
-            android:background="@drawable/next_button"
-            android:orientation="horizontal"
-            android:weightSum="5">
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/corner_curve_cement_bg"
+            android:orientation="vertical"
+            android:paddingBottom="10dp">
 
             <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="2dp"
-                android:layout_marginBottom="5dp"
-                android:layout_weight="1.5"
-                android:paddingTop="3dp"
-                android:paddingBottom="3dp"
-                android:text="Type "
-                android:textAllCaps="true"
-                android:textColor="@color/white"
-                android:textSize="@dimen/value" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="3.5"
-                android:background="@drawable/corner_curve_white">
-
-                <TextView
-                    android:id="@+id/pat_type"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginBottom="6dp"
-                    android:textColor="@color/grey"
-                    android:textSize="@dimen/value" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="7dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginBottom="5dp"
-            android:background="@drawable/next_button"
-            android:orientation="horizontal"
-            android:weightSum="5">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="2dp"
-                android:layout_marginBottom="5dp"
-                android:layout_weight="1.5"
-                android:paddingTop="3dp"
-                android:paddingBottom="3dp"
-                android:text="Id :"
-                android:textAllCaps="true"
-                android:textColor="@color/white"
-                android:textSize="@dimen/value" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="3.5"
-                android:background="@drawable/corner_curve_white">
-
-                <TextView
-                    android:id="@+id/id_number"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginBottom="6dp"
-                    android:textColor="@color/grey"
-                    android:textSize="@dimen/value" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="7dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginBottom="5dp"
-            android:background="@drawable/next_button"
-            android:orientation="horizontal"
-            android:weightSum="5">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="2dp"
-                android:layout_marginBottom="5dp"
-                android:layout_weight="1.5"
-                android:paddingTop="3dp"
-                android:paddingBottom="3dp"
-                android:text="SCT :"
-                android:textAllCaps="true"
-                android:textColor="@color/white"
-                android:textSize="@dimen/value" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="3.5"
-                android:background="@drawable/corner_curve_white">
-
-                <TextView
-                    android:id="@+id/pat_sct"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginBottom="6dp"
-                    android:textColor="@color/grey"
-                    android:textSize="@dimen/value" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="7dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginBottom="5dp"
-            android:background="@drawable/next_button"
-            android:orientation="horizontal"
-            android:weightSum="5">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="2dp"
-                android:layout_marginBottom="5dp"
-                android:layout_weight="1.5"
-                android:paddingTop="3dp"
-                android:paddingBottom="3dp"
-                android:text="Name :"
-                android:textAllCaps="true"
-                android:textColor="@color/white"
-                android:textSize="@dimen/value" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="3.5"
-                android:background="@drawable/corner_curve_white">
-
-                <TextView
-                    android:id="@+id/pat_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginBottom="6dp"
-                    android:textColor="@color/grey"
-                    android:textSize="@dimen/value" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/ll_patient_age"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="7dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginRight="5dp"
-            android:background="@drawable/next_button"
-            android:orientation="horizontal"
-            android:weightSum="5">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="2dp"
-                android:layout_marginBottom="5dp"
-                android:layout_weight="1.5"
-                android:paddingTop="3dp"
-                android:paddingBottom="3dp"
-                android:text="Age : "
-                android:textAllCaps="true"
-                android:textColor="@color/white"
-                android:textSize="@dimen/value" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="3.5"
-                android:background="@drawable/corner_curve_white">
-
-                <TextView
-                    android:id="@+id/txt_pat_age"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginBottom="6dp"
-                    android:textColor="@color/grey"
-                    android:textSize="@dimen/value" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/ll_patient_gender"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="7dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginBottom="5dp"
-            android:background="@drawable/next_button"
-            android:orientation="horizontal"
-            android:weightSum="5">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="2dp"
-                android:layout_marginBottom="5dp"
-                android:layout_weight="1.5"
-                android:paddingTop="3dp"
-                android:paddingBottom="3dp"
-                android:text="Gender : "
-                android:textAllCaps="true"
-                android:textColor="@color/white"
-                android:textSize="@dimen/value" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="3.5"
-                android:background="@drawable/corner_curve_white">
-
-                <TextView
-                    android:id="@+id/txt_pat_gender"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginBottom="6dp"
-                    android:textColor="@color/grey"
-                    android:textSize="@dimen/value" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="7dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginBottom="5dp"
-            android:background="@drawable/next_button"
-            android:orientation="horizontal"
-            android:weightSum="5">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="2dp"
-                android:layout_marginBottom="5dp"
-                android:layout_weight="1.5"
-                android:paddingTop="3dp"
-                android:paddingBottom="3dp"
-                android:text="Ref By :"
-                android:textAllCaps="true"
-                android:textColor="@color/white"
-                android:textSize="@dimen/value" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="3.5"
-                android:background="@drawable/corner_curve_white">
-
-                <TextView
-                    android:id="@+id/pat_ref"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginBottom="6dp"
-                    android:textColor="@color/grey"
-                    android:textSize="@dimen/value" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="7dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginBottom="5dp"
-            android:background="@drawable/next_button"
-            android:orientation="horizontal"
-            android:weightSum="5">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="2dp"
-                android:layout_marginBottom="5dp"
-                android:layout_weight="1.5"
-                android:paddingTop="3dp"
-                android:paddingBottom="3dp"
-                android:text="BTECH :"
-                android:textAllCaps="true"
-                android:textColor="@color/white"
-                android:textSize="@dimen/value" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="3.5"
-                android:background="@drawable/corner_curve_white">
-
-                <TextView
-                    android:id="@+id/btech"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginBottom="6dp"
-                    android:textColor="@color/grey"
-                    android:textSize="@dimen/value" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="7dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginBottom="5dp"
-            android:background="@drawable/next_button"
-            android:orientation="horizontal"
-            android:weightSum="5">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="2dp"
-                android:layout_marginBottom="5dp"
-                android:layout_weight="1.5"
-                android:paddingTop="3dp"
-                android:paddingBottom="3dp"
-                android:text="SCP :"
-                android:textAllCaps="true"
-                android:textColor="@color/white"
-                android:textSize="@dimen/value" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="3.5"
-                android:background="@drawable/corner_curve_white">
-
-                <TextView
-                    android:id="@+id/pat_scp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginBottom="6dp"
-                    android:textColor="@color/grey"
-                    android:textSize="@dimen/value" />
-            </LinearLayout>
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:id="@+id/sgclayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:visibility="gone">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_weight="1"
-                android:text="SGC :"
-                android:textSize="@dimen/value"
-                android:textAllCaps="true"
-                android:textColor="@color/red"
-                android:textStyle="italic" />
-
-            <TextView
-                android:id="@+id/pat_sgc"
-                android:textAllCaps="true"
-                android:textSize="@dimen/value"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_weight="1"
-                android:text="Patient info"
-                android:textColor="@color/DARKGray" />
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:visibility="gone">
-
-            <TextView
+                android:id="@+id/patient_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:text="Amount Collected :"
-                android:textColor="@color/red"
-                android:textStyle="italic" />
-
-            <TextView
-                android:id="@+id/pat_amt_collected"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:text="Patient info"
-                android:textColor="@color/DARKGray" />
-        </LinearLayout>
-
-
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="7dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="5dp"
-            android:background="@drawable/sample_info_drawable"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginBottom="5dp"
-                android:background="@drawable/underline_white"
+                android:background="@drawable/underline_grey"
                 android:gravity="center"
-                android:text="Sample Info"
+                android:text="Patient info"
                 android:textAllCaps="true"
-                android:textColor="@color/white"
+                android:textColor="@color/Graytoolbar"
                 android:textSize="@dimen/label"
                 android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="-1dp"
-                android:layout_marginRight="10dp"
-                android:background="@drawable/corner_grey_bg"
-                android:gravity="center"
+                android:layout_marginLeft="7dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/next_button"
                 android:orientation="horizontal"
                 android:weightSum="5">
 
                 <TextView
-                    android:id="@+id/test_tv"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:layout_weight="1.4"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="1.5"
                     android:paddingTop="3dp"
                     android:paddingBottom="3dp"
-                    android:text="Test "
+                    android:text="Type "
                     android:textAllCaps="true"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/value"
-                    android:textStyle="bold" />
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/value" />
 
                 <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3.6"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3.5"
                     android:background="@drawable/corner_curve_white">
 
                     <TextView
-                        android:id="@+id/tests"
+                        android:id="@+id/pat_type"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dp"
@@ -601,48 +127,526 @@
                         android:layout_marginBottom="6dp"
                         android:textColor="@color/grey"
                         android:textSize="@dimen/value" />
-
                 </LinearLayout>
             </LinearLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/sample_list"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="7dp"
-                android:layout_marginBottom="30dp" />
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="7dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/next_button"
+                android:orientation="horizontal"
+                android:weightSum="5">
 
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="1.5"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:text="Id :"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/value" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3.5"
+                    android:background="@drawable/corner_curve_white">
+
+                    <TextView
+                        android:id="@+id/id_number"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginBottom="6dp"
+                        android:textColor="@color/grey"
+                        android:textSize="@dimen/value" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="7dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/next_button"
+                android:orientation="horizontal"
+                android:weightSum="5">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="1.5"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:text="SCT :"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/value" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3.5"
+                    android:background="@drawable/corner_curve_white">
+
+                    <TextView
+                        android:id="@+id/pat_sct"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginBottom="6dp"
+                        android:textColor="@color/grey"
+                        android:textSize="@dimen/value" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="7dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/next_button"
+                android:orientation="horizontal"
+                android:weightSum="5">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="1.5"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:text="Name :"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/value" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3.5"
+                    android:background="@drawable/corner_curve_white">
+
+                    <TextView
+                        android:id="@+id/pat_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginBottom="6dp"
+                        android:textColor="@color/grey"
+                        android:textSize="@dimen/value" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/ll_patient_age"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="7dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/next_button"
+                android:orientation="horizontal"
+                android:weightSum="5">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="1.5"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:text="Age : "
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/value" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3.5"
+                    android:background="@drawable/corner_curve_white">
+
+                    <TextView
+                        android:id="@+id/txt_pat_age"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginBottom="6dp"
+                        android:textColor="@color/grey"
+                        android:textSize="@dimen/value" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/ll_patient_gender"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="7dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/next_button"
+                android:orientation="horizontal"
+                android:weightSum="5">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="1.5"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:text="Gender : "
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/value" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3.5"
+                    android:background="@drawable/corner_curve_white">
+
+                    <TextView
+                        android:id="@+id/txt_pat_gender"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginBottom="6dp"
+                        android:textColor="@color/grey"
+                        android:textSize="@dimen/value" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="7dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/next_button"
+                android:orientation="horizontal"
+                android:weightSum="5">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="1.5"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:text="Ref By :"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/value" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3.5"
+                    android:background="@drawable/corner_curve_white">
+
+                    <TextView
+                        android:id="@+id/pat_ref"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginBottom="6dp"
+                        android:textColor="@color/grey"
+                        android:textSize="@dimen/value" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="7dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/next_button"
+                android:orientation="horizontal"
+                android:weightSum="5">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="1.5"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:text="BTECH :"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/value" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3.5"
+                    android:background="@drawable/corner_curve_white">
+
+                    <TextView
+                        android:id="@+id/btech"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginBottom="6dp"
+                        android:textColor="@color/grey"
+                        android:textSize="@dimen/value" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="7dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/next_button"
+                android:orientation="horizontal"
+                android:weightSum="5">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="1.5"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:text="SCP :"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/value" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3.5"
+                    android:background="@drawable/corner_curve_white">
+
+                    <TextView
+                        android:id="@+id/pat_scp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginBottom="6dp"
+                        android:textColor="@color/grey"
+                        android:textSize="@dimen/value" />
+                </LinearLayout>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/sgclayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="1"
+                    android:text="SGC :"
+                    android:textAllCaps="true"
+                    android:textColor="@color/red"
+                    android:textSize="@dimen/value"
+                    android:textStyle="italic" />
+
+                <TextView
+                    android:id="@+id/pat_sgc"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="1"
+                    android:text="Patient info"
+                    android:textAllCaps="true"
+                    android:textColor="@color/DARKGray"
+                    android:textSize="@dimen/value" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="Amount Collected :"
+                    android:textColor="@color/red"
+                    android:textStyle="italic" />
+
+                <TextView
+                    android:id="@+id/pat_amt_collected"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="Patient info"
+                    android:textColor="@color/DARKGray" />
+            </LinearLayout>
+
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="7dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:background="@drawable/sample_info_drawable"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@drawable/underline_white"
+                    android:gravity="center"
+                    android:text="Sample Info"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/label"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="-1dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/corner_grey_bg"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:weightSum="5">
+
+                    <TextView
+                        android:id="@+id/test_tv"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="1.4"
+                        android:paddingTop="3dp"
+                        android:paddingBottom="3dp"
+                        android:text="Test"
+                        android:textAllCaps="true"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/value"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3.6"
+                        android:background="@drawable/corner_curve_white">
+
+                        <TextView
+                            android:id="@+id/tests"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginTop="6dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_marginBottom="6dp"
+                            android:textColor="@color/grey"
+                            android:textSize="@dimen/value" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/sample_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="7dp"
+                    android:layout_marginBottom="5dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/delete_patient_test"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_gravity="center|bottom"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/next_button"
+                android:minHeight="40dp">
+
+                <TextView
+                    android:id="@+id/saveclose"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="20dp"
+                    android:layout_weight="1"
+                    android:drawableLeft="@drawable/save_close"
+                    android:gravity="center"
+                    android:text="   Save and close"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/label" />
+            </LinearLayout>
 
         </LinearLayout>
 
-    </LinearLayout>
+    </ScrollView>
 
-
-    <LinearLayout
-        android:id="@+id/delete_patient_test"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="center|bottom"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/next_button"
-        android:minHeight="40dp">
-
-        <TextView
-            android:id="@+id/saveclose"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_marginLeft="20dp"
-            android:layout_weight="1"
-            android:drawableLeft="@drawable/save_close"
-            android:gravity="center"
-            android:text="   Save and close"
-            android:textAllCaps="true"
-            android:textColor="@color/white"
-            android:textSize="@dimen/label" />
-    </LinearLayout>
 
 </RelativeLayout>

@@ -35,7 +35,7 @@ import com.example.e5322.thyrosoft.Models.VideoLangaugesResponseModel;
 import com.example.e5322.thyrosoft.Models.VideosResponseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.Retrofit.APIInteface;
-import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
+import com.example.e5322.thyrosoft.Retrofit.PostAPIInterface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
@@ -357,7 +357,7 @@ public class VideoActivity extends AppCompatActivity {
         GetVideoLanguageWiseRequestModel model = new GetVideoLanguageWiseRequestModel();
         model.setApp(Constants.APP_ID);
         model.setLanguage(LanguageID);
-        PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(mActivity, Api.LIVEAPI).create(PostAPIInteface.class);
+        PostAPIInterface apiInterface = RetroFit_APIClient.getInstance().getClient(mActivity, Api.LIVEAPI).create(PostAPIInterface.class);
         Call<VideosResponseModel> responseCall = apiInterface.getVideobasedOnLanguage(model);
         // Log.e(TAG, "VIDEO LIST BODY ---->" + new GsonBuilder().create().toJson(model));
         //Log.e(TAG, "VIDEO LIST URL ---->" + responseCall.request().url());

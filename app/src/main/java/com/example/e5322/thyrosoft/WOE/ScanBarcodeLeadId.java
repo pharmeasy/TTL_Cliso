@@ -1,5 +1,7 @@
 package com.example.e5322.thyrosoft.WOE;
 
+import static android.content.ContentValues.TAG;
+
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
@@ -14,6 +16,11 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.RequestQueue;
 import com.example.e5322.thyrosoft.Adapter.LeadIdAdapter;
@@ -38,13 +45,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import static android.content.ContentValues.TAG;
 
 public class ScanBarcodeLeadId extends AppCompatActivity implements RecyclerInterface {
     TextView ordersct, date, show_selected_tests_data, title;
@@ -72,7 +72,7 @@ public class ScanBarcodeLeadId extends AppCompatActivity implements RecyclerInte
     LeadOrderIdMainModel leadOrderIdMainModel;
     RequestQueue requestQueueNoticeBoard;
     ScannedBarcodeDetails scannedBarcodeDetails;
-   // LeadScannedBarcodeDetails leadScannedBarcodeDetails;
+    // LeadScannedBarcodeDetails leadScannedBarcodeDetails;
     ImageView back, home;
     private boolean isfor1sttime = false;
     private String pass_full_date;
@@ -257,7 +257,11 @@ public class ScanBarcodeLeadId extends AppCompatActivity implements RecyclerInte
                         for (int k = 0; k < fluriodetest.size(); k++) {
                             scannedBarcodeDetails = new ScannedBarcodeDetails();
                             scannedBarcodeDetails.setProducts(fluriodetest.get(k));
-                            scannedBarcodeDetails.setSpecimen_type(list.get(i).getSample_type()[0].getOutlab_sampletype().trim());
+                            if (GlobalClass.checkEqualIgnoreCase(fluriodetest.get(k), "PPBS") || GlobalClass.checkEqualIgnoreCase(fluriodetest.get(k), "FBS")) {
+                                scannedBarcodeDetails.setSpecimen_type("(" + fluriodetest.get(k) + ")" + list.get(i).getSample_type()[0].getOutlab_sampletype().trim());
+                            } else {
+                                scannedBarcodeDetails.setSpecimen_type(list.get(i).getSample_type()[0].getOutlab_sampletype().trim());
+                            }
                             FinalBarcodeDetailsList.add(scannedBarcodeDetails);
                         }
                     } else {
@@ -353,7 +357,7 @@ public class ScanBarcodeLeadId extends AppCompatActivity implements RecyclerInte
                         j.putExtra("Time", formFullTime);
                         j.putExtra("DateTime", pass_full_date);
                         startActivity(j);
-                        finish();
+//                        finish();
                         flagintent = false;
                     }
 

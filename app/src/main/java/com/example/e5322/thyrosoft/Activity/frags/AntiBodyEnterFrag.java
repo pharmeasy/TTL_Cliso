@@ -1,5 +1,10 @@
 package com.example.e5322.thyrosoft.Activity.frags;
 
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static android.app.Activity.RESULT_OK;
+import static com.example.e5322.thyrosoft.ToastFile.invalid_brcd;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -76,10 +81,11 @@ import com.example.e5322.thyrosoft.Models.WOERequestModel;
 import com.example.e5322.thyrosoft.MultiSelectSpinner;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.Retrofit.APIInteface;
-import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
+import com.example.e5322.thyrosoft.Retrofit.PostAPIInterface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.example.e5322.thyrosoft.Utility;
+import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.gson.GsonBuilder;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -104,11 +110,6 @@ import java.util.Locale;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static android.Manifest.permission.CAMERA;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-import static android.app.Activity.RESULT_OK;
-import static com.example.e5322.thyrosoft.ToastFile.invalid_brcd;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -240,10 +241,12 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
             @Override
             public void onClick(View v) {
                 if (checkPermission()) {
-                    if (other_file != null) {
+                    if (aadhar_file != null && aadhar_file1 != null) {
+
                         GlobalClass.showCustomToast(activity, "You can upload only two images", 0);
                     } else {
-                        selectImage();
+//                        selectImage();
+                        GlobalClass.cropImageFullScreenFragment(AntiBodyEnterFrag.this, 1);
                     }
                 } else {
                     requestPermission();
@@ -312,7 +315,6 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
                 if (Validate()) {
                     WOERequestModel submitCampWoeRequestModel = setWoedata();
                     CallSubmitWoeDetailsAPI(submitCampWoeRequestModel);
-
 
                 }
             }
@@ -786,13 +788,13 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
     private void mobileverify(String mobileno) {
 
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
+        PostAPIInterface postAPIInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInterface.class);
         CoVerifyMobReq coVerifyMobReq = new CoVerifyMobReq();
         coVerifyMobReq.setApi_key(apikey);
         coVerifyMobReq.setMobile(mobileno);
         coVerifyMobReq.setScode(usercode);
 
-        final Call<COVerifyMobileResponse> covidmis_responseCall = postAPIInteface.covmobileVerification(coVerifyMobReq);
+        final Call<COVerifyMobileResponse> covidmis_responseCall = postAPIInterface.covmobileVerification(coVerifyMobReq);
         Log.e(TAG, "MOB VERIFY URL--->" + covidmis_responseCall.request().url());
         Log.e(TAG, "MOB VERIFY BODY--->" + new GsonBuilder().create().toJson(coVerifyMobReq));
         covidmis_responseCall.enqueue(new Callback<COVerifyMobileResponse>() {
@@ -833,14 +835,14 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
 
     private void generateOtP(String mobileno) {
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
+        PostAPIInterface postAPIInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInterface.class);
 
         COVIDgetotp_req coviDgetotp_req = new COVIDgetotp_req();
         coviDgetotp_req.setApi_key(apikey);
         coviDgetotp_req.setMobile(mobileno);
         coviDgetotp_req.setScode(usercode);
 
-        Call<Covidotpresponse> covidotpresponseCall = postAPIInteface.generateotp(coviDgetotp_req);
+        Call<Covidotpresponse> covidotpresponseCall = postAPIInterface.generateotp(coviDgetotp_req);
         covidotpresponseCall.enqueue(new Callback<Covidotpresponse>() {
             @Override
             public void onResponse(Call<Covidotpresponse> call, Response<Covidotpresponse> response) {
@@ -940,14 +942,14 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
     private void validateotp() {
 
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
+        PostAPIInterface postAPIInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInterface.class);
         Covid_validateotp_req covid_validateotp_req = new Covid_validateotp_req();
         covid_validateotp_req.setApi_key(apikey);
         covid_validateotp_req.setMobile(edt_missed_mobile.getText().toString());
         covid_validateotp_req.setOtp(edt_verifycc.getText().toString());
         covid_validateotp_req.setScode(usercode);
 
-        Call<Covid_validateotp_res> covidotpresponseCall = postAPIInteface.validateotp(covid_validateotp_req);
+        Call<Covid_validateotp_res> covidotpresponseCall = postAPIInterface.validateotp(covid_validateotp_req);
         covidotpresponseCall.enqueue(new Callback<Covid_validateotp_res>() {
             @Override
             public void onResponse(Call<Covid_validateotp_res> call, Response<Covid_validateotp_res> response) {
@@ -1083,6 +1085,53 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
                         Toast.makeText(getContext(), invalid_brcd, Toast.LENGTH_SHORT).show();
                     }
                 }
+            } else if (requestCode == ImagePicker.REQUEST_CODE && resultCode == RESULT_OK) {
+                if (lin_adhar_images.getVisibility() == View.VISIBLE && aadhar_file != null) {
+                    if (data.getData() != null) {
+                        if (aadhar_file1 == null) {
+                            aadhar_file1 = ImagePicker.Companion.getFile(data);
+                        }
+                    }
+                    Uri uri = data.getData();
+                    bitmapimage = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), uri);
+                    aadhar_file1 = ImagePicker.Companion.getFile(data);
+                    lin_adhar_images.setVisibility(View.VISIBLE);
+                    txt_adharfileupload.setVisibility(View.VISIBLE);
+                    txt_adharfileupload.setText("2 " + getResources().getString(R.string.imgupload));
+                    txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                    txt_nofileadhar.setVisibility(View.GONE);
+                    aadharlist.add(aadhar_file1.toString());
+                } else {
+                    if (data.getData() != null) {
+                        if (aadhar_file == null) {
+                            aadhar_file = ImagePicker.Companion.getFile(data);
+                        }
+                    }
+                    Uri uri = data.getData();
+                    bitmapimage = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), uri);
+                    aadhar_file = ImagePicker.Companion.getFile(data);
+                    lin_adhar_images.setVisibility(View.VISIBLE);
+                    txt_adharfileupload.setVisibility(View.VISIBLE);
+                    txt_adharfileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                    txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                    txt_nofileadhar.setVisibility(View.GONE);
+                    aadharlist.add(aadhar_file.toString());
+
+                }
+
+                if (aadhar_file != null && aadhar_file1 != null) {
+                    isadhar = false;
+                    lin_adhar_images.setVisibility(View.VISIBLE);
+                    txt_adharfileupload.setVisibility(View.VISIBLE);
+                    txt_adharfileupload.setText("2 " + getResources().getString(R.string.imgupload));
+                    txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                    btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
+                    btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.black));
+
+                }
+
+                lin_adhar_images.setVisibility(View.VISIBLE);
+
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -1339,7 +1388,7 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
                                 if (aadharlist.size() == 1) {
                                     lin_adhar_images.setVisibility(View.VISIBLE);
                                     btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-                                    btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.maroon));
+                                    btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.white));
                                     txt_adharfileupload.setText("1 " + getResources().getString(R.string.imgupload));
                                     txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                                 } else if (aadharlist.size() == 2) {
@@ -1350,7 +1399,7 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
                                     txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                                 } else {
                                     btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-                                    btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.maroon));
+                                    btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.white));
                                     txt_nofileadhar.setVisibility(View.VISIBLE);
                                     txt_adharfileupload.setVisibility(View.GONE);
 
@@ -1448,7 +1497,7 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
         });
     }
 
-    public void getUploadResponse(String response,String mobile) {
+    public void getUploadResponse(String response, String mobile) {
         JSONObject jsonObject = null;
         try {
             jsonObject = new JSONObject(response);
@@ -1457,7 +1506,7 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
 
             if (RESPONSEID.equalsIgnoreCase(Constants.RES0000)) {
                 Global.showCustomToast(activity, RESPONSE);
-                new LogUserActivityTagging(activity,"WOE-COVID",mobile);
+                new LogUserActivityTagging(activity, "WOE-COVID", mobile);
 
                 ClearFields();
                 progressDialog.dismiss();
@@ -1471,7 +1520,6 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 dialogInterface.dismiss();
-
                                 Covidpostdata covidpostdata = getCovidpostdata();
                                 new Covidmultipart_controller(AntiBodyEnterFrag.this, activity, covidpostdata).execute();
                             }

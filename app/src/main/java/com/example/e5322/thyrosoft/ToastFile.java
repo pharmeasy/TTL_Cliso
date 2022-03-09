@@ -20,6 +20,7 @@ public class ToastFile {
     public static String passwd = "Please enter password";
     public static String crt_pwd = "Please enter correct password";
     public static String crt_mob_num = "Please enter correct mobile number";
+    public static String crt_phone_num = "Please enter correct phone number";
     public static String crt_mob_num_eml = "Please enter Mobile number and e-mail";
     public static String crt_eml = "Please enter correct e-mail address";
     public static String crt_otp = "Please enter correct OTP";

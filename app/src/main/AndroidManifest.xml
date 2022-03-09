@@ -51,9 +51,19 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:icon,android:appComponentFactory,android:allowBackup">
         <activity
+            android:name=".Activity.EscalationMatrixActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.TermsAndConditionsActivity"
+            android:exported="true"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.NetworkFeedbackActivity"
+            android:exported="true"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".Activity.WOEPaymentActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".Activity.SRFCovidWOEEditActivity"
             android:screenOrientation="portrait" />
@@ -74,7 +84,6 @@
             android:name=".Activity.RATEditActivity"
             android:screenOrientation="portrait" />
 
-
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
@@ -88,17 +97,12 @@
         <activity
             android:name=".Activity.LedgerDetailsActivityNew"
             android:screenOrientation="portrait" />
-
-
-
-
         <activity
             android:name=".Activity.LedgerActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".Activity.BillingActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".BroadcastDetailsActivity"
             android:screenOrientation="portrait" />
@@ -222,7 +226,6 @@
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
-
 
         <activity
             android:name=".Registration.Registration_third_screen_Activity"

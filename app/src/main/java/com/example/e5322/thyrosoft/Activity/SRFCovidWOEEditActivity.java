@@ -62,7 +62,7 @@ import com.example.e5322.thyrosoft.Models.FileUtil;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.AppPreferenceManager;
 import com.example.e5322.thyrosoft.Models.ResponseModels.VerifyBarcodeResponseModel;
 import com.example.e5322.thyrosoft.R;
-import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
+import com.example.e5322.thyrosoft.Retrofit.PostAPIInterface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.example.e5322.thyrosoft.Utility;
@@ -1473,8 +1473,8 @@ public class SRFCovidWOEEditActivity extends AppCompatActivity {
         covidRateReqModel.setAPIKEY("" + apikey);
         covidRateReqModel.setTestcode("" + woeDetailsModel.getTestCode());
 
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
-        Call<Covidratemodel> covidratemodelCall = postAPIInteface.displayrates(covidRateReqModel);
+        PostAPIInterface postAPIInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInterface.class);
+        Call<Covidratemodel> covidratemodelCall = postAPIInterface.displayrates(covidRateReqModel);
         covidratemodelCall.enqueue(new Callback<Covidratemodel>() {
             @Override
             public void onResponse(Call<Covidratemodel> call, Response<Covidratemodel> response) {

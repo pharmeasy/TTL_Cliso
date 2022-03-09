@@ -4,13 +4,10 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -36,6 +33,7 @@ import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.BuildConfig;
+import com.example.e5322.thyrosoft.Controller.GetBaselineDetailsAPIController;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Controller.LogUserActivityTagging;
 import com.example.e5322.thyrosoft.GlobalClass;
@@ -45,12 +43,13 @@ import com.example.e5322.thyrosoft.Models.CovidAccessResponseModel;
 import com.example.e5322.thyrosoft.Models.FirebaseModel;
 import com.example.e5322.thyrosoft.Models.Firebasepost;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.AppPreferenceManager;
+import com.example.e5322.thyrosoft.Models.RequestModels.GetBaselineDetailsRequestModel;
 import com.example.e5322.thyrosoft.Models.RequestModels.LoginRequestModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.LoginResponseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.Registration.Registration_first_screen;
 import com.example.e5322.thyrosoft.Retrofit.APIInteface;
-import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
+import com.example.e5322.thyrosoft.Retrofit.PostAPIInterface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -77,13 +76,10 @@ public class Login extends Activity implements View.OnClickListener {
     EditText username, password, otpmobile, otpemail;
     TextView forgotpassword, registration;
     Button login, generateotp;
-    Context context;
-    String RESPONSE1, islogin, getOTPNO, numberforgotpass, regmobile, uil_from_login, res_id, nameFromLoginApi, RESPONSE, RES_ID, VALID, USER_TYPE, SENDERID, OTPNO, User, version, emailPattern, pass, ACCESS_TYPE11, API_KEY11, CLIENT_TYPE11, EMAIL11, EXISTS11, MOBILE11, NAME11, macAddress, RESPONSE11, RES_ID11, URL11, USER_CODE11, USER_TYPE11, VERSION_NO11;
+    String getOTPNO, numberforgotpass, regmobile, RESPONSE, RES_ID, VALID, USER_TYPE, SENDERID, OTPNO, User, version, emailPattern, pass, USER_CODE11;
     ProgressDialog barProgressDialog;
     SharedPreferences.Editor editor;
-    Handler updateBarHandler;
     String emailIdValidateOTP, isMobileEmailValidValidateOTP, mobileNoValidateOTP, otpNoValidateOTP, resIdValidateOTP, responseValidateOTP;
-    //WaveDrawable mWaveDrawable;
     AlertDialog alertDialog, alertDialogforgotpass, alertDialogforotp, alertDialogverifyOtp;
     String email, getPhone_num, emailId, isMobileEmailValid, mobileNo, otpNo, resId, response1;
     Random random;
@@ -94,19 +90,20 @@ public class Login extends Activity implements View.OnClickListener {
     String newToken;
     private String TAG = Login.class.getSimpleName().toString();
     private GlobalClass globalClass;
-    /*SharedPreferences.Editor editorUserActivity;
-    SharedPreferences shr_user_log;*/
     private String androidOS;
     AppPreferenceManager appPreferenceManager;
     Activity activity;
-    SharedPreferences pref_versioncheck;
+    ConnectionDetector cd;
 
     @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         activity = this;
+        cd = new ConnectionDetector(activity);
+
         username = (EditText) findViewById(R.id.username);
         password = (EditText) findViewById(R.id.password);
         forgotpassword = (TextView) findViewById(R.id.forgotpass);
@@ -121,7 +118,6 @@ public class Login extends Activity implements View.OnClickListener {
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.setStatusBarColor(getResources().getColor(R.color.limaroon));
         }
-
 
         PackageInfo pInfo = null;
         try {
@@ -647,19 +643,13 @@ public class Login extends Activity implements View.OnClickListener {
     }
 
     private void sendOtp() {
-
         generateOTP = GlobalClass.setVolleyReq(Login.this);
-        ;
-
         JSONObject jsonObjectOtp = new JSONObject();
         try {
-
             jsonObjectOtp.put("apikey", "jLmjR1POZBbn@TVVzb0uJvpTMeBbnNwR3lCNnqI)Ivk=");
             jsonObjectOtp.put("type", "SENDOTP");
             jsonObjectOtp.put("mobile", getPhone_num);
             jsonObjectOtp.put("otpno", randomNumber);
-
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -712,11 +702,6 @@ public class Login extends Activity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-
-        WifiManager wifi = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        WifiInfo wInfo = wifi.getConnectionInfo();
-        macAddress = wInfo.getMacAddress();
-
         barProgressDialog = new ProgressDialog(Login.this);
         barProgressDialog.setTitle("Kindly wait ...");
         barProgressDialog.setMessage(ToastFile.processing_request);
@@ -725,29 +710,7 @@ public class Login extends Activity implements View.OnClickListener {
         barProgressDialog.setMax(20);
         barProgressDialog.setCanceledOnTouchOutside(false);
         barProgressDialog.setCancelable(false);
-    /*    new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    // Here you should write your time consuming task...
-                    while (barProgressDialog.getProgress() <= barProgressDialog.getMax()) {
-                        Thread.sleep(2000);
-                        updateBarHandler.post(new Runnable() {
-                            public void run() {
-                                barProgressDialog.incrementProgressBy(2);
-                            }
-                        });
-                        if (barProgressDialog.getProgress() == barProgressDialog.getMax()) {
-                            if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                                barProgressDialog.dismiss();
-                            }
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();*/
+
         User = username.getText().toString();
         pass = password.getText().toString();
         if (User.length() == 0 & pass.length() == 0) {
@@ -757,122 +720,137 @@ public class Login extends Activity implements View.OnClickListener {
         } else if (pass.length() == 0) {
             Toast.makeText(this, "Please enter your Password", Toast.LENGTH_SHORT).show();
         } else {
-            try {
-                barProgressDialog.show();
-                PostQue = GlobalClass.setVolleyReq(Login.this);
-                JSONObject jsonObject = null;
-                try {
-                    LoginRequestModel requestModel = new LoginRequestModel();
-                    requestModel.setPortalType("ThyrosoftLite");
-                    requestModel.setUserCode(User);
-                    requestModel.setPassWord(pass);
-
-                    Gson gson = new Gson();
-                    String postData = gson.toJson(requestModel);
-                    jsonObject = new JSONObject(postData);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                RequestQueue queue = GlobalClass.setVolleyReq(Login.this);
-                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.LOGIN, jsonObject, new com.android.volley.Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                            barProgressDialog.dismiss();
-                        }
-                        Log.e(TAG, "onResponse: " + response);
-                        try {
-                            if (response != null) {
-                                Gson gson = new Gson();
-                                LoginResponseModel loginResponseModel = gson.fromJson(String.valueOf(response), LoginResponseModel.class);
-
-                                if (loginResponseModel != null) {
-                                    if (!GlobalClass.isNull(loginResponseModel.getRES_ID()) && loginResponseModel.getRES_ID().equalsIgnoreCase(Constants.RES0000)) {
-                                        editor = getSharedPreferences("Userdetails", 0).edit();
-                                        editor.putString("Username", User);
-                                        editor.putString("password", pass);
-                                        editor.putString("ACCESS_TYPE", loginResponseModel.getACCESS_TYPE());
-                                        editor.putString("API_KEY", loginResponseModel.getAPI_KEY());
-                                        editor.putString("email", loginResponseModel.getEMAIL());
-                                        editor.putString("mobile_user", loginResponseModel.getMOBILE());
-                                        editor.putString("CLIENT_TYPE", loginResponseModel.getCLIENT_TYPE());
-                                        editor.putString("NAME", loginResponseModel.getNAME());
-                                        editor.putString("RES_ID", loginResponseModel.getRES_ID());
-                                        editor.putString("URL", loginResponseModel.getURL());
-                                        editor.putString("USER_CODE", loginResponseModel.getUSER_CODE());
-                                        editor.putString("USER_TYPE", loginResponseModel.getUSER_TYPE());
-                                        editor.putString("VERSION_NO", loginResponseModel.getVERSION_NO());
-                                        editor.putString("SOURCE_TYPE", loginResponseModel.getSOURCE_TYPE());
-                                        editor.putString(Constants.SCANSOLOGINTYPE, loginResponseModel.getUSERFLAG());
-                                        editor.apply();
-
-                                        SharedPreferences pref_versioncheck = activity.getSharedPreferences("pref_versioncheck", MODE_PRIVATE);
-                                        SharedPreferences.Editor editorversioncode = pref_versioncheck.edit();
-                                        editorversioncode.putInt("versioncode", BuildConfig.VERSION_CODE);
-                                        editorversioncode.apply();
-
-
-                                        checkcovidaccess();
-
-
-                                        new LogUserActivityTagging(activity, Constants.SHLOGIN,"");
-
-
-                                        USER_CODE11 = loginResponseModel.getUSER_CODE();
-
-                                        FirebaseMessaging.getInstance().unsubscribeFromTopic(Constants.TOPIC);
-                                        FirebaseMessaging.getInstance().subscribeToTopic(Constants.TOPIC);
-                                        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(Login.this, new OnSuccessListener<InstanceIdResult>() {
-                                            @Override
-                                            public void onSuccess(InstanceIdResult instanceIdResult) {
-                                                newToken = instanceIdResult.getToken();
-                                                Log.e("NewToken----->", newToken);
-                                                storeRegIdInPref(newToken);
-                                                pushToken();
-                                            }
-                                        });
-                                    } else {
-                                        TastyToast.makeText(getApplicationContext(), loginResponseModel.getRESPONSE(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                                    }
-                                } else {
-                                    TastyToast.makeText(getApplicationContext(), ToastFile.something_went_wrong, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                                }
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new com.android.volley.Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                            barProgressDialog.dismiss();
-                        }
-
-                        Toast.makeText(Login.this, ToastFile.invalid_log, Toast.LENGTH_SHORT).show();
-                        System.out.println(error);
-
-                    }
-                });
-                Log.e(TAG, "deletePatientDetailsandTest: url" + jsonObjectRequest);
-                Log.e(TAG, "deletePatientDetailsandTest: json" + jsonObject);
-                jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(300000, 3,
-                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-                queue.add(jsonObjectRequest);
-            } catch (Exception ex) {
-                if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                    barProgressDialog.dismiss();
-                }
+            if (cd.isConnectingToInternet()) {
+                callLoginAPI();
+            } else {
+                GlobalClass.showCustomToast(activity, ToastFile.intConnection, 1);
             }
         }
     }
 
+    private void callLoginAPI() {
+        try {
+            barProgressDialog.show();
+            PostQue = GlobalClass.setVolleyReq(Login.this);
+            JSONObject jsonObject = null;
+            try {
+                LoginRequestModel requestModel = new LoginRequestModel();
+                requestModel.setPortalType("ThyrosoftLite");
+                requestModel.setUserCode(User);
+                requestModel.setPassWord(pass);
+
+                Gson gson = new Gson();
+                String postData = gson.toJson(requestModel);
+                jsonObject = new JSONObject(postData);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            RequestQueue queue = GlobalClass.setVolleyReq(Login.this);
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.LOGIN, jsonObject, new com.android.volley.Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                        barProgressDialog.dismiss();
+                    }
+                    Log.e(TAG, "onResponse: " + response);
+                    try {
+                        if (response != null) {
+                            Gson gson = new Gson();
+                            LoginResponseModel loginResponseModel = gson.fromJson(String.valueOf(response), LoginResponseModel.class);
+
+                            if (loginResponseModel != null) {
+                                if (!GlobalClass.isNull(loginResponseModel.getRES_ID()) && loginResponseModel.getRES_ID().equalsIgnoreCase(Constants.RES0000)) {
+                                    editor = getSharedPreferences("Userdetails", 0).edit();
+                                    editor.putString("Username", User);
+                                    editor.putString("password", pass);
+                                    editor.putString("ACCESS_TYPE", loginResponseModel.getACCESS_TYPE());
+                                    editor.putString("API_KEY", loginResponseModel.getAPI_KEY());
+                                    editor.putString("email", loginResponseModel.getEMAIL());
+                                    editor.putString("mobile_user", loginResponseModel.getMOBILE());
+                                    editor.putString("CLIENT_TYPE", loginResponseModel.getCLIENT_TYPE());
+                                    editor.putString("NAME", loginResponseModel.getNAME());
+                                    editor.putString("RES_ID", loginResponseModel.getRES_ID());
+                                    editor.putString("URL", loginResponseModel.getURL());
+                                    editor.putString("USER_CODE", loginResponseModel.getUSER_CODE());
+                                    editor.putString("USER_TYPE", loginResponseModel.getUSER_TYPE());
+                                    editor.putString("VERSION_NO", loginResponseModel.getVERSION_NO());
+                                    editor.putString("SOURCE_TYPE", loginResponseModel.getSOURCE_TYPE());
+                                    editor.putString(Constants.SCANSOLOGINTYPE, loginResponseModel.getUSERFLAG());
+                                    editor.apply();
+
+                                    SharedPreferences pref_versioncheck = activity.getSharedPreferences("pref_versioncheck", MODE_PRIVATE);
+                                    SharedPreferences.Editor editorversioncode = pref_versioncheck.edit();
+                                    editorversioncode.putInt("versioncode", BuildConfig.VERSION_CODE);
+                                    editorversioncode.apply();
+
+                                    checkcovidaccess();
+
+                                    new LogUserActivityTagging(activity, Constants.SHLOGIN, "");
+
+                                    USER_CODE11 = loginResponseModel.getUSER_CODE();
+
+                                    FirebaseMessaging.getInstance().unsubscribeFromTopic(Constants.TOPIC);
+                                    FirebaseMessaging.getInstance().subscribeToTopic(Constants.TOPIC);
+                                    FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(Login.this, new OnSuccessListener<InstanceIdResult>() {
+                                        @Override
+                                        public void onSuccess(InstanceIdResult instanceIdResult) {
+                                            newToken = instanceIdResult.getToken();
+                                            Log.e("NewToken----->", newToken);
+                                            storeRegIdInPref(newToken);
+                                            pushToken();
+                                        }
+                                    });
+                                } else {
+                                    TastyToast.makeText(getApplicationContext(), loginResponseModel.getRESPONSE(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                }
+                            } else {
+                                TastyToast.makeText(getApplicationContext(), ToastFile.something_went_wrong, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new com.android.volley.Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                        barProgressDialog.dismiss();
+                    }
+                    Toast.makeText(Login.this, ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
+                    System.out.println("" + error);
+                }
+            });
+            Log.e(TAG, "url: " + jsonObjectRequest);
+            Log.e(TAG, "json: " + jsonObject);
+            jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(300000, 3,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            queue.add(jsonObjectRequest);
+        } catch (Exception ex) {
+            if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                barProgressDialog.dismiss();
+            }
+        }
+    }
+
+    private void GetBaselineDetails() {
+        GetBaselineDetailsRequestModel getBaselineDetailsRequestModel = new GetBaselineDetailsRequestModel();
+        getBaselineDetailsRequestModel.setSession(User);
+
+        GetBaselineDetailsAPIController getBaselineDetailsAPIController = new GetBaselineDetailsAPIController(Login.this);
+        getBaselineDetailsAPIController.CallAPI(getBaselineDetailsRequestModel);
+    }
+
+    public void getBaselineDetailsResponse() {
+        gotoHome();
+    }
+
     private void checkcovidaccess() {
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
+        PostAPIInterface postAPIInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInterface.class);
         CovidAccessReq covidAccessReq = new CovidAccessReq();
         covidAccessReq.setSourceCode(User);
         globalClass.showProgressDialog(this);
-        Call<CovidAccessResponseModel> covidaccessResCall = postAPIInteface.checkcovidaccess(covidAccessReq);
+        Call<CovidAccessResponseModel> covidaccessResCall = postAPIInterface.checkcovidaccess(covidAccessReq);
         covidaccessResCall.enqueue(new Callback<CovidAccessResponseModel>() {
             @Override
             public void onResponse(Call<CovidAccessResponseModel> call, retrofit2.Response<CovidAccessResponseModel> response) {
@@ -890,13 +868,15 @@ public class Login extends Activity implements View.OnClickListener {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                gotoHome();
+                GetBaselineDetails();
+
             }
 
             @Override
             public void onFailure(Call<CovidAccessResponseModel> call, Throwable t) {
                 globalClass.dismissProgressDialog();
-                gotoHome();
+
+                GetBaselineDetails();
             }
         });
     }
@@ -926,60 +906,30 @@ public class Login extends Activity implements View.OnClickListener {
         firebasepost.setToken(newToken);
         firebasepost.setTopic(Constants.TOPIC);
 
-
         Call<FirebaseModel> responseCall = apiInterface.pushtoken(firebasepost);
-        // Log.e("TAG", "PUSH TOKEN --->" + new GsonBuilder().create().toJson(firebasepost));
-        //Log.e("TAG", "PUSH URL" + responseCall.request().url());
         responseCall.enqueue(new Callback<FirebaseModel>() {
             @Override
             public void onResponse(Call<FirebaseModel> call, Response<FirebaseModel> response) {
                 try {
                     if (response.body().getResponseId().equalsIgnoreCase(Constants.RES0000)) {
-                        // Log.e(TAG, "o n R e s p o n s e : " + response.body().getResponse());
                         Constants.PUSHNOT_FLAG = false;
                     }
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
             }
 
             @Override
             public void onFailure(Call<FirebaseModel> call, Throwable t) {
                 Log.e(TAG, "o n E r r o r ---->" + t.getLocalizedMessage());
-
             }
         });
     }
-
-/*    public String getDeviceIMEI() {
-        String deviceUniqueIdentifier = null;
-        TelephonyManager tm = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
-        if (null != tm) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                //return false;
-            }
-            deviceUniqueIdentifier = tm.getDeviceId();
-        }
-
-        if (null == deviceUniqueIdentifier || 0 == deviceUniqueIdentifier.length()) {
-            deviceUniqueIdentifier = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
-        }
-
-        return deviceUniqueIdentifier;
-    }*/
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         finishAffinity();
     }
+
 }

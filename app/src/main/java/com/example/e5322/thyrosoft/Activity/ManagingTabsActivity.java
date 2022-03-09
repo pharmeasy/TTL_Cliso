@@ -56,16 +56,22 @@ import com.example.e5322.thyrosoft.Activity.frags.RapidAntibodyFrag;
 import com.example.e5322.thyrosoft.BottomNavigationViewHelper;
 import com.example.e5322.thyrosoft.BuildConfig;
 import com.example.e5322.thyrosoft.Cliso_BMC.BMC_StockAvailabilityActivity;
+import com.example.e5322.thyrosoft.Controller.FeedBackQuestionsController;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Controller.LogUserActivityTagging;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.MyPojoWoe;
+import com.example.e5322.thyrosoft.Fragment.Offline_woe;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.HHHtest.SelectTestsActivity;
 import com.example.e5322.thyrosoft.Kotlin.KTActivity.AccreditationActivity;
 import com.example.e5322.thyrosoft.Kotlin.KTActivity.FAQ_activity;
+import com.example.e5322.thyrosoft.Models.FeedbackQuestionsResponseModel;
 import com.example.e5322.thyrosoft.Models.GetVideoResponse_Model;
 import com.example.e5322.thyrosoft.Models.GetVideopost_model;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.AppPreferenceManager;
+import com.example.e5322.thyrosoft.Models.RequestModels.GetBaselineDetailsRequestModel;
+import com.example.e5322.thyrosoft.Models.ResponseModels.FeedbackQuestionRequestModel;
+import com.example.e5322.thyrosoft.Models.ResponseModels.GetTermsResponseModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.ProfileDetailsResponseModel;
 import com.example.e5322.thyrosoft.Models.Videopoppost;
 import com.example.e5322.thyrosoft.Models.Videopoppost_response;
@@ -78,6 +84,7 @@ import com.example.e5322.thyrosoft.RevisedScreenNewUser.UploadDocument;
 import com.example.e5322.thyrosoft.SpecialOffer.SpecialOffer_Activity;
 import com.example.e5322.thyrosoft.SqliteDb.DatabaseHelper;
 import com.example.e5322.thyrosoft.ToastFile;
+import com.example.e5322.thyrosoft.startscreen.ConnectionDetector;
 import com.example.e5322.thyrosoft.startscreen.Login;
 import com.example.e5322.thyrosoft.startscreen.SplashScreen;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -137,6 +144,8 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     private VideoView video_view;
     private int offline_draft_counts;
     AppPreferenceManager appPreferenceManager;
+    ConnectionDetector cd;
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -158,29 +167,30 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                     return true;
 
                 case R.id.bell_ic:
-                    AlertDialog.Builder builder1 = new AlertDialog.Builder(ManagingTabsActivity.this);
-                    builder1.setMessage("Do you want to Sync Data?");
-                    builder1.setCancelable(true);
-                    builder1.setPositiveButton(
-                            "Yes",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    SyncData();
-                                }
-                            });
-
-                    builder1.setNegativeButton(
-                            "No",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                }
-                            });
-
-                    AlertDialog alert11 = builder1.create();
-                    alert11.show();
+                    if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                        GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+                    } else {
+                        AlertDialog.Builder builder1 = new AlertDialog.Builder(ManagingTabsActivity.this);
+                        builder1.setMessage("Do you want to Sync Data?");
+                        builder1.setCancelable(true);
+                        builder1.setPositiveButton(
+                                "Yes",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        SyncData();
+                                    }
+                                });
+                        builder1.setNegativeButton(
+                                "No",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+                        AlertDialog alert11 = builder1.create();
+                        alert11.show();
+                    }
                     return true;
-
                 case R.id.hamb_ic:
                     drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
                     drawerLayout.openDrawer(Gravity.END);
@@ -229,6 +239,8 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         setContentView(R.layout.activity_main_ll);
         activity = this;
         appPreferenceManager = new AppPreferenceManager(activity);
+        cd = new ConnectionDetector(activity);
+
         prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
         user = prefs.getString("Username", "");
         passwrd = prefs.getString("password", "");
@@ -323,6 +335,9 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             }
         }
 
+        //Get Questions
+        GetQuestions();
+        openTermsAndConditions();
 
         try {
             db = new DatabaseHelper(ManagingTabsActivity.this);
@@ -333,6 +348,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             e.printStackTrace();
         }
 
+        navigationView.getMenu().findItem(R.id.offlinewoe).setVisible(GlobalClass.allowForOfflineUse(user));
 
         if (!GlobalClass.isNull(CLIENT_TYPE) && CLIENT_TYPE.equalsIgnoreCase(NHF)) {
 
@@ -345,7 +361,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 //            navigationView.getMenu().findItem(R.id.profile).setVisible(true);
 //            navigationView.getMenu().findItem(R.id.notification).setVisible(true);
 //            navigationView.getMenu().findItem(R.id.phone).setVisible(true);
-//            navigationView.getMenu().findItem(R.id.whatsapp).setVisible(true);
+            navigationView.getMenu().findItem(R.id.whatsapp).setVisible(true);
             navigationView.getMenu().findItem(R.id.logout).setVisible(true);
             navigationView.getMenu().findItem(R.id.upload_document_navigation).setVisible(true);
             navigationView.getMenu().findItem(R.id.sgc_pgc_entry_data).setVisible(true);
@@ -404,7 +420,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 navigationView.getMenu().findItem(R.id.logout).setVisible(true);
 //                navigationView.getMenu().findItem(R.id.phone).setVisible(true);
                 navigationView.getMenu().findItem(R.id.item_certificate).setVisible(true);
-//                navigationView.getMenu().findItem(R.id.whatsapp).setVisible(true);
+                navigationView.getMenu().findItem(R.id.whatsapp).setVisible(true);
 //                navigationView.getMenu().findItem(R.id.profile).setVisible(true);
                 navigationView.getMenu().findItem(R.id.synchronization).setVisible(true);
             } else if (access.equals("ADMIN")) {
@@ -421,12 +437,22 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 //                navigationView.getMenu().findItem(R.id.feedback).setVisible(true);
                 navigationView.getMenu().findItem(R.id.logout).setVisible(true);
 //                navigationView.getMenu().findItem(R.id.phone).setVisible(true);
-//                navigationView.getMenu().findItem(R.id.whatsapp).setVisible(true);
+                navigationView.getMenu().findItem(R.id.whatsapp).setVisible(true);
                 navigationView.getMenu().findItem(R.id.item_certificate).setVisible(true);
 //                navigationView.getMenu().findItem(R.id.profile).setVisible(true);
                 navigationView.getMenu().findItem(R.id.synchronization).setVisible(true);
             }
         }
+
+        if (appPreferenceManager.getTermsFlag() != null) {
+
+            if (!appPreferenceManager.getTermsFlag()) {
+                navigationView.getMenu().findItem(R.id.item_agreement).setVisible(true);
+            } else {
+                navigationView.getMenu().findItem(R.id.item_agreement).setVisible(false);
+            }
+        }
+
 
         SharedPreferences getProfileName = getSharedPreferences("profilename", MODE_PRIVATE);
         String name = getProfileName.getString("name", null);
@@ -464,8 +490,68 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             ecode.setText("(" + usercode + ")");
         }
 
+
 //        ShowOfflineDialog();
         GlobalClass.DisplayImgWithPlaceholderFromURL(activity, profile_image, imageViewprofile, R.drawable.userprofile);
+    }
+
+    private void openTermsAndConditions() {
+        try {
+            if (appPreferenceManager.getTermsFlag() != null && appPreferenceManager.getTermsFlag()) {
+                Global.ToShowRewards = false;
+                CallTermsAPI();
+            } else {
+                String TermsDate = appPreferenceManager.getTermsSyncDate();
+                if (!TermsDate.equalsIgnoreCase(GlobalClass.getCurrentDate())) {
+                    CallTermsAPI();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void CallTermsAPI() {
+        try {
+            if (GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                GetBaselineDetailsRequestModel getBaselineDetailsRequestModel = new GetBaselineDetailsRequestModel();
+                getBaselineDetailsRequestModel.setSession(user);
+
+                APIInteface apiInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(APIInteface.class);
+                Call<GetTermsResponseModel> call = apiInteface.GetTermsDetails(getBaselineDetailsRequestModel);
+                call.enqueue(new Callback<GetTermsResponseModel>() {
+                    @Override
+                    public void onResponse(Call<GetTermsResponseModel> call, retrofit2.Response<GetTermsResponseModel> response) {
+                        if (response.body() != null && !GlobalClass.isNull(response.body().getResponseId())) {
+                            if (response.body().getResponseId().equalsIgnoreCase(Constants.RES0000)) {
+                                appPreferenceManager.setTermsSyncDate(GlobalClass.getCurrentDate());
+                                appPreferenceManager.setTermsUrl(response.body().getUrl());
+                                appPreferenceManager.setTermsFlag(response.body().getTermFlag());
+                                if (response.body().getTermFlag()) {
+                                    Global.ToShowRewards = false;
+                                    Intent intent = new Intent(activity, TermsAndConditionsActivity.class);
+                                    intent.putExtra("Link", response.body().getUrl());
+                                    intent.putExtra("logoutflag", "1");
+                                    startActivity(intent);
+                                } else {
+                                    if (appPreferenceManager.getTermsFlag() != null) {
+                                        navigationView.getMenu().findItem(R.id.item_agreement).setVisible(!appPreferenceManager.getTermsFlag());
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<GetTermsResponseModel> call, Throwable t) {
+                    }
+                });
+            } else {
+                GlobalClass.showCustomToast(activity, MessageConstants.CHECK_INTERNET_CONN, 0);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void ShowratePopup() {
@@ -556,7 +642,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         getVideoResponse_modelCall.enqueue(new Callback<GetVideoResponse_Model>() {
             @Override
             public void onResponse(Call<GetVideoResponse_Model> call, final retrofit2.Response<GetVideoResponse_Model> response) {
-
                 try {
                     GlobalClass.storeCachingDate(ManagingTabsActivity.this, "Video");
                     if (response.body().getResId().equalsIgnoreCase("RSS0000")) {
@@ -727,7 +812,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                                 ic_close.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-
                                         if (!GlobalClass.isNull(response.body().getOutput().get(0).getId())) {
                                             if (GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                                                 ic_close.setClickable(false);
@@ -875,6 +959,8 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             carouselFragment.setArguments(bundle);
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.container, carouselFragment).commit();
+        } else if (SCRID == Constants.SCR_Logout) {
+            logout();
         }
     }
 
@@ -921,16 +1007,20 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
             }
         } else if (id == R.id.offlinewoe) {
-            Bundle bundle = new Bundle();
+            /*Bundle bundle = new Bundle();
             bundle.putInt("position", 1);
             carouselFragment = new CarouselFragment();
             carouselFragment.setArguments(bundle);
             final FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.container, carouselFragment)
+                    .commit();*/
+
+            Offline_woe fragment = new Offline_woe();
+            final FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.container, fragment)
                     .commit();
-
-
         } else if (id == R.id.chn) {
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
@@ -1002,7 +1092,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 startIntent.putExtra("COMEFROM", "ManagingTabsActivity");
                 startActivity(startIntent);
             }
-
 
         } else if (id == R.id.communication) {
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
@@ -1104,6 +1193,13 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             }
 
 
+        } else if (id == R.id.matrix_Details) {
+            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+            } else {
+                Intent i = new Intent(ManagingTabsActivity.this, EscalationMatrixActivity.class);
+                startActivity(i);
+            }
         } else if (id == R.id.leadgenrate) {
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
@@ -1224,6 +1320,24 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             Intent i = new Intent(ManagingTabsActivity.this, Certificate_activity.class);
             startActivity(i);
 
+        } else if (id == R.id.item_agreement) {
+            Intent i = new Intent(ManagingTabsActivity.this, TermsAndConditionsActivity.class);
+            i.putExtra("toshow", false);
+            i.putExtra("Link", appPreferenceManager.getTermsUrl());
+            i.putExtra("logoutflag", "0");
+            startActivity(i);
+
+        } else if (id == R.id.item_rewards) {
+            if (appPreferenceManager.getBaselineDetailsResponse().getBaseDetails() != null) {
+                String URL = appPreferenceManager.getBaselineDetailsResponse().getBaseDetails().get(0).getURL();
+                if (!GlobalClass.isNull(URL)) {
+                    appPreferenceManager.setRewardPopUpDate(GlobalClass.getCurrentDate());
+                    String pdfurl = URL.replaceAll("\\\\", "//");
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(pdfurl));
+                    startActivity(browserIntent);
+                }
+            }
+
         } else if (id == R.id.logout) {
             new AlertDialog.Builder(this)
                     .setMessage(ToastFile.surelogout)
@@ -1311,7 +1425,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
                 AlertDialog alert11 = builder1.create();
                 alert11.show();
-
             }
         } else if (id == R.id.faq_data) {
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
@@ -1453,7 +1566,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         Log.e(TAG, "Get my Profile ---->" + Api.Cloud_base + api_key + "/" + user + "/" + "getmyprofile");
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, Api.Cloud_base + api_key + "/" + user + "/" + "getmyprofile",
                 new Response.Listener<JSONObject>() {
-
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
@@ -1571,6 +1683,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         Constants.pushrat_flag = 0;
         Constants.universal = 0;
         Constants.PUSHNOT_FLAG = false;
+        Global.ToShowRewards = true;
 //        prefsEditor.putString("myData", jsondata);
 
         Intent f = new Intent(getApplicationContext(), Login.class);
@@ -1663,5 +1776,26 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     @Override
     protected void onPause() {
         super.onPause();
+    }
+
+    private void GetQuestions() {
+        if (cd.isConnectingToInternet()) {
+            FeedbackQuestionRequestModel feedbackQuestionRequestModel = new FeedbackQuestionRequestModel();
+            feedbackQuestionRequestModel.setType("Cliso");
+            feedbackQuestionRequestModel.setSourcecode(user);
+            FeedBackQuestionsController feedBackQuestionsController = new FeedBackQuestionsController(ManagingTabsActivity.this);
+            feedBackQuestionsController.CallAPI(feedbackQuestionRequestModel);
+        }/* else {
+            GlobalClass.showCustomToast(activity, ToastFile.intConnection, 1);
+        }*/
+    }
+
+    public void getpostresponse(FeedbackQuestionsResponseModel feedbackQuestionsResponseModel, Boolean toShow) {
+        if (toShow) {
+            Intent intent = new Intent(activity, NetworkFeedbackActivity.class);
+            intent.putExtra("Questions", feedbackQuestionsResponseModel.getOutput());
+            activity.startActivity(intent);
+            ((Activity) activity).finish();
+        }
     }
 }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,6 +61,18 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
         } else {
             viewholder.txt_ppebrcd.setVisibility(View.GONE);
         }
+
+        //Sushil SRF ID
+        if (!GlobalClass.isNull(covidMISmodel.getSRFID())) {
+            viewholder.tv_srf_id.setVisibility(View.VISIBLE);
+            viewholder.tv_srf_label.setVisibility(View.VISIBLE);
+            GlobalClass.SetText(viewholder.tv_srf_id, covidMISmodel.getSRFID());
+        } else {
+            viewholder.tv_srf_id.setVisibility(View.INVISIBLE);
+            viewholder.tv_srf_label.setVisibility(View.INVISIBLE);
+        }
+        //Sushil SRF ID
+
         GlobalClass.SetText(viewholder.testcode, "" + covidMISmodel.getTestCode());
 
         if (!GlobalClass.isNull(covidMISmodel.getAmount_Collected())) {
@@ -72,6 +85,16 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
         if (!GlobalClass.isNull(covidMISmodel.getEntryDate().trim())) {
             GlobalClass.SetText(viewholder.txt_time, covidMISmodel.getEntryDate().trim());
         }
+
+
+        viewholder.btn_viewpdf.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String trf_url = covidMISmodel.getTrf().replaceAll("\\\\", "//");
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(trf_url));
+                activity.startActivity(browserIntent);
+            }
+        });
 
 
         if (!GlobalClass.isNull(covidMISmodel.getStatusName())) {
@@ -133,7 +156,8 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
                     doclist.add(adharurl2);
                 }
 
-                String trf_url = "";
+                //Sushil
+          /*      String trf_url = "";
                 String trf_url2 = "";
 
                 if (!GlobalClass.isNull(covidMISmodel.getTrf())) {
@@ -145,7 +169,8 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
                     trf_url2 = covidMISmodel.getTrf1().replaceAll("\\\\", "//");
                     doclist.add(trf_url2);
 
-                }
+                }*/
+                //Sushil
 
                 String vial_url = "";
                 if (!GlobalClass.isNull(covidMISmodel.getVialImage())) {
@@ -185,13 +210,16 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
     }
 
     public class Viewholder extends RecyclerView.ViewHolder {
-        TextView txt_name, txt_amt, txt_mob, txt_ccc, txt_time, txt_reason, txt_ppebrcd, testcode;
-        Button btn_resubmit, btn_viewupload;
+        TextView txt_name, txt_amt, txt_mob, txt_ccc, txt_time, txt_reason, txt_ppebrcd, testcode, tv_srf_id, tv_srf_label;
+        Button btn_resubmit, btn_viewupload, btn_viewpdf;
         LinearLayout lin_reason;
 
         public Viewholder(@NonNull View itemView) {
             super(itemView);
 
+            tv_srf_label = itemView.findViewById(R.id.tv_srf_label);
+            tv_srf_id = itemView.findViewById(R.id.tv_srf_id);
+            btn_viewpdf = itemView.findViewById(R.id.btn_viewpdf);
             btn_resubmit = itemView.findViewById(R.id.btn_resubmit);
             btn_viewupload = itemView.findViewById(R.id.btn_viewupload);
             txt_name = itemView.findViewById(R.id.patientName);

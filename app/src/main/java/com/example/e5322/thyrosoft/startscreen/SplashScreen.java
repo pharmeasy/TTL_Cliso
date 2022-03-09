@@ -33,6 +33,7 @@ import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Activity.MessageConstants;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
+import com.example.e5322.thyrosoft.Controller.GetBaselineDetailsAPIController;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Controller.LogUserActivityTagging;
 import com.example.e5322.thyrosoft.Controller.VersionCheckAPIController;
@@ -43,9 +44,10 @@ import com.example.e5322.thyrosoft.Models.CovidAccessResponseModel;
 import com.example.e5322.thyrosoft.Models.FirebaseModel;
 import com.example.e5322.thyrosoft.Models.Firebasepost;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.AppPreferenceManager;
+import com.example.e5322.thyrosoft.Models.RequestModels.GetBaselineDetailsRequestModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.Retrofit.APIInteface;
-import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
+import com.example.e5322.thyrosoft.Retrofit.PostAPIInterface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -232,7 +234,6 @@ public class SplashScreen extends AppCompatActivity {
 
 
     private void CallFirebaseDynamicLinkListeners() {
-
         FirebaseDynamicLinks.getInstance()
                 .getDynamicLink(getIntent())
                 .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
@@ -307,11 +308,11 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     private void GoAhead() {
-
         if (cd.isConnectingToInternet()) {
             callAPICheckVersion();
         } else {
-            GlobalClass.showCustomToast(activity, ToastFile.intConnection, 1);
+//            GlobalClass.showCustomToast(activity, ToastFile.intConnection, 1);
+            callIntent();
         }
     }
 
@@ -321,18 +322,14 @@ public class SplashScreen extends AppCompatActivity {
             if (ControllersGlobalInitialiser.versionCheckAPIController != null) {
                 ControllersGlobalInitialiser.versionCheckAPIController = null;
             }
-
-
             String sourcecode = "";
             if (!GlobalClass.isNull(user)) {
                 sourcecode = user;
             } else {
                 sourcecode = "";
             }
-
             ControllersGlobalInitialiser.versionCheckAPIController = new VersionCheckAPIController(SplashScreen.this, activity, sourcecode);
             ControllersGlobalInitialiser.versionCheckAPIController.checkVersion(true);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -375,9 +372,9 @@ public class SplashScreen extends AppCompatActivity {
 
 
     private void callIntent() {
-        new LogUserActivityTagging(activity, "","");
+        new LogUserActivityTagging(activity, "", "");
 
-        if (!GlobalClass.isNull(user) && !GlobalClass.isNull(passwrd) ) {
+        if (!GlobalClass.isNull(user) && !GlobalClass.isNull(passwrd)) {
             long PreviousTime = prefs_CovidSync.getLong("PreivousTimeOfSync", 0);
             long currenttime = System.currentTimeMillis();
             long differ_millis = currenttime - PreviousTime;
@@ -385,9 +382,10 @@ public class SplashScreen extends AppCompatActivity {
 
             if (days >= 1) {
                 if (GlobalClass.isNetworkAvailable(activity)) {
+                    GetBaselineDetails();
                     checkcovidaccess();
-                } else
-                    GlobalClass.showCustomToast(SplashScreen.this, MessageConstants.CHECK_INTERNET_CONN, 0);
+                } /*else
+                    GlobalClass.showCustomToast(SplashScreen.this, MessageConstants.CHECK_INTERNET_CONN, 0);*/
             } else {
                 Log.e(TAG, " Caching :Less than 1 Day");
             }
@@ -411,8 +409,6 @@ public class SplashScreen extends AppCompatActivity {
                 activity.startActivity(prefe);
                 ((Activity) activity).finish();
             }
-
-
         } else {
             Intent i = new Intent(activity, Login.class);
             activity.startActivity(i);
@@ -420,12 +416,20 @@ public class SplashScreen extends AppCompatActivity {
         }
     }
 
+    private void GetBaselineDetails() {
+        GetBaselineDetailsRequestModel getBaselineDetailsRequestModel = new GetBaselineDetailsRequestModel();
+        getBaselineDetailsRequestModel.setSession(user);
+
+        GetBaselineDetailsAPIController getBaselineDetailsAPIController = new GetBaselineDetailsAPIController(SplashScreen.this);
+        getBaselineDetailsAPIController.CallAPI(getBaselineDetailsRequestModel);
+    }
+
     private void checkcovidaccess() {
 
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
+        PostAPIInterface postAPIInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInterface.class);
         CovidAccessReq covidAccessReq = new CovidAccessReq();
         covidAccessReq.setSourceCode(user);
-        Call<CovidAccessResponseModel> covidaccessResCall = postAPIInteface.checkcovidaccess(covidAccessReq);
+        Call<CovidAccessResponseModel> covidaccessResCall = postAPIInterface.checkcovidaccess(covidAccessReq);
         covidaccessResCall.enqueue(new Callback<CovidAccessResponseModel>() {
             @Override
             public void onResponse(Call<CovidAccessResponseModel> call, retrofit2.Response<CovidAccessResponseModel> response) {
@@ -451,7 +455,6 @@ public class SplashScreen extends AppCompatActivity {
             }
         });
     }
-
 
     private void GetInstallPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -506,7 +509,6 @@ public class SplashScreen extends AppCompatActivity {
 
     }
 
-
     public boolean ValidateInstallPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -547,4 +549,5 @@ public class SplashScreen extends AppCompatActivity {
         finish();
         super.onBackPressed();
     }
+
 }

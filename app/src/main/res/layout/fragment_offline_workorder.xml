@@ -6,9 +6,44 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/lightgray"
+        android:orientation="horizontal"
+        android:weightSum="5">
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:src="@drawable/color_back" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="4"
+            android:gravity="center"
+            android:text="@string/offline_woe"
+            android:textAllCaps="true"
+            android:textSize="@dimen/header"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/home"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:src="@drawable/color_homr" />
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/parent_ll"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="@dimen/smallPadding"
         android:layout_weight="9"
         android:orientation="vertical">
 
@@ -16,7 +51,9 @@
             android:id="@+id/linearlayout3"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_weight="1"
+            android:layout_marginLeft="@dimen/smallPadding"
+            android:layout_marginRight="@dimen/smallPadding"
+            android:background="@drawable/button_background"
             android:orientation="horizontal"
             android:weightSum="10">
 
@@ -24,15 +61,12 @@
                 android:id="@+id/edtSearch"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_centerVertical="true"
-                android:layout_toStartOf="@+id/imgSearch"
-                android:layout_toLeftOf="@+id/imgSearch"
-                android:layout_weight="9"
-                android:background="@drawable/button_background"
+                android:background="@null"
                 android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz "
                 android:drawableRight="@drawable/ic_search_black_36dp"
                 android:ems="10"
-                android:hint=" SEARCH BY PATIENT NAME OR BARCODE"
+                android:layout_margin="@dimen/dp_3"
+                android:hint="SEARCH BY PATIENT NAME OR BARCODE"
                 android:imeOptions="actionSearch"
                 android:textColorHint="@color/gray"
                 android:textSize="@dimen/value" />
@@ -42,22 +76,23 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="2dp"
-            android:background="#c0c0c0" />
+            android:background="#c0c0c0"
+            android:visibility="gone" />
 
 
         <TextView
             android:id="@+id/tv_total"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/value"
-            android:text="Total Count"
-            android:gravity="center"
-            android:visibility="gone"
-            android:textAllCaps="true"
             android:layout_gravity="center"
+            android:layout_margin="@dimen/_3sdp"
+            android:gravity="center"
+            android:text="Total Count"
             android:textAlignment="center"
+            android:textAllCaps="true"
             android:textColor="@color/black"
-            android:layout_margin="@dimen/_3sdp"/>
+            android:textSize="@dimen/value"
+            android:visibility="gone" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
@@ -65,20 +100,20 @@
             android:layout_height="0dp"
             android:layout_margin="5dp"
             android:layout_weight="90"
-            android:scrollbars="vertical"/>
+            android:scrollbars="vertical" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp"
         android:id="@+id/sendwoe_ll"
         android:layout_width="match_parent"
         android:layout_height="30dp"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="5dp"
         android:background="@drawable/next_button"
         android:orientation="horizontal">
 
@@ -86,13 +121,13 @@
             android:id="@+id/sync_woe"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
             android:layout_weight="2"
             android:gravity="center|center_horizontal|center_vertical"
             android:text="Send WOE"
-            android:textAllCaps="true"
             android:textAlignment="textEnd"
+            android:textAllCaps="true"
             android:textColor="@color/white"
             android:textSize="@dimen/label"
             tools:ignore="RtlCompat" />
@@ -109,14 +144,14 @@
 
     </LinearLayout>
 
-
     <TextView
         android:id="@+id/tvNoDataFound"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
         android:layout_gravity="start"
+        android:layout_weight="1"
         android:background="@color/white"
+        android:layout_marginTop="@dimen/largePadding"
         android:gravity="center|top"
         android:text="No record found"
         android:textAllCaps="true"

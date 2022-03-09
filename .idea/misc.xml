@@ -3,37 +3,94 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../../../../layout/custom_preview.xml" value="0.21666666666666667" />
+        <entry key="../../../../../../layout/custom_preview.xml" value="0.1" />
+        <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/drawable/sample_info_drawable.xml" value="0.3646153846153846" />
+        <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/activity_escalation_matrix.xml" value="0.2844155844155844" />
+        <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/activity_lead_generation.xml" value="0.3541666666666667" />
+        <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/activity_scan__barcode__ils.xml" value="0.2943722943722944" />
+        <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/activity_scan_barcode_lead_id.xml" value="0.2982456140350877" />
+        <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/activity_sgc__pgc__entry_.xml" value="0.3487179487179487" />
+        <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/activity_summary_lead_id.xml" value="0.2943722943722944" />
+        <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/brand_item.xml" value="0.18802083333333333" />
+        <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/covid_enter.xml" value="0.2611111111111111" />
+        <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/fragment_a2.xml" value="0.19166666666666668" />
+        <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/fragment_a3.xml" value="0.15185185185185185" />
+        <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/fragment_next__consignment__entry.xml" value="0.19166666666666668" />
+        <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/fragment_offline_workorder.xml" value="0.3487179487179487" />
+        <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/fragment_r_a_t_enter.xml" value="0.18802083333333333" />
+        <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/fragment_rate_calculator.xml" value="0.3541666666666667" />
+        <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/fragment_start__new__woe.xml" value="0.18802083333333333" />
+        <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/fragment_woe_add_test.xml" value="0.19166666666666668" />
+        <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/item_escalation_matrix.xml" value="0.2982456140350877" />
+        <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/lay_covidedit.xml" value="0.2611111111111111" />
+        <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/lay_covidreg.xml" value="0.3541666666666667" />
+        <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/matrix_recycle.xml" value="0.25" />
+        <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/rate_calculator_outlab_layout.xml" value="0.3541666666666667" />
+        <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/summary_activity_new.xml" value="0.3541666666666667" />
+        <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/tm.xml" value="0.19166666666666668" />
+        <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/menu/activity_main_drawer.xml" value="0.22" />
         <entry key="app/src/main/res/drawable-xhdpi/bottom_sheet_design.xml" value="0.17962962962962964" />
+        <entry key="app/src/main/res/drawable/bg_feeback_count.xml" value="0.28114035087719297" />
+        <entry key="app/src/main/res/drawable/bg_feedback_main.xml" value="0.28114035087719297" />
+        <entry key="app/src/main/res/drawable/bg_rounded_button.xml" value="0.28114035087719297" />
+        <entry key="app/src/main/res/drawable/bg_rounded_button_grey.xml" value="0.27316017316017316" />
+        <entry key="app/src/main/res/drawable/clear_button.xml" value="0.22685185185185186" />
+        <entry key="app/src/main/res/drawable/ic_feedback_arrow.xml" value="0.28114035087719297" />
+        <entry key="app/src/main/res/drawable/ic_menu_rewards.xml" value="0.27316017316017316" />
+        <entry key="app/src/main/res/layout-v11/magicretry_fragment.xml" value="0.2631578947368421" />
         <entry key="app/src/main/res/layout/activity_billing.xml" value="0.13464912280701755" />
         <entry key="app/src/main/res/layout/activity_billing_details.xml" value="0.2881578947368421" />
         <entry key="app/src/main/res/layout/activity_ledger.xml" value="0.2101851851851852" />
         <entry key="app/src/main/res/layout/activity_ledger_details_new.xml" value="0.2101851851851852" />
+        <entry key="app/src/main/res/layout/activity_login.xml" value="0.2675438596491228" />
+        <entry key="app/src/main/res/layout/activity_main_ll.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_network_feedback.xml" value="0.2675438596491228" />
         <entry key="app/src/main/res/layout/activity_out_lab_tests.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/activity_scan__barcode__ils.xml" value="0.2881578947368421" />
+        <entry key="app/src/main/res/layout/activity_payment_.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_rat_edit.xml" value="0.2675438596491228" />
+        <entry key="app/src/main/res/layout/activity_scan__barcode__ils.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_sgc__pgc__entry_.xml" value="0.2574561403508772" />
+        <entry key="app/src/main/res/layout/activity_srf_covid_woe_edit.xml" value="0.18" />
+        <entry key="app/src/main/res/layout/activity_terms_and_conditions.xml" value="0.2597402597402597" />
         <entry key="app/src/main/res/layout/activity_video.xml" value="0.2574561403508772" />
+        <entry key="app/src/main/res/layout/adapter_covidmis.xml" value="0.2675438596491228" />
+        <entry key="app/src/main/res/layout/app_bar_main_data.xml" value="0.26406926406926406" />
         <entry key="app/src/main/res/layout/billing_det_row_header.xml" value="0.2881578947368421" />
         <entry key="app/src/main/res/layout/brand_item.xml" value="0.2881578947368421" />
         <entry key="app/src/main/res/layout/certificate_item.xml" value="0.2574561403508772" />
+        <entry key="app/src/main/res/layout/covid_enter.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/covid_entered.xml" value="0.2675438596491228" />
         <entry key="app/src/main/res/layout/custom_missed_call_verification_dialog.xml" value="0.25701754385964914" />
         <entry key="app/src/main/res/layout/custom_slider.xml" value="0.1570175438596491" />
+        <entry key="app/src/main/res/layout/fragment_anti_body_enter.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_communication.xml" value="0.2101851851851852" />
+        <entry key="app/src/main/res/layout/fragment_feedback.xml" value="0.2675438596491228" />
         <entry key="app/src/main/res/layout/fragment_my_profile.xml" value="0.2574561403508772" />
-        <entry key="app/src/main/res/layout/fragment_r_a_t_enter.xml" value="0.2675438596491228" />
+        <entry key="app/src/main/res/layout/fragment_noticeboard_.xml" value="0.2675438596491228" />
+        <entry key="app/src/main/res/layout/fragment_r_a_t_enter.xml" value="0.15" />
+        <entry key="app/src/main/res/layout/fragment_rapid_antibody.xml" value="0.2675438596491228" />
+        <entry key="app/src/main/res/layout/fragment_rat_woe.xml" value="0.2" />
         <entry key="app/src/main/res/layout/fragment_rate_calculator.xml" value="0.2101851851851852" />
-        <entry key="app/src/main/res/layout/fragment_start__new__woe.xml" value="0.2657894736842105" />
+        <entry key="app/src/main/res/layout/fragment_srf_covid_woe_enter.xml" value="0.2" />
+        <entry key="app/src/main/res/layout/fragment_start__new__woe.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_summary.xml" value="0.2574561403508772" />
         <entry key="app/src/main/res/layout/fromcpl_tocpl_child_row.xml" value="0.2675438596491228" />
         <entry key="app/src/main/res/layout/lay_confbook.xml" value="0.25277777777777777" />
+        <entry key="app/src/main/res/layout/lay_covidedit.xml" value="0.18" />
         <entry key="app/src/main/res/layout/lay_nhf.xml" value="0.2675438596491228" />
         <entry key="app/src/main/res/layout/lay_petct.xml" value="0.26406926406926406" />
         <entry key="app/src/main/res/layout/lay_scansummary.xml" value="0.2675438596491228" />
+        <entry key="app/src/main/res/layout/magicretry_fragment.xml" value="0.25043859649122807" />
         <entry key="app/src/main/res/layout/nav_header_main.xml" value="0.2675438596491228" />
+        <entry key="app/src/main/res/layout/new_login_otp.xml" value="0.26406926406926406" />
+        <entry key="app/src/main/res/layout/notice_board_singleview.xml" value="0.2675438596491228" />
         <entry key="app/src/main/res/layout/outlab_activity.xml" value="0.13903508771929823" />
         <entry key="app/src/main/res/layout/rpl_cpl_header_row.xml" value="0.262719298245614" />
         <entry key="app/src/main/res/layout/single_barcode_list.xml" value="0.2881578947368421" />
         <entry key="app/src/main/res/layout/summary_activity_new.xml" value="0.2574561403508772" />
         <entry key="app/src/main/res/menu/activity_main_drawer.xml" value="0.2574561403508772" />
+        <entry key="app/src/main/res/menu/more_tab_menu.xml" value="0.2675438596491228" />
       </map>
     </option>
   </component>
@@ -83,7 +140,7 @@
       </value>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

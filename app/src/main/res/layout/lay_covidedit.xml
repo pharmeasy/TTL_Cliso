@@ -360,7 +360,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/value"
+            android:layout_marginTop="@dimen/_5sdp"
             android:orientation="horizontal"
             android:weightSum="3">
 
@@ -370,7 +370,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/_5sdp"
-                android:layout_weight="0.8"
+                android:layout_weight="0.9"
                 android:drawablePadding="@dimen/_2sdp"
                 android:text="@string/pescription"
                 android:textAllCaps="true"
@@ -469,6 +469,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:layout_marginTop="@dimen/_5sdp"
             android:weightSum="3">
 
             <TextView
@@ -477,7 +478,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/_5sdp"
-                android:layout_weight="0.8"
+                android:layout_weight="0.9"
                 android:drawablePadding="@dimen/_2sdp"
                 android:text="@string/adhar"
                 android:textAllCaps="true"
@@ -572,6 +573,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:layout_marginTop="@dimen/_5sdp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -583,9 +585,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/_5sdp"
-                android:layout_weight="0.8"
+                android:layout_weight="0.9"
                 android:drawablePadding="@dimen/_2sdp"
-                android:text="@string/trf"
+                android:text="SRF PDF*"
                 android:textAllCaps="true"
                 android:textColor="@color/black"
                 android:textSize="@dimen/value"
@@ -600,13 +602,14 @@
                 android:layout_weight="0.8"
                 android:background="@drawable/covidbtn"
                 android:backgroundTint="@color/maroon"
-                android:text="@string/uploadfile"
+                android:text="UPLOAD"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
                 android:textSize="@dimen/value"
-                android:visibility="gone" />
+                />
 
             <LinearLayout
+                android:visibility="gone"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -672,6 +675,7 @@
                     android:layout_marginLeft="@dimen/_3sdp"
                     android:textColor="@color/black"
                     android:textSize="@dimen/value"
+                    android:text="@string/hello_blank_fragment"
                     android:textStyle="bold" />
 
 
@@ -692,7 +696,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/_5sdp"
-                android:layout_weight="0.8"
+                android:layout_weight="0.9"
                 android:drawablePadding="@dimen/_2sdp"
                 android:text="@string/vialimg"
                 android:textAllCaps="true"
@@ -722,6 +726,7 @@
                 android:layout_weight="0.8"
                 android:background="@drawable/border_background_maroon"
                 android:gravity="center"
+
                 android:orientation="horizontal"
                 android:padding="@dimen/dp_5">
 
@@ -799,7 +804,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/_5sdp"
-                android:layout_weight="0.8"
+                android:layout_weight="0.9"
                 android:drawablePadding="@dimen/_2sdp"
                 android:text="@string/other"
                 android:textAllCaps="true"

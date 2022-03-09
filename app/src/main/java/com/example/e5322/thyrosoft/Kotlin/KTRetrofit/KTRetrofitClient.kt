@@ -38,10 +38,10 @@ class KTRetrofitClient {
         client.readTimeout(1, TimeUnit.MINUTES)
         client.writeTimeout(30, TimeUnit.SECONDS)
         client.connectTimeout(15, TimeUnit.SECONDS)
-        client.addInterceptor { chain ->
+        /*client.addInterceptor { chain ->
             val request = chain.request().newBuilder().addHeader(Constants.HEADER_USER_AGENT, GlobalClass.getHeaderValue(activity)).build()
             chain.proceed(request)
-        }
+        }*/
         retrofit = Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .client(client.build()) /*  .addConverterFactory(ScalarsConverterFactory.create())*/

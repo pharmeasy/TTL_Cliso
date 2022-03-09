@@ -77,4 +77,5 @@
 
     <color name="light_pink">#F5D2D9</color>
     <color name="default_text_color">#909090</color>
+    <color name="light_color">#f7dfe7</color>
 </resources>

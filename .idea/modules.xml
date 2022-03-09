@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Cliso_beforePayment.iml" filepath="$PROJECT_DIR$/.idea/modules/Cliso_beforePayment.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Cliso_beforePayment.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Cliso_beforePayment.app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/libraryViewPagerIndicator/Cliso_beforePayment.libraryViewPagerIndicator.iml" filepath="$PROJECT_DIR$/.idea/modules/libraryViewPagerIndicator/Cliso_beforePayment.libraryViewPagerIndicator.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sdkui/Cliso_beforePayment.sdkui.iml" filepath="$PROJECT_DIR$/.idea/modules/sdkui/Cliso_beforePayment.sdkui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ClisoApp.iml" filepath="$PROJECT_DIR$/.idea/modules/ClisoApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/ClisoApp.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/ClisoApp.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/libraryViewPagerIndicator/ClisoApp.libraryViewPagerIndicator.iml" filepath="$PROJECT_DIR$/.idea/modules/libraryViewPagerIndicator/ClisoApp.libraryViewPagerIndicator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sdkui/ClisoApp.sdkui.iml" filepath="$PROJECT_DIR$/.idea/modules/sdkui/ClisoApp.sdkui.iml" />
     </modules>
   </component>
 </project>

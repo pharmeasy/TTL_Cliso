@@ -168,7 +168,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     ArrayList<TRFModel> trflist = new ArrayList<>();
     RadioGroup location_radio_grp;
     RadioButton cpl_rdo, rpl_rdo;
-    LinearLayout ll_uploadTRF;
+    LinearLayout ll_uploadTRF, ll_location_note;
     RecyclerView rec_trf;
     LinearLayoutManager linearLayoutManager1;
     Activity mActivity;
@@ -251,7 +251,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     private String brabdurl;
     TextView tv_viewsample;
     private int nhl_rate;
-    ConnectionDetector connectionDetector;
+    ConnectionDetector cd;
     RecyclerView recy_brand;
     private String EMAIL_ID;
     private int PaymentType;
@@ -263,6 +263,8 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     private String ADDITIONAL1 = "";
     TextView tv_location, tv_lab;
 
+    String communication, commModes;
+
 
     @SuppressLint({"WrongViewCast", "NewApi"})
     @Override
@@ -271,7 +273,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         setContentView(R.layout.activity_scan__barcode__ils);
 
         mActivity = Scan_Barcode_ILS_New.this;
-        connectionDetector = new ConnectionDetector(mActivity);
+        cd = new ConnectionDetector(mActivity);
         recycler_barcode = (RecyclerView) findViewById(R.id.recycler_barcode);
         show_selected_tests_data = (TextView) findViewById(R.id.show_selected_tests_data);
         setAmt = (TextView) findViewById(R.id.setAmt);
@@ -290,6 +292,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         home = (ImageView) findViewById(R.id.home);
         ll_uploadTRF = (LinearLayout) findViewById(R.id.ll_uploadTRF);
         rec_trf = (RecyclerView) findViewById(R.id.rec_trf);
+        ll_location_note = findViewById(R.id.ll_location_note);
 
         prefe = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
         brandName = prefe.getString("WOEbrand", "");
@@ -322,12 +325,15 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         lin_preview_pres = findViewById(R.id.lin_preview_pres);
         txt_fileupload_pres = findViewById(R.id.txt_fileupload_pres);
 
+        ll_location_note.setVisibility(cd.isConnectingToInternet() ? View.VISIBLE : View.GONE);
+
         btn_choosefile_presc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 ImagePicker.Companion.with(Scan_Barcode_ILS_New.this)
                         .compress(Constants.MaxImageSize)
+                        .crop()
                         .maxResultSize(Constants.MaxImageWidth, Constants.MaxImageHeight)
                         .start();
                 ispresc = true;
@@ -340,7 +346,6 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                 setviewpager(imagelist_per);
             }
         });
-
 
         SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
         Gson gson = new Gson();
@@ -465,6 +470,9 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         labAddress = savepatientDetails.getString("labAddress", "");
 
         patientAddress = savepatientDetails.getString("patientAddress", "");
+        communication = savepatientDetails.getString("Communication", "");
+        commModes = savepatientDetails.getString("CommModes", "");
+
         referrredBy = savepatientDetails.getString("refBy", "");
         referenceID = savepatientDetails.getString("refId", "");
         labIDaddress = savepatientDetails.getString("labIDaddress", "");
@@ -623,7 +631,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
             e.printStackTrace();
         }
 
-        if (connectionDetector.isConnectingToInternet()) {
+        if (cd.isConnectingToInternet()) {
             GetLocationReqModel getLocationReqModel = new GetLocationReqModel();
             getLocationReqModel.setTest("" + TextUtils.join(",", getTestCode));
             getLocationReqModel.setTSP("" + user);
@@ -727,22 +735,17 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
             }
         }
 
-
         for (int i = 0; i < temparraylist.size(); i++) {
             if (!temparraylist.get(i).equalsIgnoreCase("FLUORIDE")) {
                 ScannedBarcodeDetails scannedBarcodeDetails = new ScannedBarcodeDetails();
                 setSpecimenTypeCodes = new ArrayList<>();
-
                 for (int j = 0; j < getproductDetailswithBarcodes.size(); j++) {
                     if (temparraylist.get(i).equalsIgnoreCase(getproductDetailswithBarcodes.get(j).getBarcode())) {
                         setSpecimenTypeCodes.add(getproductDetailswithBarcodes.get(j).getProduct());
                     }
                 }
-
                 scannedBarcodeDetails.setSpecimen_type(temparraylist.get(i));
-
                 for (int k = 0; k < setSpecimenTypeCodes.size(); k++) {
-
                     HashSet<String> listToSet = new HashSet<String>(setSpecimenTypeCodes);
                     List<String> listWithoutDuplicates = new ArrayList<String>(listToSet);
                     String setProducts = TextUtils.join(",", listWithoutDuplicates);
@@ -752,11 +755,8 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                     }
                     String setFinalProducts = TextUtils.join(",", test);
                     scannedBarcodeDetails.setProducts(setFinalProducts);
-
                 }
-
                 GlobalClass.finalspecimenttypewiselist.add(scannedBarcodeDetails);
-
             }
         }
 
@@ -1183,30 +1183,33 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     }
 
     public void checklistData() {
+        if (GlobalClass.allowForOfflineUse(user)) {
+            checkAndProceed();
+        } else {
+            if (cd.isConnectingToInternet()) {
+                checkAndProceed();
+            } else {
+                GlobalClass.showCustomToast(mActivity, ToastFile.intConnection, 1);
+            }
+        }
+    }
 
-        if (connectionDetector.isConnectingToInternet()) {
-            if (trflist.size() > 0) {
-                for (int i = 0; i < trflist.size(); i++) {
-                    if (trflist.get(i).getTrf_image() == null)
-                        trfCheckFlag = true;
-                }
-
-                if (trfCheckFlag) {
-                    trfCheckFlag = false;
-                    Toast.makeText(mActivity, ToastFile.TRF_UPLOAD_CHECK, Toast.LENGTH_SHORT).show();
-                } else {
-
-                    doFinalWoe();
-                }
-
+    private void checkAndProceed() {
+        if (trflist.size() > 0) {
+            for (int i = 0; i < trflist.size(); i++) {
+                if (trflist.get(i).getTrf_image() == null)
+                    trfCheckFlag = true;
+            }
+            if (trfCheckFlag) {
+                trfCheckFlag = false;
+                Toast.makeText(mActivity, ToastFile.TRF_UPLOAD_CHECK, Toast.LENGTH_SHORT).show();
             } else {
                 doFinalWoe();
             }
         } else {
-            GlobalClass.showCustomToast(mActivity, ToastFile.intConnection, 1);
+            doFinalWoe();
         }
     }
-
 
     public void callTRFAdapter(ArrayList<TRFModel> trflist) {
         if (trflist.size() > 0) {
@@ -1413,6 +1416,8 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         woe.setREMARKS("MOBILE - " + getRemark);
         woe.setSPECIMEN_COLLECTION_TIME(outputDateStr + " " + GlobalClass.cutString + ".000");
         woe.setSPECIMEN_SOURCE("");
+        woe.setCommunication1(commModes);
+        woe.setCommModes(communication);
         woe.setSR_NO(pass_to_api);
         woe.setSTATUS("N");
         woe.setSUB_SOURCE_CODE(user);
@@ -1499,7 +1504,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
 
                                     if (!GlobalClass.isNull(status) && status.equalsIgnoreCase("SUCCESS")) {
 
-                                        new LogUserActivityTagging(mActivity,"WOE-NOVID",barcode_patient_id);
+                                        new LogUserActivityTagging(mActivity, "WOE-NOVID", barcode_patient_id);
 
                                         SharedPreferences.Editor editor = getSharedPreferences("showSelectedTest", 0).edit();
                                         editor.remove("testsSElected");
@@ -1777,51 +1782,44 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     }
 
     private void passBarcodeData(String s) {
-        if (connectionDetector.isConnectingToInternet()) {
-            boolean isbacodeduplicate = false;
-            for (int i = 0; i < GlobalClass.finalspecimenttypewiselist.size(); i++) {
-                if (GlobalClass.finalspecimenttypewiselist.get(i).getBarcode() != null && !GlobalClass.finalspecimenttypewiselist.get(i).getBarcode().isEmpty()) {
-                    if (GlobalClass.finalspecimenttypewiselist.get(i).getBarcode().equalsIgnoreCase(s)) {
-                        isbacodeduplicate = true;
-                    }
+        boolean isbacodeduplicate = false;
+        for (int i = 0; i < GlobalClass.finalspecimenttypewiselist.size(); i++) {
+            if (GlobalClass.finalspecimenttypewiselist.get(i).getBarcode() != null && !GlobalClass.finalspecimenttypewiselist.get(i).getBarcode().isEmpty()) {
+                if (GlobalClass.finalspecimenttypewiselist.get(i).getBarcode().equalsIgnoreCase(s)) {
+                    isbacodeduplicate = true;
                 }
             }
-
-            if (isbacodeduplicate) {
-                Toast.makeText(Scan_Barcode_ILS_New.this, ToastFile.duplicate_barcd, Toast.LENGTH_SHORT).show();
-            } else {
-                for (int i = 0; i < GlobalClass.finalspecimenttypewiselist.size(); i++) {
-                    if (GlobalClass.finalspecimenttypewiselist.get(i).getSpecimen_type().equalsIgnoreCase(GlobalClass.specimenttype)) {
-                        GlobalClass.finalspecimenttypewiselist.get(i).setBarcode(s);
-                        GlobalClass.finalspecimenttypewiselist.get(i).setRemark("Scan");
-                        getRemark = "";
-                        getRemark = GlobalClass.finalspecimenttypewiselist.get(i).getRemark();
-                        Log.e(TAG, "passBarcodeData: show barcode" + s);
-                    }
-                }
-            }
-
-            recycler_barcode.removeAllViews();
-//        adapterBarcode.notifyDataSetChanged();
-            adapterBarcode = new AdapterBarcode_New(Scan_Barcode_ILS_New.this, selctedTest, GlobalClass.finalspecimenttypewiselist, this);
-            adapterBarcode.setOnItemClickListener(new AdapterBarcode_New.OnItemClickListener() {
-                @Override
-                public void onScanbarcodeClickListener(String Specimenttype, Activity activity) {
-                    scanIntegrator = new IntentIntegrator(activity);
-                    if (GlobalClass.specimenttype != null) {
-                        GlobalClass.specimenttype = "";
-                    }
-                    GlobalClass.specimenttype = Specimenttype;
-                    scanIntegrator.initiateScan();
-                }
-            });
-            recycler_barcode.setAdapter(adapterBarcode);
-        } else {
-            GlobalClass.showCustomToast(mActivity, ToastFile.intConnection, 1);
-
         }
 
+        if (isbacodeduplicate) {
+            Toast.makeText(Scan_Barcode_ILS_New.this, ToastFile.duplicate_barcd, Toast.LENGTH_SHORT).show();
+        } else {
+            for (int i = 0; i < GlobalClass.finalspecimenttypewiselist.size(); i++) {
+                if (GlobalClass.finalspecimenttypewiselist.get(i).getSpecimen_type().equalsIgnoreCase(GlobalClass.specimenttype)) {
+                    GlobalClass.finalspecimenttypewiselist.get(i).setBarcode(s);
+                    GlobalClass.finalspecimenttypewiselist.get(i).setRemark("Scan");
+                    getRemark = "";
+                    getRemark = GlobalClass.finalspecimenttypewiselist.get(i).getRemark();
+                    Log.e(TAG, "passBarcodeData: show barcode" + s);
+                }
+            }
+        }
 
+        recycler_barcode.removeAllViews();
+//        adapterBarcode.notifyDataSetChanged();
+        adapterBarcode = new AdapterBarcode_New(Scan_Barcode_ILS_New.this, selctedTest, GlobalClass.finalspecimenttypewiselist, this);
+        adapterBarcode.setOnItemClickListener(new AdapterBarcode_New.OnItemClickListener() {
+            @Override
+            public void onScanbarcodeClickListener(String Specimenttype, Activity activity) {
+                scanIntegrator = new IntentIntegrator(activity);
+                if (GlobalClass.specimenttype != null) {
+                    GlobalClass.specimenttype = "";
+                }
+                GlobalClass.specimenttype = Specimenttype;
+                scanIntegrator.initiateScan();
+            }
+        });
+        recycler_barcode.setAdapter(adapterBarcode);
     }
 
     @Override

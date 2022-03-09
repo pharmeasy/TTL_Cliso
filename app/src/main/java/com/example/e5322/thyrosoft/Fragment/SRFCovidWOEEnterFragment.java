@@ -1,5 +1,11 @@
 package com.example.e5322.thyrosoft.Fragment;
 
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static android.app.Activity.RESULT_OK;
+import static android.content.Context.MODE_PRIVATE;
+import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -38,6 +44,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -87,7 +94,7 @@ import com.example.e5322.thyrosoft.Models.PincodeMOdel.DateUtils;
 import com.example.e5322.thyrosoft.Models.ResponseModels.VerifyBarcodeResponseModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.getSCPTechnicianModel;
 import com.example.e5322.thyrosoft.R;
-import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
+import com.example.e5322.thyrosoft.Retrofit.PostAPIInterface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.example.e5322.thyrosoft.Utility;
@@ -125,12 +132,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static android.Manifest.permission.CAMERA;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-import static android.app.Activity.RESULT_OK;
-import static android.content.Context.MODE_PRIVATE;
-import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
-
 public class SRFCovidWOEEnterFragment extends Fragment {
 
 
@@ -142,6 +143,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
     private List<String> otherlist = new ArrayList<>();
     private List<String> selfielist = new ArrayList<>();
     private CountDownTimer countDownTimer;
+    private RadioGroup radiogrp2;
     private RadioButton by_missed, by_generate, by_sendsms;
     private LinearLayout mainlinear, consignment_name_layout, lineareditbarcode, lin_by_missed, lin_selfie, lin_generate_verify, lin_pres_preview, lin_adhar_images, lin_vial_images, lin_other_images;
     private RelativeLayout rel_mobno, rel_verify_mobile;
@@ -180,6 +182,8 @@ public class SRFCovidWOEEnterFragment extends Fragment {
     ArrayList<String> getAddressList;
     ArrayList<String> l_pincode = new ArrayList<>();
 
+    boolean OTPAccess;
+
     public SRFCovidWOEEnterFragment() {
         // Required empty public constructor
     }
@@ -212,9 +216,21 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         usercode = preferences.getString("USER_CODE", "");
         apikey = preferences.getString("API_KEY", "");
         scanIntegrator = IntentIntegrator.forSupportFragment(this);
+
+
+        try {
+            if (appPreferenceManager != null && appPreferenceManager.getCovidAccessResponseModel() != null) {
+                OTPAccess = appPreferenceManager.getCovidAccessResponseModel().isCovidOtpAllow();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
         initUI(view);
         initListeners();
         GetTestCode();
+
 
         setAgeSpinner(R.array.Patientsagespinner);
         spn_age.setSelection(0);
@@ -243,7 +259,6 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         } else {
             GlobalClass.toastyError(getContext(), MessageConstants.CHECK_INTERNET_CONN, false);
         }
-
     }
 
     private void initUI(View view) {
@@ -286,6 +301,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         tv_help = view.findViewById(R.id.tv_help);
         tv_help.setText(Html.fromHtml("<u> Help</u>"));
 
+
         setback = view.findViewById(R.id.setback);
         enter_barcode = view.findViewById(R.id.enter_barcode);
         reenter = view.findViewById(R.id.reenter);
@@ -320,6 +336,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         by_generate = view.findViewById(R.id.by_generate);
         by_sendsms = view.findViewById(R.id.by_sendsms);
         edt_email = view.findViewById(R.id.edt_email);
+        radiogrp2 = view.findViewById(R.id.radiogrp2);
 
         samplecollectionponit = view.findViewById(R.id.samplecollectionponit);
         samplecollectionponit.setText(Constants.setSCPmsg);
@@ -343,6 +360,16 @@ public class SRFCovidWOEEnterFragment extends Fragment {
 
         edt_barcode.setTransformationMethod(new AsteriskPasswordTransformationMethod());
         edt_re_enter_barcode.setTransformationMethod(new AsteriskPasswordTransformationMethod());
+
+        if (!OTPAccess) {
+            tv_help.setVisibility(View.VISIBLE);
+            btn_generate.setVisibility(View.VISIBLE);
+            radiogrp2.setVisibility(View.VISIBLE);
+        } else {
+            tv_help.setVisibility(View.GONE);
+            btn_generate.setVisibility(View.GONE);
+            radiogrp2.setVisibility(View.GONE);
+        }
 
         if (appPreferenceManager.getCovidAccessResponseModel().isDRC()) {
             edt_email.setHint("EMAIL ID*");
@@ -383,7 +410,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         img_camera_selfie.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (verifyotp) {
+                if (getVerifiedAllowed()) {
                     if (selfie_flag == 0) {
                         boolean result = Utility.checkPermission(activity);
                         if (result)
@@ -406,7 +433,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         img_gallery_other.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (verifyotp) {
+                if (getVerifiedAllowed()) {
                     if (checkPermission()) {
                         if (other_file != null && other_file1 != null) {
                             GlobalClass.showCustomToast(activity, "You can upload only two images", 0);
@@ -415,7 +442,8 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                             isadhar = false;
                             isvial = false;
                             isother = true;
-                            chooseFromGallery();
+//                            chooseFromGallery();
+                            GlobalClass.cropImageFullScreenFragment(SRFCovidWOEEnterFragment.this, 2);
                         }
                     } else {
                         requestPermission();
@@ -429,7 +457,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         img_camera_other.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (verifyotp) {
+                if (getVerifiedAllowed()) {
                     if (checkPermission()) {
                         if (other_file != null && other_file1 != null) {
                             GlobalClass.showCustomToast(activity, "You can upload only two images", 0);
@@ -439,7 +467,8 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                             isvial = false;
                             isother = true;
                             iscamera = false;
-                            openCamera();
+//                            openCamera();
+                            GlobalClass.cropImageFullScreenFragment(SRFCovidWOEEnterFragment.this, 0);
                         }
                     } else {
                         requestPermission();
@@ -453,7 +482,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         img_gallery_vial.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (verifyotp) {
+                if (getVerifiedAllowed()) {
                     if (checkPermission()) {
                         if (vial_file != null) {
                             GlobalClass.showCustomToast(activity, "You can upload only one images", 0);
@@ -478,7 +507,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         img_camera_vial.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (verifyotp) {
+                if (getVerifiedAllowed()) {
                     if (checkPermission()) {
                         if (vial_file != null) {
                             GlobalClass.showCustomToast(activity, "You can upload only one images", 0);
@@ -503,7 +532,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                if (verifyotp) {
+                if (getVerifiedAllowed()) {
                     if (checkPermission()) {
                         if (aadhar_file != null && aadhar_file1 != null) {
                             GlobalClass.showCustomToast(activity, "You can upload only two images", 0);
@@ -513,7 +542,8 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                             isvial = false;
                             isother = false;
                             iscamera = false;
-                            openCamera();
+//                            openCamera();
+                            GlobalClass.cropImageFullScreenFragment(SRFCovidWOEEnterFragment.this, 0);
                         }
                     } else {
                         requestPermission();
@@ -528,7 +558,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                if (verifyotp) {
+                if (getVerifiedAllowed()) {
                     if (checkPermission()) {
                         if (aadhar_file != null && aadhar_file1 != null) {
                             GlobalClass.showCustomToast(activity, "You can upload only two images", 0);
@@ -537,7 +567,8 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                             isadhar = true;
                             isvial = false;
                             isother = false;
-                            chooseFromGallery();
+//                            chooseFromGallery();
+                            GlobalClass.cropImageFullScreenFragment(SRFCovidWOEEnterFragment.this, 2);
                         }
                     } else {
                         requestPermission();
@@ -552,7 +583,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         img_camera_prescription.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (verifyotp) {
+                if (getVerifiedAllowed()) {
                     if (checkPermission()) {
                         if (presc_file != null) {
                             GlobalClass.showCustomToast(activity, "You can upload only one image", 0);
@@ -562,7 +593,8 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                             isvial = false;
                             isother = false;
                             iscamera = false;
-                            openCamera();
+//                            openCamera();
+                            GlobalClass.cropImageFullScreenFragment(SRFCovidWOEEnterFragment.this, 0);
                         }
                     } else {
                         requestPermission();
@@ -576,7 +608,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                if (verifyotp) {
+                if (getVerifiedAllowed()) {
                     if (checkPermission()) {
                         if (presc_file != null) {
                             GlobalClass.showCustomToast(activity, "You can upload only one image", 0);
@@ -585,7 +617,8 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                             isadhar = false;
                             isvial = false;
                             isother = false;
-                            chooseFromGallery();
+//                            chooseFromGallery();
+                            GlobalClass.cropImageFullScreenFragment(SRFCovidWOEEnterFragment.this, 2);
                         }
                     } else {
                         requestPermission();
@@ -644,7 +677,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
                 if (enter_barcode.getText().length() != 8) {
-                    Toast.makeText(activity, "Enter Valid Enter Barcode", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(activity, "Enter Valid Enter Barcode", Toast.LENGTH_SHORT).show();
                 } else {
                     if (s.toString().equalsIgnoreCase(enter_barcode.getText().toString())) {
                         verifyBarcode(s.toString());
@@ -1268,6 +1301,14 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                         edt_missed_mobile.setText("");
                     }
                 }
+
+                if (!OTPAccess) {
+                    if (enteredString.length() == 10) {
+                        mobileverify(edt_missed_mobile.getText().toString());
+                    }
+                } else {
+                    buttonval();
+                }
             }
 
             @Override
@@ -1428,8 +1469,8 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         covidRateReqModel.setAPIKEY("" + apikey);
         covidRateReqModel.setTestcode("" + Testcode);
 
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
-        Call<Covidratemodel> covidratemodelCall = postAPIInteface.displayrates(covidRateReqModel);
+        PostAPIInterface postAPIInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInterface.class);
+        Call<Covidratemodel> covidratemodelCall = postAPIInterface.displayrates(covidRateReqModel);
         covidratemodelCall.enqueue(new Callback<Covidratemodel>() {
             @Override
             public void onResponse(Call<Covidratemodel> call, Response<Covidratemodel> response) {
@@ -1538,7 +1579,12 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         edt_verifycc.getText().clear();
         edt_missed_mobile.setEnabled(true);
         edt_missed_mobile.setClickable(true);
-        btn_generate.setVisibility(View.VISIBLE);
+        if (!OTPAccess) {
+            btn_generate.setVisibility(View.VISIBLE);
+        } else {
+            btn_generate.setVisibility(View.GONE);
+        }
+        spr_test.setSelection(0);
         btn_generate.setEnabled(true);
         btn_generate.setClickable(true);
         btn_verify.setClickable(true);
@@ -1728,12 +1774,12 @@ public class SRFCovidWOEEnterFragment extends Fragment {
 
     private void mobileverify(String mobileno) {
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
+        PostAPIInterface postAPIInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInterface.class);
         CoVerifyMobReq coVerifyMobReq = new CoVerifyMobReq();
         coVerifyMobReq.setApi_key(apikey);
         coVerifyMobReq.setMobile(mobileno);
         coVerifyMobReq.setScode(usercode);
-        final Call<COVerifyMobileResponse> covidmis_responseCall = postAPIInteface.covmobileVerification(coVerifyMobReq);
+        final Call<COVerifyMobileResponse> covidmis_responseCall = postAPIInterface.covmobileVerification(coVerifyMobReq);
         covidmis_responseCall.enqueue(new Callback<COVerifyMobileResponse>() {
             @Override
             public void onResponse(Call<COVerifyMobileResponse> call, Response<COVerifyMobileResponse> response) {
@@ -1992,6 +2038,85 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                         btn_choosefile_vial.setTextColor(getResources().getColor(R.color.black));
                         buttonval();
                     }
+                }  else if (ispresciption) {
+//                    presc_file = new File(camera.getCameraBitmapPath());
+                    presc_file = ImagePicker.Companion.getFile(data);
+                    lin_pres_preview.setVisibility(View.VISIBLE);
+                    txt_presfileupload.setVisibility(View.VISIBLE);
+                    txt_presfileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                    txt_presfileupload.setPaintFlags(txt_presfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                    txt_nofilepresc.setVisibility(View.GONE);
+                    presclist = new ArrayList<>();
+                    presclist.clear();
+                    presclist.add(presc_file.toString());
+                    if (presc_file != null) {
+                        ispresciption = false;
+                        btn_choosefile_presc.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
+                        btn_choosefile_presc.setTextColor(getResources().getColor(R.color.black));
+                        buttonval();
+                    }
+                } else if (isadhar) {
+                    if (lin_adhar_images.getVisibility() == View.VISIBLE && aadhar_file != null) {
+                        aadhar_file1 = ImagePicker.Companion.getFile(data);
+                        lin_adhar_images.setVisibility(View.VISIBLE);
+                        txt_adharfileupload.setVisibility(View.VISIBLE);
+                        txt_adharfileupload.setText("2 " + getResources().getString(R.string.imgupload));
+                        txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                        txt_nofileadhar.setVisibility(View.GONE);
+                        aadharlist.add(aadhar_file1.toString());
+                        CallAadharImageOCR(aadhar_file1);
+                    } else {
+                        aadhar_file = ImagePicker.Companion.getFile(data);
+                        lin_adhar_images.setVisibility(View.VISIBLE);
+                        txt_adharfileupload.setVisibility(View.VISIBLE);
+                        txt_adharfileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                        txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                        txt_nofileadhar.setVisibility(View.GONE);
+                        aadharlist.add(aadhar_file.toString());
+                        CallAadharImageOCR(aadhar_file);
+                    }
+                    if (aadhar_file != null && aadhar_file1 != null) {
+                        isadhar = false;
+                        lin_adhar_images.setVisibility(View.VISIBLE);
+                        txt_adharfileupload.setVisibility(View.VISIBLE);
+                        txt_adharfileupload.setText("2 " + getResources().getString(R.string.imgupload));
+                        txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                        btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
+                        btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.black));
+                    }
+                    buttonval();
+                    lin_adhar_images.setVisibility(View.VISIBLE);
+                } else if (isother) {
+                    if (lin_other_images.getVisibility() == View.VISIBLE && other_file != null) {
+                        other_file1 = ImagePicker.Companion.getFile(data);
+
+                        lin_other_images.setVisibility(View.VISIBLE);
+                        txt_otherfileupload.setVisibility(View.VISIBLE);
+                        txt_otherfileupload.setText("2 " + getResources().getString(R.string.imgupload));
+                        txt_otherfileupload.setPaintFlags(txt_otherfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                        txt_nofileother.setVisibility(View.GONE);
+                        otherlist.add(other_file1.toString());
+                    } else {
+                        other_file = ImagePicker.Companion.getFile(data);
+                        lin_other_images.setVisibility(View.VISIBLE);
+                        txt_otherfileupload.setVisibility(View.VISIBLE);
+                        txt_otherfileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                        txt_otherfileupload.setPaintFlags(txt_otherfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                        txt_nofileother.setVisibility(View.GONE);
+                        otherlist.add(other_file.toString());
+                    }
+                    if (other_file != null && other_file1 != null) {
+                        isother = false;
+                        btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
+                        btn_choosefile_other.setTextColor(getResources().getColor(R.color.black));
+                        lin_other_images.setVisibility(View.VISIBLE);
+                        txt_otherfileupload.setVisibility(View.VISIBLE);
+                        txt_otherfileupload.setText("2 " + getResources().getString(R.string.imgupload));
+                        txt_otherfileupload.setPaintFlags(txt_otherfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
+                    }
+                    buttonval();
+                    lin_other_images.setVisibility(View.VISIBLE);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -2416,14 +2541,14 @@ public class SRFCovidWOEEnterFragment extends Fragment {
 
     private void generateOtP(String mobileno) {
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
+        PostAPIInterface postAPIInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInterface.class);
 
         COVIDgetotp_req coviDgetotp_req = new COVIDgetotp_req();
         coviDgetotp_req.setApi_key(apikey);
         coviDgetotp_req.setMobile(mobileno);
         coviDgetotp_req.setScode(usercode);
 
-        Call<Covidotpresponse> covidotpresponseCall = postAPIInteface.generateotp(coviDgetotp_req);
+        Call<Covidotpresponse> covidotpresponseCall = postAPIInterface.generateotp(coviDgetotp_req);
         covidotpresponseCall.enqueue(new Callback<Covidotpresponse>() {
             @Override
             public void onResponse(Call<Covidotpresponse> call, Response<Covidotpresponse> response) {
@@ -2455,14 +2580,14 @@ public class SRFCovidWOEEnterFragment extends Fragment {
 
     private void validateotp() {
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
+        PostAPIInterface postAPIInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInterface.class);
         Covid_validateotp_req covid_validateotp_req = new Covid_validateotp_req();
         covid_validateotp_req.setApi_key(apikey);
         covid_validateotp_req.setMobile(edt_missed_mobile.getText().toString());
         covid_validateotp_req.setOtp(edt_verifycc.getText().toString());
         covid_validateotp_req.setScode(usercode);
 
-        Call<Covid_validateotp_res> covidotpresponseCall = postAPIInteface.validateotp(covid_validateotp_req);
+        Call<Covid_validateotp_res> covidotpresponseCall = postAPIInterface.validateotp(covid_validateotp_req);
         covidotpresponseCall.enqueue(new Callback<Covid_validateotp_res>() {
             @Override
             public void onResponse(Call<Covid_validateotp_res> call, Response<Covid_validateotp_res> response) {
@@ -2504,14 +2629,14 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         return true;
     }
 
-    public void getUploadResponse(String response,String mobile) {
+    public void getUploadResponse(String response, String mobile) {
         JSONObject jsonObject = null;
         try {
             jsonObject = new JSONObject(response);
             String RESPONSE = jsonObject.optString("Response");
             String RESPONSEID = jsonObject.optString("ResId");
             if (!GlobalClass.isNull(RESPONSEID) && RESPONSEID.equalsIgnoreCase(Constants.RES0000)) {
-                new LogUserActivityTagging(activity,"WOE-SRF(COVID)",mobile);
+                new LogUserActivityTagging(activity, "WOE-SRF(COVID)", mobile);
                 Global.showCustomToast(activity, RESPONSE);
                 Constants.SRFcovidWOEfrag_flag = "1";
                 clearonreset();
@@ -3540,6 +3665,18 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         female_red.setVisibility(View.GONE);
         male.setVisibility(View.GONE);
         buttonval();
+    }
+
+    private boolean getVerifiedAllowed() {
+        if (OTPAccess) {
+            return true;
+        } else {
+            if (verifyotp) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 
 }

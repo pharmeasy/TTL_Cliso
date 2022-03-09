@@ -210,11 +210,11 @@ public class LeadIdAdapter extends RecyclerView.Adapter<LeadIdAdapter.ViewHolder
 
         } else {
             if (!GlobalClass.isNull(sample_type_array.get(position).getSpecimen_type())){
-                if (sample_type_array.get(position).getSpecimen_type().equalsIgnoreCase(Constants.FLUORIDE)) {
+                /*if (sample_type_array.get(position).getSpecimen_type().equalsIgnoreCase(Constants.FLUORIDE)) {
                     holder.scanBarcode.setText("(" + sample_type_array.get(position).getProducts() + ")" + sample_type_array.get(position).getSpecimen_type());
-                } else {
+                } else {*/
                     holder.scanBarcode.setText(sample_type_array.get(position).getSpecimen_type());
-                }
+//                }
             }
         }
 

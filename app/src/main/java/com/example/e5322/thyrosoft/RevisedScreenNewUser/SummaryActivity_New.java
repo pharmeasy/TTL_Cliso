@@ -1,6 +1,7 @@
 package com.example.e5322.thyrosoft.RevisedScreenNewUser;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -31,6 +32,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
@@ -141,6 +143,8 @@ public class SummaryActivity_New extends AppCompatActivity {
     String patientId;
     RequestQueue requestQueuePatientDetails;
     Summary_model summary_model;
+    ConnectionDetector cd;
+    private Activity mActivity;
 
     public static String Req_Date_Req(String time, String inputPattern, String outputPattern) {
 
@@ -168,6 +172,10 @@ public class SummaryActivity_New extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.summary_activity_new);
+
+        mActivity = SummaryActivity_New.this;
+        cd = new ConnectionDetector(mActivity);
+
         pat_type = (TextView) findViewById(R.id.pat_type);
         pat_sct = (TextView) findViewById(R.id.pat_sct);
         pat_name = (TextView) findViewById(R.id.pat_name);
@@ -346,7 +354,7 @@ public class SummaryActivity_New extends AppCompatActivity {
         patientGender = preferences.getString("gender", "");
 
 //        getFinalTime = GlobalClass.changetimeformate(getFinalTime);
-        getFinalTime= DateUtils.Req_Date_Req(getFinalTime, "hh:mm a", "HH:mm");
+        getFinalTime = DateUtils.Req_Date_Req(getFinalTime, "hh:mm a", "HH:mm");
         Log.e(TAG, "getFinalDate---->" + getFinalDate);
         Log.e(TAG, "getFinalTime---->" + getFinalTime);
 
@@ -443,7 +451,11 @@ public class SummaryActivity_New extends AppCompatActivity {
 
                                 patientId = patient_id_to_delete_tests;
                                 GlobalClass.summary_models = new ArrayList<>();
-                                getPatientDetails();
+                                if (cd.isConnectingToInternet()) {
+                                    getPatientDetails();
+                                } else {
+                                    GlobalClass.showTastyToast(mActivity, ToastFile.intConnection, 2);
+                                }
 //                                GlobalClass.getPatientIdforDeleteDetails = patients.get(position).getPatient_id().toString();
 
                             }

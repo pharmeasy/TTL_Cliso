@@ -30,6 +30,7 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.InputFilter;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -101,15 +102,17 @@ import com.example.e5322.thyrosoft.Models.Covidotpresponse;
 import com.example.e5322.thyrosoft.Models.MyPojo;
 import com.example.e5322.thyrosoft.Models.OTPrequest;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.AppPreferenceManager;
+import com.example.e5322.thyrosoft.Models.PincodeMOdel.BundleConstants;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.DateUtils;
 import com.example.e5322.thyrosoft.Models.RequestModels.GetPatientDetailsRequestModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.GetBarcodeDetailsResponseModel;
+import com.example.e5322.thyrosoft.Models.ResponseModels.GetBaselineDetailsResponseModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.PatientDetailsAPiResponseModel;
 import com.example.e5322.thyrosoft.Models.Tokenresponse;
 import com.example.e5322.thyrosoft.Models.ValidateOTPmodel;
 import com.example.e5322.thyrosoft.Models.VerifyotpModel;
 import com.example.e5322.thyrosoft.R;
-import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
+import com.example.e5322.thyrosoft.Retrofit.PostAPIInterface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.RevisedScreenNewUser.ProductLisitngActivityNew;
 import com.example.e5322.thyrosoft.SourceILSModel.LABS;
@@ -139,6 +142,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
@@ -177,7 +181,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     RadioButton by_missed, by_generate, by_sendsms;
     RelativeLayout rel_verify_mobile;
     RelativeLayout rel_mobno;
-    LinearLayout lin_generate_verify, lin_by_missed;
+    LinearLayout lin_generate_verify, lin_by_missed, lin_missed_verify;
     TextView tv_timer, tv_resetno, tv_mobileno;
     CountDownTimer countDownTimer;
     RadioGroup radiogrp2;
@@ -365,10 +369,16 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     TextView tv_help;
     EditText edt_email;
 
-    LinearLayout ll_email;
+    LinearLayout ll_email, LL_main2, ll_communication_main;
     List<String> hourSin, minuteSpin;
     private String CLIENT_TYPE;
-    CheckBox cb_kyc_verification;
+    CheckBox cb_kyc_verification, cb_report, cb_receipt, cb_comm, cb_sms, cb_email,cb_wa;
+    ArrayList<String> reportArray = new ArrayList<>();
+    ArrayList<String> typeArray = new ArrayList<>();
+    String mode;
+    TextView tv_baseline;
+    String Baseline, CMT, Shortage;
+    GetBaselineDetailsResponseModel getBaselineDetailsResponseModel;
 
     public Start_New_Woe() {
         // Required empty public constructor
@@ -397,8 +407,55 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         init();
         SetCurrenttime();
         listner();
+        showBaselineDetails();
+        showRewardsDialog();
 
         return viewMain;
+    }
+
+    public void showRewardsDialog() {
+        try {
+            if (Global.ToShowRewards) {
+                if (appPreferenceManager.getBaselineDetailsResponse().getBaseDetails() != null) {
+                    String URL = appPreferenceManager.getBaselineDetailsResponse().getBaseDetails().get(0).getURL();
+                    if (!GlobalClass.isNull(URL)) {
+                        String date = appPreferenceManager.getRewardPopUpDate();
+                        if (!date.equalsIgnoreCase(GlobalClass.getCurrentDate())) {
+                            appPreferenceManager.setRewardPopUpDate(GlobalClass.getCurrentDate());
+                            String pdfurl = URL.replaceAll("\\\\", "//");
+                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(pdfurl));
+                            startActivity(browserIntent);
+                        }
+                    }
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showBaselineDetails() {
+        try {
+            getBaselineDetailsResponseModel = new GetBaselineDetailsResponseModel();
+            getBaselineDetailsResponseModel = appPreferenceManager.getBaselineDetailsResponse();
+
+            if (getBaselineDetailsResponseModel != null && getBaselineDetailsResponseModel.getBaseDetails() != null) {
+                Baseline = "" + getBaselineDetailsResponseModel.getBaseDetails().get(0).getBASELINE();
+                CMT = "" + getBaselineDetailsResponseModel.getBaseDetails().get(0).getCURRENTMONTH();
+                Shortage = "" + getBaselineDetailsResponseModel.getBaseDetails().get(0).getINCREMENTAL();
+            }
+
+            if (GlobalClass.isNull(Baseline)) {
+                tv_baseline.setVisibility(View.GONE);
+            } else {
+                tv_baseline.setVisibility(View.VISIBLE);
+                tv_baseline.setSelected(true);
+                tv_baseline.setText("  BASELINE : " + GlobalClass.currencyFormat(Baseline) + "        " + "CMT : " + GlobalClass.currencyFormat(CMT) + "        " + "SHORTAGE : " + GlobalClass.currencyFormat(Shortage) + " ");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void SetCurrenttime() {
@@ -422,6 +479,155 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
 
     private void listner() {
+
+        cb_report.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mode = BundleConstants.REPORT;
+                if (isChecked) {
+                    reportArray.add(mode);
+                    LL_main2.setVisibility(View.VISIBLE);
+                   /* if (reportArray.contains("Communication")) {
+                        reportArray.clear();
+                    } else {
+                        reportArray.add(mode);
+                    }
+                    if (cb_comm.isChecked()) {
+                        cb_comm.setChecked(false);
+                    }
+                    LL_main2.setVisibility(View.VISIBLE);*/
+                } else {
+                    reportArray.remove(mode);
+                    if (cb_receipt.isChecked() || cb_comm.isChecked()) {
+                        LL_main2.setVisibility(View.VISIBLE);
+                    } else {
+                        setResetCommModes();
+                        LL_main2.setVisibility(View.GONE);
+                    }
+                }
+            }
+        });
+
+        cb_receipt.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mode = BundleConstants.RECEIPT;
+                if (isChecked) {
+                    /*if (reportArray.contains("Communication")) {
+                        reportArray.clear();
+                    } else {
+                        reportArray.add(mode);
+                    }
+                    if (cb_comm.isChecked()) {
+                        cb_comm.setChecked(false);
+                    } else {
+                        cb_report.setChecked(false);
+                        cb_comm.setChecked(false);
+                    }*/
+                    reportArray.add(mode);
+                    LL_main2.setVisibility(View.VISIBLE);
+                } else {
+                    reportArray.remove(mode);
+                    if (cb_report.isChecked() || cb_comm.isChecked()) {
+                        LL_main2.setVisibility(View.VISIBLE);
+                    } else {
+                        setResetCommModes();
+                        LL_main2.setVisibility(View.GONE);
+                    }
+                }
+            }
+        });
+
+        cb_comm.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mode = "Communication";
+                if (isChecked) {
+//                    checkArray();
+                    /*cb_receipt.setChecked(false);
+                    cb_report.setChecked(false);
+                    cb_sms.setChecked(true);
+                    cb_email.setChecked(true);*/
+                    reportArray.add(mode);
+                    LL_main2.setVisibility(View.VISIBLE);
+                } else {
+                    reportArray.remove(mode);
+                    if (cb_report.isChecked() || cb_receipt.isChecked()) {
+                        LL_main2.setVisibility(View.VISIBLE);
+                    } else {
+                        setResetCommModes();
+                        LL_main2.setVisibility(View.GONE);
+                    }
+                }
+            }
+        });
+
+        cb_sms.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    Global.CommModes = "SMS";
+                    cb_kyc_verification.setVisibility(View.GONE);
+                    typeArray.add(Global.CommModes);
+//                    cb_kyc_verification.setChecked(true);
+                    ll_miscallotp.setVisibility(View.VISIBLE);
+                } else {
+                    if (!cb_wa.isChecked()){
+                        ll_miscallotp.setVisibility(View.GONE);
+                        cb_kyc_verification.setVisibility(View.VISIBLE);
+                        cb_kyc_verification.setChecked(false);
+                    }else{
+                        cb_kyc_verification.setVisibility(View.GONE);
+                        ll_miscallotp.setVisibility(View.VISIBLE);
+                    }
+                    if (typeArray.contains("SMS")) {
+                        typeArray.remove("SMS");
+                    }
+                    /*cb_kyc_verification.setChecked(false);
+                    ll_miscallotp.setVisibility(View.GONE);*/
+                }
+            }
+        });
+
+        cb_email.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    edt_email.setHint("EMAIL-ID*");
+                    Global.CommModes = "EMAIL";
+                    typeArray.add(Global.CommModes);
+                } else {
+                    if (typeArray.contains("EMAIL")) {
+                        typeArray.remove("EMAIL");
+                    }
+                    edt_email.setHint("EMAIL-ID");
+                }
+            }
+        });
+
+        cb_wa.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    cb_kyc_verification.setVisibility(View.GONE);
+                    Global.CommModes = "WhatsApp";
+                     typeArray.add(Global.CommModes);
+                    ll_miscallotp.setVisibility(View.VISIBLE);
+                }else{
+                    if (!cb_sms.isChecked()){
+                        ll_miscallotp.setVisibility(View.GONE);
+                        cb_kyc_verification.setVisibility(View.VISIBLE);
+                        cb_kyc_verification.setChecked(false);
+                    }else{
+                        cb_kyc_verification.setVisibility(View.GONE);
+                        ll_miscallotp.setVisibility(View.VISIBLE);
+                    }
+                    if (typeArray.contains("WhatsApp")){
+                        typeArray.remove("WhatsApp");
+                    }
+                }
+            }
+        });
 
         btn_generate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1023,12 +1229,33 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
     }
 
+    private void setResetCommModes() {
+        cb_email.setChecked(false);
+        cb_sms.setChecked(false);
+        cb_comm.setChecked(false);
+        cb_receipt.setChecked(false);
+        cb_report.setChecked(false);
+        cb_wa.setChecked(false);
+    }
+
+    private void checkArray() {
+        if (GlobalClass.isArraylistNotNull(reportArray) && reportArray.size() > 0) {
+            reportArray.clear();
+            mode = "Communication";
+            reportArray.add(mode);
+        } else {
+            mode = "Communication";
+            reportArray.add(mode);
+        }
+    }
+
     private void init() {
         mContext = getContext();
         cd = new ConnectionDetector(getActivity());
         appPreferenceManager = new AppPreferenceManager(getActivity());
 
         covidacc = appPreferenceManager.getCovidAccessResponseModel().isCovidRegistration();
+
 
         name = (AutoCompleteTextView) viewMain.findViewById(R.id.name);
         img_restPatientData = (ImageView) viewMain.findViewById(R.id.img_restPatientData);
@@ -1083,7 +1310,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         camp_spinner_olc = (Spinner) viewMain.findViewById(R.id.camp_spinner_olc);
         btechname = (Spinner) viewMain.findViewById(R.id.btech_spinner);
         timeampm = (Spinner) viewMain.findViewById(R.id.timeampm);
-        samplecollectionponit =  viewMain.findViewById(R.id.samplecollectionponit);
+        samplecollectionponit = viewMain.findViewById(R.id.samplecollectionponit);
         scp_name = (RecyclerView) viewMain.findViewById(R.id.scp_name);
         referedbyText = (AutoCompleteTextView) viewMain.findViewById(R.id.referedby);//
         radio = (TextView) viewMain.findViewById(R.id.radio);
@@ -1113,6 +1340,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         lin_generate_verify = viewMain.findViewById(R.id.lin_generate_verify);
         tv_mobileno = viewMain.findViewById(R.id.tv_mobileno);
         lin_by_missed = viewMain.findViewById(R.id.lin_missed_verify);
+        lin_missed_verify = viewMain.findViewById(R.id.lin_missed_verify);
         by_missed = viewMain.findViewById(R.id.by_missed);
         by_generate = viewMain.findViewById(R.id.by_generate);
         btn_verify = viewMain.findViewById(R.id.btn_verify);
@@ -1140,6 +1368,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         ref_check = (ImageView) viewMain.findViewById(R.id.ref_check);
         btn_clear_data = (Button) viewMain.findViewById(R.id.btn_clear_data);
         cb_kyc_verification = (CheckBox) viewMain.findViewById(R.id.cb_kyc_verification);
+        tv_baseline = viewMain.findViewById(R.id.tv_baseline);
 
         getshared = getActivity().getApplicationContext().getSharedPreferences("profile", MODE_PRIVATE);
 
@@ -1155,18 +1384,26 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         enter.setBackground(getResources().getDrawable(R.drawable.enter_button));
         enter_arrow_enter.setVisibility(View.VISIBLE);
 
+        cb_report = viewMain.findViewById(R.id.cb_report);
+        cb_receipt = viewMain.findViewById(R.id.cb_receipt);
+        cb_comm = viewMain.findViewById(R.id.cb_comm);
+        cb_sms = viewMain.findViewById(R.id.cb_sms);
+        cb_email = viewMain.findViewById(R.id.cb_email);
+        cb_wa = viewMain.findViewById(R.id.cb_wa);
+        LL_main2 = viewMain.findViewById(R.id.LL_main2);
+        ll_communication_main = viewMain.findViewById(R.id.ll_communication_main);
 
         if (Global.isKYC) {
+            cb_kyc_verification.setVisibility(View.GONE);
             by_sendsms.setVisibility(View.VISIBLE);
             by_generate.setVisibility(View.GONE);
             by_missed.setVisibility(View.GONE);
         } else {
+            cb_kyc_verification.setVisibility(View.GONE);
             by_missed.setVisibility(View.VISIBLE);
             by_generate.setVisibility(View.VISIBLE);
             by_sendsms.setVisibility(View.VISIBLE);
         }
-
-
 
 
         // Inflate the layout for this fragment
@@ -1224,6 +1461,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         saveDetails.remove("WOEbrand");
         saveDetails.remove("SR_NO");
         saveDetails.remove("EMAIL_ID");
+        saveDetails.remove("Communication");
+        saveDetails.remove("CommModes");
         saveDetails.commit();
 
         getCurrentDateandTime = new Date();
@@ -1249,109 +1488,89 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         myPojo = gson.fromJson(json, MyPojo.class);
 
         try {
-            if (myPojo != null) {
-                getBrandName = new ArrayList<>();
-                spinnerBrandName = new ArrayList<String>();
-                getDatafetch = new ArrayList();
-                getSubSource = new ArrayList();
-
-                try {
-                    if (myPojo.getMASTERS().getBRAND_LIST() != null) {
-                        for (int i = 0; i < myPojo.getMASTERS().getBRAND_LIST().length; i++) {
-                            getDatafetch.add(myPojo.getMASTERS().getBRAND_LIST()[i].getBrand_name());
-                            spinnerBrandName.add(myPojo.getMASTERS().getBRAND_LIST()[i].getBrand_name());
-                            camp_lists = myPojo.getMASTERS().getCAMP_LIST();
-                            // GlobalClass.getcamp_lists=camp_lists;
-
-                            if (myPojo.getMASTERS().getTSP_MASTER() != null) {
-                                String TspNumber = myPojo.getMASTERS().getTSP_MASTER().getNumber();
-                                SharedPreferences.Editor editor = getActivity().getSharedPreferences("TspNumber", 0).edit();
-                                editor.putString("TSPMobileNumber", TspNumber);
-                                editor.commit();
-                            }
-
-                        }
-
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            String date = appPreferenceManager.getWoMasterSyncDate();
+            if (!date.equalsIgnoreCase(GlobalClass.getCurrentDate())) {
+                requestJsonObject();
+            } else {
 
                 if (myPojo != null) {
-                    if (myPojo.getMASTERS() != null && myPojo.getMASTERS().getSUB_SOURCECODE() != null) {
-                        for (int i = 0; i < myPojo.getMASTERS().getSUB_SOURCECODE().length; i++) {
-                            getSubSource.add(myPojo.getMASTERS().getSUB_SOURCECODE()[i].getSub_source_code_pass());
+                    getBrandName = new ArrayList<>();
+                    spinnerBrandName = new ArrayList<String>();
+                    getDatafetch = new ArrayList();
+                    getSubSource = new ArrayList();
+
+                    try {
+                        if (myPojo.getMASTERS().getBRAND_LIST() != null) {
+                            for (int i = 0; i < myPojo.getMASTERS().getBRAND_LIST().length; i++) {
+                                getDatafetch.add(myPojo.getMASTERS().getBRAND_LIST()[i].getBrand_name());
+                                spinnerBrandName.add(myPojo.getMASTERS().getBRAND_LIST()[i].getBrand_name());
+                                camp_lists = myPojo.getMASTERS().getCAMP_LIST();
+                                // GlobalClass.getcamp_lists=camp_lists;
+
+                                if (myPojo.getMASTERS().getTSP_MASTER() != null) {
+                                    String TspNumber = myPojo.getMASTERS().getTSP_MASTER().getNumber();
+                                    SharedPreferences.Editor editor = getActivity().getSharedPreferences("TspNumber", 0).edit();
+                                    editor.putString("TSPMobileNumber", TspNumber);
+                                    editor.commit();
+                                }
+
+                            }
+
                         }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
 
-                }
-
-                spinnerTypeName = new ArrayList<>();
-                getTypeListfirst = new ArrayList<>();
-                getTypeListSMT = new ArrayList<>();
-
-                try {
-                    if (myPojo != null && myPojo.getMASTERS() != null && myPojo.getMASTERS().getBRAND_LIST() != null && myPojo.getMASTERS().getBRAND_LIST().length != 0) {
-                        if (myPojo.getMASTERS().getBRAND_LIST()[0].getBrand_type() != null) {
-                            for (int i = 0; i < myPojo.getMASTERS().getBRAND_LIST()[0].getBrand_type().length; i++) {
-                                getTypeListfirst.add(myPojo.getMASTERS().getBRAND_LIST()[0].getBrand_type()[i].getType());
+                    if (myPojo != null) {
+                        if (myPojo.getMASTERS() != null && myPojo.getMASTERS().getSUB_SOURCECODE() != null) {
+                            for (int i = 0; i < myPojo.getMASTERS().getSUB_SOURCECODE().length; i++) {
+                                getSubSource.add(myPojo.getMASTERS().getSUB_SOURCECODE()[i].getSub_source_code_pass());
                             }
                         }
+
                     }
 
+                    spinnerTypeName = new ArrayList<>();
+                    getTypeListfirst = new ArrayList<>();
+                    getTypeListSMT = new ArrayList<>();
 
-                    if (myPojo != null && myPojo.getMASTERS() != null && myPojo.getMASTERS().getBRAND_LIST() != null && myPojo.getMASTERS().getBRAND_LIST().length != 0) {
-                        if (myPojo.getMASTERS().getBRAND_LIST().length > 1) {
+                    try {
+                        if (myPojo != null && myPojo.getMASTERS() != null && myPojo.getMASTERS().getBRAND_LIST() != null && myPojo.getMASTERS().getBRAND_LIST().length != 0) {
+                            if (myPojo.getMASTERS().getBRAND_LIST()[0].getBrand_type() != null) {
+                                for (int i = 0; i < myPojo.getMASTERS().getBRAND_LIST()[0].getBrand_type().length; i++) {
+                                    getTypeListfirst.add(myPojo.getMASTERS().getBRAND_LIST()[0].getBrand_type()[i].getType());
+                                }
+                            }
+                        }
 
-                            if (myPojo.getMASTERS().getBRAND_LIST()[1].getBrand_name().contains("SMT")) {
 
-                                if (myPojo != null && myPojo.getMASTERS() != null && myPojo.getMASTERS().getBRAND_LIST() != null && myPojo.getMASTERS().getBRAND_LIST().length != 0) {
-                                    if (myPojo.getMASTERS().getBRAND_LIST()[1].getBrand_type() != null) {
-                                        for (int i = 0; i < myPojo.getMASTERS().getBRAND_LIST()[1].getBrand_type().length; i++) {
-                                            getTypeListSMT.add(myPojo.getMASTERS().getBRAND_LIST()[1].getBrand_type()[i].getType());
+                        if (myPojo != null && myPojo.getMASTERS() != null && myPojo.getMASTERS().getBRAND_LIST() != null && myPojo.getMASTERS().getBRAND_LIST().length != 0) {
+                            if (myPojo.getMASTERS().getBRAND_LIST().length > 1) {
+
+                                if (myPojo.getMASTERS().getBRAND_LIST()[1].getBrand_name().contains("SMT")) {
+
+                                    if (myPojo != null && myPojo.getMASTERS() != null && myPojo.getMASTERS().getBRAND_LIST() != null && myPojo.getMASTERS().getBRAND_LIST().length != 0) {
+                                        if (myPojo.getMASTERS().getBRAND_LIST()[1].getBrand_type() != null) {
+                                            for (int i = 0; i < myPojo.getMASTERS().getBRAND_LIST()[1].getBrand_type().length; i++) {
+                                                getTypeListSMT.add(myPojo.getMASTERS().getBRAND_LIST()[1].getBrand_type()[i].getType());
+                                            }
                                         }
                                     }
-                                }
 
-                                if (myPojo.getMASTERS().getBRAND_LIST()[2] != null) {
-                                    Brand_type[] c = myPojo.getMASTERS().getBRAND_LIST()[2].getBrand_type();
-                                    Brand_type c1 = new Brand_type();
-                                    getTypeListsecond = new ArrayList<>();
-                                    for (int j = 0; j < c.length; j++) {
-                                        System.out.println(c[j].getType());
-                                        String type12 = "";
-                                        type12 = c[j].getType();
-                                        getTypeListsecond.add(c[j].getType());
-                                    }
-                                }
-
-                                if (myPojo.getMASTERS().getBRAND_LIST()[3] != null) {
-                                    Brand_type[] data = myPojo.getMASTERS().getBRAND_LIST()[3].getBrand_type();
-                                    Brand_type d1 = new Brand_type();
-                                    getTypeListthird = new ArrayList<>();
-                                    for (int k = 0; k < data.length; k++) {
-                                        System.out.println(data[k].getType());
-                                        String type12 = "";
-                                        type12 = data[k].getType();
-                                        getTypeListthird.add(data[k].getType());
-                                    }
-                                }
-                            } else {
-                                if (myPojo.getMASTERS().getBRAND_LIST()[1] != null) {
-                                    Brand_type[] c = myPojo.getMASTERS().getBRAND_LIST()[1].getBrand_type();
-                                    Brand_type c1 = new Brand_type();
-                                    getTypeListsecond = new ArrayList<>();
-                                    for (int j = 0; j < c.length; j++) {
-                                        System.out.println(c[j].getType());
-                                        String type12 = "";
-                                        type12 = c[j].getType();
-                                        getTypeListsecond.add(c[j].getType());
-                                    }
-                                }
-
-                                try {
                                     if (myPojo.getMASTERS().getBRAND_LIST()[2] != null) {
-                                        Brand_type[] data = myPojo.getMASTERS().getBRAND_LIST()[2].getBrand_type();
+                                        Brand_type[] c = myPojo.getMASTERS().getBRAND_LIST()[2].getBrand_type();
+                                        Brand_type c1 = new Brand_type();
+                                        getTypeListsecond = new ArrayList<>();
+                                        for (int j = 0; j < c.length; j++) {
+                                            System.out.println(c[j].getType());
+                                            String type12 = "";
+                                            type12 = c[j].getType();
+                                            getTypeListsecond.add(c[j].getType());
+                                        }
+                                    }
+
+                                    if (myPojo.getMASTERS().getBRAND_LIST()[3] != null) {
+                                        Brand_type[] data = myPojo.getMASTERS().getBRAND_LIST()[3].getBrand_type();
                                         Brand_type d1 = new Brand_type();
                                         getTypeListthird = new ArrayList<>();
                                         for (int k = 0; k < data.length; k++) {
@@ -1361,80 +1580,107 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             getTypeListthird.add(data[k].getType());
                                         }
                                     }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
+                                } else {
+                                    if (myPojo.getMASTERS().getBRAND_LIST()[1] != null) {
+                                        Brand_type[] c = myPojo.getMASTERS().getBRAND_LIST()[1].getBrand_type();
+                                        Brand_type c1 = new Brand_type();
+                                        getTypeListsecond = new ArrayList<>();
+                                        for (int j = 0; j < c.length; j++) {
+                                            System.out.println(c[j].getType());
+                                            String type12 = "";
+                                            type12 = c[j].getType();
+                                            getTypeListsecond.add(c[j].getType());
+                                        }
+                                    }
+
+                                    try {
+                                        if (myPojo.getMASTERS().getBRAND_LIST()[2] != null) {
+                                            Brand_type[] data = myPojo.getMASTERS().getBRAND_LIST()[2].getBrand_type();
+                                            Brand_type d1 = new Brand_type();
+                                            getTypeListthird = new ArrayList<>();
+                                            for (int k = 0; k < data.length; k++) {
+                                                System.out.println(data[k].getType());
+                                                String type12 = "";
+                                                type12 = data[k].getType();
+                                                getTypeListthird.add(data[k].getType());
+                                            }
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
                                 }
+
                             }
 
-                        }
+                            SharedPreferences appSharedPrefsdata = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                            Gson gsondata = new Gson();
+                            String jsondata = appSharedPrefsdata.getString("savelabnames", "");
+                            obj = new SourceILSMainModel();
+                            obj = gsondata.fromJson(jsondata, SourceILSMainModel.class);
 
-                        SharedPreferences appSharedPrefsdata = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                        Gson gsondata = new Gson();
-                        String jsondata = appSharedPrefsdata.getString("savelabnames", "");
-                        obj = new SourceILSMainModel();
-                        obj = gsondata.fromJson(jsondata, SourceILSMainModel.class);
-
-                        if (obj != null) {
-                            if (obj.getMASTERS() != null && obj.getUSER_TYPE() != null) {
-                                callAdapter(obj);
+                            if (obj != null) {
+                                if (obj.getMASTERS() != null && obj.getUSER_TYPE() != null) {
+                                    callAdapter(obj);
+                                } else {
+                                    fetchData();
+                                }
                             } else {
                                 fetchData();
                             }
                         } else {
-                            fetchData();
+                            if (!isLoaded) {
+                                requestJsonObject();
+                            }
                         }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    String getAddress = "";
+
+                    if (myPojo != null && myPojo.getMASTERS() != null && myPojo.getMASTERS().getTSP_MASTER() != null) {
+                        getAddress = myPojo.getMASTERS().getTSP_MASTER().getAddress();
+                        SharedPreferences.Editor ScpAddress = getActivity().getSharedPreferences("ScpAddress", 0).edit();
+                        ScpAddress.putString("scp_addrr", getAddress);
+                        ScpAddress.commit();
+                    }
+
+                    if (myPojo != null && myPojo.getMASTERS() != null && myPojo.getMASTERS().getLAB_ALERTS() != null) {
+                        GlobalClass.putData = myPojo.getMASTERS().getLAB_ALERTS();
+                        for (int i = 0; i < GlobalClass.putData.length; i++) {
+                            GlobalClass.items.add(GlobalClass.putData[i]);
+                        }
+                    }
+
+                    SetBrandSpinner();
+
+
+                } else {
+                    if (!GlobalClass.isNetworkAvailable(getActivity())) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                        // Set the Alert Dialog Message
+                        builder.setMessage(ToastFile.intConnection)
+                                .setCancelable(false)
+                                .setPositiveButton("Retry",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog,
+                                                                int id) {
+                                                Start_New_Woe fragment = new Start_New_Woe();
+                                                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_mainLayout, fragment, fragment.getClass
+                                                        ().getSimpleName()).addToBackStack(null).commit();
+                                            }
+                                        });
+                        alert = builder.create();
+                        alert.show();
                     } else {
                         if (!isLoaded) {
                             requestJsonObject();
                         }
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
 
-                String getAddress = "";
-
-                if (myPojo != null && myPojo.getMASTERS() != null && myPojo.getMASTERS().getTSP_MASTER() != null) {
-                    getAddress = myPojo.getMASTERS().getTSP_MASTER().getAddress();
-                    SharedPreferences.Editor ScpAddress = getActivity().getSharedPreferences("ScpAddress", 0).edit();
-                    ScpAddress.putString("scp_addrr", getAddress);
-                    ScpAddress.commit();
-                }
-
-                if (myPojo != null && myPojo.getMASTERS() != null && myPojo.getMASTERS().getLAB_ALERTS() != null) {
-                    GlobalClass.putData = myPojo.getMASTERS().getLAB_ALERTS();
-                    for (int i = 0; i < GlobalClass.putData.length; i++) {
-                        GlobalClass.items.add(GlobalClass.putData[i]);
-                    }
-                }
-
-                SetBrandSpinner();
-
-
-            } else {
-                if (!GlobalClass.isNetworkAvailable(getActivity())) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                    // Set the Alert Dialog Message
-                    builder.setMessage(ToastFile.intConnection)
-                            .setCancelable(false)
-                            .setPositiveButton("Retry",
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog,
-                                                            int id) {
-
-                                            Start_New_Woe fragment = new Start_New_Woe();
-                                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_mainLayout, fragment, fragment.getClass
-                                                    ().getSimpleName()).addToBackStack(null).commit();
-                                        }
-                                    });
-                    alert = builder.create();
-                    alert.show();
-                } else {
-                    if (!isLoaded) {
-                        requestJsonObject();
-                    }
-                }
             }
+
         } catch (JsonSyntaxException e) {
             e.printStackTrace();
         }
@@ -1646,6 +1892,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         GlobalClass.hideProgress(getActivity(), barProgressDialog);
                         Log.e(TAG, "onResponse: RESPONSE" + response);
                         if (response != null) {
+                            //Sushil Store data on success
+                            appPreferenceManager.setWoMasterSyncDate(GlobalClass.getCurrentDate());
                             Gson gson = new Gson();
                             myPojo = new MyPojo();
                             myPojo = gson.fromJson(response.toString(), MyPojo.class);
@@ -1783,6 +2031,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                 startDataSetting();
                             }
                         } else {
+
                             Toast.makeText(mContext, ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
                         }
                     } catch (JsonSyntaxException e) {
@@ -1805,7 +2054,6 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                     3,
                     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             requestQueue.add(jsonObjectRequest2);
-            Log.e(TAG, "requestJsonObject: URL" + jsonObjectRequest2);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1853,13 +2101,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     private void mobileverify(String mobileno) {
 
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(getActivity());
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(getActivity(), Api.Cloud_base).create(PostAPIInteface.class);
+        PostAPIInterface postAPIInterface = RetroFit_APIClient.getInstance().getClient(getActivity(), Api.Cloud_base).create(PostAPIInterface.class);
         CoVerifyMobReq coVerifyMobReq = new CoVerifyMobReq();
         coVerifyMobReq.setApi_key(api_key);
         coVerifyMobReq.setMobile(mobileno);
         coVerifyMobReq.setScode(usercode);
 
-        final Call<COVerifyMobileResponse> covidmis_responseCall = postAPIInteface.covmobileVerification(coVerifyMobReq);
+        final Call<COVerifyMobileResponse> covidmis_responseCall = postAPIInterface.covmobileVerification(coVerifyMobReq);
         Log.e(TAG, "MOB VERIFY URL--->" + covidmis_responseCall.request().url());
         Log.e(TAG, "MOB VERIFY BODY--->" + new GsonBuilder().create().toJson(coVerifyMobReq));
         covidmis_responseCall.enqueue(new Callback<COVerifyMobileResponse>() {
@@ -1947,7 +2195,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         requestModel.setMobile(edt_missed_mobile.getText().toString().trim());
         requestModel.setScode(user);
 
-        PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(getActivity(), Api.Cloud_base).create(PostAPIInteface.class);
+        PostAPIInterface apiInterface = RetroFit_APIClient.getInstance().getClient(getActivity(), Api.Cloud_base).create(PostAPIInterface.class);
         Call<PatientDetailsAPiResponseModel> responseModelCall = apiInterface.CallGetPatientDetailsAPI(requestModel);
         final ProgressDialog progressDialog1 = GlobalClass.ShowprogressDialog(getActivity());
         responseModelCall.enqueue(new Callback<PatientDetailsAPiResponseModel>() {
@@ -2131,14 +2379,14 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
     private void generateOtP(String mobileno) {
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(getActivity());
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(getActivity(), Api.Cloud_base).create(PostAPIInteface.class);
+        PostAPIInterface postAPIInterface = RetroFit_APIClient.getInstance().getClient(getActivity(), Api.Cloud_base).create(PostAPIInterface.class);
 
         COVIDgetotp_req coviDgetotp_req = new COVIDgetotp_req();
         coviDgetotp_req.setApi_key(api_key);
         coviDgetotp_req.setMobile(mobileno);
         coviDgetotp_req.setScode(usercode);
 
-        Call<Covidotpresponse> covidotpresponseCall = postAPIInteface.generateotp(coviDgetotp_req);
+        Call<Covidotpresponse> covidotpresponseCall = postAPIInterface.generateotp(coviDgetotp_req);
         covidotpresponseCall.enqueue(new Callback<Covidotpresponse>() {
             @Override
             public void onResponse(Call<Covidotpresponse> call, retrofit2.Response<Covidotpresponse> response) {
@@ -2208,14 +2456,14 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     private void validateotp() {
 
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(getActivity());
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(getActivity(), Api.Cloud_base).create(PostAPIInteface.class);
+        PostAPIInterface postAPIInterface = RetroFit_APIClient.getInstance().getClient(getActivity(), Api.Cloud_base).create(PostAPIInterface.class);
         Covid_validateotp_req covid_validateotp_req = new Covid_validateotp_req();
         covid_validateotp_req.setApi_key(api_key);
         covid_validateotp_req.setMobile(edt_missed_mobile.getText().toString());
         covid_validateotp_req.setOtp(edt_verifycc.getText().toString());
         covid_validateotp_req.setScode(usercode);
 
-        Call<Covid_validateotp_res> covidotpresponseCall = postAPIInteface.validateotp(covid_validateotp_req);
+        Call<Covid_validateotp_res> covidotpresponseCall = postAPIInterface.validateotp(covid_validateotp_req);
         covidotpresponseCall.enqueue(new Callback<Covid_validateotp_res>() {
             @Override
             public void onResponse(Call<Covid_validateotp_res> call, retrofit2.Response<Covid_validateotp_res> response) {
@@ -2269,12 +2517,15 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     }
 
     private void startDataSetting() {
-
         brand_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
                 if (brand_spinner.getSelectedItem().toString().equalsIgnoreCase("TTL")) {
+                    ll_communication_main.setVisibility(View.VISIBLE);
+                    ll_miscallotp.setVisibility(View.GONE);
+                    cb_kyc_verification.setVisibility(View.VISIBLE);
+
                     ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(mContext, R.layout.name_age_spinner, getTypeListfirst);
                     adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     selectTypeSpinner.setAdapter(adapter2);
@@ -2282,7 +2533,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                     selectTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> parent, View view, int position, final long id) {
-
+                            setResetCommModes();
                             resetOTPFields();
                             SetAutoCompleteViewAdapterToView(false);  // TODO code to reset patient details selected from Dropdownlist
 
@@ -2310,9 +2561,11 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                     tv_timer.setVisibility(View.GONE);
                                     edt_missed_mobile.setHint("Mobile Number");
 
-//                                    ll_miscallotp.setVisibility(View.VISIBLE);
+                                    ll_miscallotp.setVisibility(View.GONE);
                                     cb_kyc_verification.setVisibility(View.VISIBLE);
                                     checkKYCIsChecked();
+//
+                                    checkDuplicate();
                                     radiogrp2.check(by_sendsms.getId());
                                     ll_email.setVisibility(View.VISIBLE);
                                     leadlayout.setVisibility(View.GONE);
@@ -2321,6 +2574,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                     leadlayout.setVisibility(View.GONE);
                                     next_btn.setVisibility(View.VISIBLE);
                                     vial_number.setVisibility(View.VISIBLE);
+                                    ll_communication_main.setVisibility(View.VISIBLE);
                                     camp_layout_woe.setVisibility(View.GONE);
                                     btech_linear_layout.setVisibility(View.GONE);
                                     home_layout.setVisibility(View.GONE);
@@ -2457,10 +2711,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 conertage = Integer.parseInt(ageString);
                                             }
 
+//                                            checkSelectMode();
+                                            checkDuplicate();
+
                                             if (getVial_numbver.equals("")) {
                                                 vial_number.setError(ToastFile.vial_no);
                                                 Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
-                                            }else if (edt_missed_mobile.getText().toString().startsWith("0") ||
+                                            } else if (edt_missed_mobile.getText().toString().startsWith("0") ||
                                                     edt_missed_mobile.getText().toString().startsWith("1") ||
                                                     edt_missed_mobile.getText().toString().startsWith("2") ||
                                                     edt_missed_mobile.getText().toString().startsWith("3") ||
@@ -2517,11 +2774,16 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                         GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
                                                         edt_email.requestFocus();
                                                     } else {
+                                                        if (checkSelectMode()) {
                                                         TTL_ILS();
                                                     }
+                                                    }
                                                 } else {
+                                                    if (checkSelectMode()) {
                                                     TTL_ILS();
                                                 }
+                                                        ;
+                                                    }
 //                                                }
                                             }
                                         }
@@ -2541,9 +2803,11 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         tv_mob_note.setVisibility(View.GONE);
                                     } else if (getOTPFlag().equalsIgnoreCase("YES")) {
                                         // Disablefields();
-//                                        ll_miscallotp.setVisibility(View.VISIBLE);
+                                        ll_miscallotp.setVisibility(View.GONE);
                                         cb_kyc_verification.setVisibility(View.VISIBLE);
                                         checkKYCIsChecked();
+//
+                                        checkDuplicate();
                                         radiogrp2.check(by_sendsms.getId());
                                     } else {
                                         GlobalClass.redirectToLogin(getActivity());
@@ -2569,7 +2833,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                     home_layout.setVisibility(View.VISIBLE);
                                     vial_number.setVisibility(View.VISIBLE);
                                     ll_email.setVisibility(View.VISIBLE);
-
+                                    ll_communication_main.setVisibility(View.VISIBLE);
                                     labname_linear.setVisibility(View.GONE);
                                     ref_check.setVisibility(View.GONE);
                                     Home_mobile_number_kyc.setVisibility(View.GONE);
@@ -2811,6 +3075,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 conertage = Integer.parseInt(ageString);
                                             }
 
+                                            checkDuplicate();
+
                                             if (getVial_numbver.equals("")) {
                                                 vial_number.setError(ToastFile.vial_no);
                                                 Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
@@ -2875,10 +3141,14 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                         GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
                                                         edt_email.requestFocus();
                                                     } else {
+                                                        if (checkSelectMode()) {
                                                         TTL_DPS();
                                                     }
+                                                    }
                                                 } else {
+                                                    if (checkSelectMode()) {
                                                     TTL_DPS();
+                                                }
                                                 }
 //                                                }
 
@@ -2899,7 +3169,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         tv_mob_note.setVisibility(View.GONE);
                                     } else if (getOTPFlag().equalsIgnoreCase("YES")) {
                                         // Disablefields();
-//                                        ll_miscallotp.setVisibility(View.VISIBLE);
+                                        ll_miscallotp.setVisibility(View.GONE);
                                         cb_kyc_verification.setVisibility(View.VISIBLE);
                                         checkKYCIsChecked();
                                         radiogrp2.check(by_sendsms.getId());
@@ -2927,6 +3197,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                     ll_email.setVisibility(View.VISIBLE);
 
                                     vial_number.setVisibility(View.VISIBLE);
+                                    ll_communication_main.setVisibility(View.VISIBLE);
                                     mobile_number_kyc.setVisibility(View.GONE);
                                     labname_linear.setVisibility(View.GONE);
                                     patientAddress.setText("");
@@ -3064,6 +3335,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 conertage = Integer.parseInt(ageString);
                                             }
 
+//                                            checkSelectMode();
+                                            checkDuplicate();
+
                                             if (getVial_numbver.equals("")) {
                                                 vial_number.setError(ToastFile.vial_no);
                                                 Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
@@ -3127,10 +3401,14 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                         GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
                                                         edt_email.requestFocus();
                                                     } else {
+                                                        if (checkSelectMode()) {
                                                         TTL_HOME();
                                                     }
+                                                    }
                                                 } else {
+                                                    if (checkSelectMode()) {
                                                     TTL_HOME();
+                                                }
                                                 }
 //                                                }
 
@@ -3388,6 +3666,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                                         saveDetails.putString("woetype", typename);
                                                                         saveDetails.putString("SR_NO", getVial_numbver);
                                                                         saveDetails.putString("pincode", "");
+                                                                        saveDetails.putString("Communication", Global.Communication);
+                                                                        saveDetails.putString("CommModes", Global.CommModes);
                                                                         saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
                                                                         saveDetails.commit();
                                                                         sDialog.dismissWithAnimation();
@@ -3426,6 +3706,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                         saveDetails.putString("woetype", typename);
                                                         saveDetails.putString("SR_NO", getVial_numbver);
                                                         saveDetails.putString("pincode", "");
+                                                        saveDetails.putString("Communication", Global.Communication);
+                                                        saveDetails.putString("CommModes", Global.CommModes);
                                                         saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
                                                         saveDetails.commit();
                                                     }
@@ -3453,6 +3735,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                 ll_miscallotp.setVisibility(View.GONE);
                                 cb_kyc_verification.setVisibility(View.GONE);
                                 vial_number.setVisibility(View.GONE);
+                                ll_communication_main.setVisibility(View.GONE);
                                 camp_layout_woe.setVisibility(View.GONE);
                                 ll_email.setVisibility(View.GONE);
                                 btech_linear_layout.setVisibility(View.GONE);
@@ -3545,6 +3828,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                 pincode_linear_data.setVisibility(View.GONE);
                                 barcode_layout.setVisibility(View.VISIBLE);
                                 vial_number.setVisibility(View.GONE);
+                                ll_communication_main.setVisibility(View.GONE);
                                 camp_layout_woe.setVisibility(View.GONE);
                                 btech_linear_layout.setVisibility(View.GONE);
                                 home_layout.setVisibility(View.GONE);
@@ -3642,6 +3926,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         }
                     });
                 } else if (brand_spinner.getSelectedItem().toString().equalsIgnoreCase("NHL")) {
+                    ll_communication_main.setVisibility(View.GONE);
                     {
                         ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(mContext, R.layout.name_age_spinner, getTypeListfirst);
                         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -3650,7 +3935,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         selectTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
                             public void onItemSelected(AdapterView<?> parent, View view, int position, final long id) {
-
+                                setResetCommModes();
                                 resetOTPFields();
                                 SetAutoCompleteViewAdapterToView(false);  // TODO code to reset patient details selected from Dropdownlist
 
@@ -3824,6 +4109,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 if (!ageString.equals("")) {
                                                     conertage = Integer.parseInt(ageString);
                                                 }
+
+                                                checkDuplicate();
 
                                                 if (getVial_numbver.equals("")) {
                                                     vial_number.setError(ToastFile.vial_no);
@@ -4418,13 +4705,15 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 if (!ageString.equals("")) {
                                                     conertage = Integer.parseInt(ageString);
                                                 }
+                                                checkSelectMode();
+                                                checkDuplicate();
 
                                                 if (getVial_numbver.equals("")) {
                                                     vial_number.setError(ToastFile.vial_no);
                                                     Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
                                                 } /*else if (GlobalClass.isNull(edt_missed_mobile.getText().toString())) {
                                                     Toast.makeText(mContext, "Enter Mobile Number", Toast.LENGTH_SHORT).show();
-                                                }*/else if (edt_missed_mobile.getText().toString().startsWith("0") ||
+                                                }*/ else if (edt_missed_mobile.getText().toString().startsWith("0") ||
                                                         edt_missed_mobile.getText().toString().startsWith("1") ||
                                                         edt_missed_mobile.getText().toString().startsWith("2") ||
                                                         edt_missed_mobile.getText().toString().startsWith("3") ||
@@ -4650,7 +4939,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                     if (!ageString.equals("")) {
                                                         conertage = Integer.parseInt(ageString);
                                                     }
-
+                                                    checkSelectMode();
+                                                    checkDuplicate();
                                                     if (getVial_numbver.equals("")) {
                                                         vial_number.setError(ToastFile.vial_no);
                                                         Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
@@ -5003,6 +5293,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                     vial_number.getText().clear();
                     id_for_woe.getText().clear();
                     if (brand_spinner.getSelectedItem().toString().equalsIgnoreCase("SMT")) {
+                        ll_communication_main.setVisibility(View.GONE);
                         ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(mContext, R.layout.name_age_spinner, getTypeListSMT);
                         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         selectTypeSpinner.setAdapter(adapter2);
@@ -5011,6 +5302,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         selectTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
                             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                                setResetCommModes();
                                 resetOTPFields();
                                 SetAutoCompleteViewAdapterToView(false);  // TODO code to reset patient details selected from Dropdownlist
                                 if (selectTypeSpinner.getSelectedItem().equals("DPS")) {
@@ -5293,6 +5586,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             if (!ageString.equals("")) {
                                                 conertage = Integer.parseInt(ageString);
                                             }
+                                            checkSelectMode();
+                                            checkDuplicate();
 
                                             if (getVial_numbver.equals("")) {
                                                 vial_number.setError(ToastFile.vial_no);
@@ -5821,6 +6116,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
 
                     } else if (brand_spinner.getSelectedItem().toString().equalsIgnoreCase("EQNX")) {
+                        ll_communication_main.setVisibility(View.GONE);
                         vial_number.getText().clear();
                         id_for_woe.getText().clear();
 
@@ -5831,6 +6127,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         selectTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
                             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                setResetCommModes();
                                 resetOTPFields();
                                 SetAutoCompleteViewAdapterToView(false);  // TODO code to reset patient details selected from Dropdownlist
                                 if (selectTypeSpinner.getSelectedItemPosition() == 0) {
@@ -6009,7 +6306,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 Toast.makeText(mContext, "Enter Valid Number", Toast.LENGTH_SHORT).show();
                                             } else if (edt_missed_mobile.getText().toString().length() > 0 && edt_missed_mobile.getText().toString().length() < 10) {
                                                 Toast.makeText(mContext, ToastFile.crt_mob_num, Toast.LENGTH_SHORT).show();
-                                            }else if (nameString.equals("")) {
+                                            } else if (nameString.equals("")) {
                                                 name.setError(ToastFile.crt_name);
                                                 Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
                                             } else if (nameString.length() < 2) {
@@ -6330,7 +6627,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             if (getVial_numbver.equals("")) {
                                                 vial_number.setError(ToastFile.vial_no);
                                                 Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
-                                            }else if (edt_missed_mobile.getText().toString().startsWith("0") ||
+                                            } else if (edt_missed_mobile.getText().toString().startsWith("0") ||
                                                     edt_missed_mobile.getText().toString().startsWith("1") ||
                                                     edt_missed_mobile.getText().toString().startsWith("2") ||
                                                     edt_missed_mobile.getText().toString().startsWith("3") ||
@@ -6561,10 +6858,12 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             }
 
 
+                                            checkSelectMode();
+                                            checkDuplicate();
                                             if (getVial_numbver.equals("")) {
                                                 vial_number.setError(ToastFile.vial_no);
                                                 Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
-                                            }else if (edt_missed_mobile.getText().toString().startsWith("0") ||
+                                            } else if (edt_missed_mobile.getText().toString().startsWith("0") ||
                                                     edt_missed_mobile.getText().toString().startsWith("1") ||
                                                     edt_missed_mobile.getText().toString().startsWith("2") ||
                                                     edt_missed_mobile.getText().toString().startsWith("3") ||
@@ -6636,6 +6935,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                             }
                         });
                     } else {
+                        ll_communication_main.setVisibility(View.GONE);
                         vial_number.getText().clear();
                         id_for_woe.getText().clear();
                         ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(mContext, R.layout.name_age_spinner, getTypeListsecond);
@@ -6645,6 +6945,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         selectTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
                             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                                setResetCommModes();
                                 resetOTPFields();
                                 SetAutoCompleteViewAdapterToView(false);  // TODO code to reset patient details selected from Dropdownlist
                                 if (selectTypeSpinner.getSelectedItemPosition() == 0) {
@@ -6795,6 +7097,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 conertage = Integer.parseInt(ageString);
                                             }
 
+
+                                            checkDuplicate();
                                             if (getVial_numbver.equals("")) {
                                                 vial_number.setError(ToastFile.vial_no);
                                                 Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
@@ -6807,7 +7111,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 Toast.makeText(mContext, "Enter Valid Number", Toast.LENGTH_SHORT).show();
                                             } else if (edt_missed_mobile.getText().toString().length() > 0 && edt_missed_mobile.getText().toString().length() < 10) {
                                                 Toast.makeText(mContext, ToastFile.crt_mob_num, Toast.LENGTH_SHORT).show();
-                                            }else if (nameString.equals("")) {
+                                            } else if (nameString.equals("")) {
                                                 name.setError(ToastFile.crt_name);
                                                 Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
                                             } else if (nameString.length() < 2) {
@@ -7128,7 +7432,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 conertage = Integer.parseInt(ageString);
                                             }
 
-
+                                            checkDuplicate();
                                             if (getVial_numbver.equals("")) {
                                                 vial_number.setError(ToastFile.vial_no);
                                                 Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
@@ -7141,7 +7445,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 Toast.makeText(mContext, "Enter Valid Number", Toast.LENGTH_SHORT).show();
                                             } else if (edt_missed_mobile.getText().toString().length() > 0 && edt_missed_mobile.getText().toString().length() < 10) {
                                                 Toast.makeText(mContext, ToastFile.crt_mob_num, Toast.LENGTH_SHORT).show();
-                                            }else if (nameString.equals("")) {
+                                            } else if (nameString.equals("")) {
                                                 name.setError(ToastFile.crt_name);
                                                 Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
                                             } else if (nameString.length() < 2) {
@@ -7365,6 +7669,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             if (!ageString.equals("")) {
                                                 conertage = Integer.parseInt(ageString);
                                             }
+//                                            checkSelectMode();
+                                            checkDuplicate();
                                             if (getVial_numbver.equals("")) {
                                                 vial_number.setError(ToastFile.vial_no);
                                                 Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
@@ -7377,7 +7683,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 Toast.makeText(mContext, "Enter Valid Number", Toast.LENGTH_SHORT).show();
                                             } else if (edt_missed_mobile.getText().toString().length() > 0 && edt_missed_mobile.getText().toString().length() < 10) {
                                                 Toast.makeText(mContext, ToastFile.crt_mob_num, Toast.LENGTH_SHORT).show();
-                                            }else if (nameString.equals("")) {
+                                            } else if (nameString.equals("")) {
                                                 name.setError(ToastFile.crt_name);
                                                 Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
                                             } else if (nameString.length() < 2) {
@@ -7456,6 +7762,71 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         });
     }
 
+    private void checkDuplicate() {
+        HashSet<String> listToSet = new HashSet<String>(reportArray);
+        List<String> listWithoutDuplicates = new ArrayList<String>(listToSet);
+        Global.Communication = TextUtils.join(",", listWithoutDuplicates);
+    }
+
+    private boolean checkSelectMode() {
+        if (cb_report.isChecked()) {
+            if (!cb_sms.isChecked() && !cb_email.isChecked() && !cb_wa.isChecked()) {
+                Toast.makeText(getActivity(), "Kindly select any one communication mode for report", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        }
+        if (cb_receipt.isChecked()) {
+            if (!cb_sms.isChecked() && !cb_email.isChecked() && !cb_wa.isChecked()) {
+                Toast.makeText(getActivity(), "Kindly select any one mode for receipt", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        }
+
+        if (cb_comm.isChecked()) {
+            if (!cb_sms.isChecked() && !cb_email.isChecked() && !cb_wa.isChecked()) {
+                Toast.makeText(getActivity(), "Kindly select any one mode for communication", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        }
+
+        if (cb_email.isChecked()) {
+            if (edt_email.getText().toString().isEmpty()) {
+                Toast.makeText(mContext, "Kindly enter Email-ID", Toast.LENGTH_SHORT).show();
+                return false;
+            } else if (!GlobalClass.isNull(edt_email.getText().toString().trim())) {
+                if (!GlobalClass.emailValidation(edt_email.getText().toString().trim())) {
+                    GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                    edt_email.requestFocus();
+                    return false;
+                }
+            }
+        }
+
+        if (cb_sms.isChecked()) {
+            if (lin_missed_verify.getVisibility() == View.VISIBLE) {
+                Toast.makeText(mContext, "Kindly verify mobile number", Toast.LENGTH_SHORT).show();
+                return false;
+            } else if (rel_verify_mobile.getVisibility() == View.VISIBLE) {
+                kycdata = tv_verifiedmob.getText().toString().trim();
+            } else {
+                Toast.makeText(mContext, "Kindly verify mobile number", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        }
+
+        if (cb_wa.isChecked()){
+            if (lin_missed_verify.getVisibility() == View.VISIBLE) {
+                Toast.makeText(mContext, "Kindly verify mobile number", Toast.LENGTH_SHORT).show();
+                return false;
+            } else if (rel_verify_mobile.getVisibility() == View.VISIBLE) {
+                kycdata = tv_verifiedmob.getText().toString().trim();
+            } else {
+                Toast.makeText(mContext, "Kindly verify mobile number", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        }
+        return true;
+    }
 
     private void Outlab_others_Home() {
    /*     if (kycdata.length() == 0) {
@@ -8237,6 +8608,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                             i.putExtra("date", getFinalDate);
                             GlobalClass.setReferenceBy_Name = referenceBy;
                             startActivity(i);
+                            Global.CommModes = TextUtils.join(",", typeArray);
                             Log.e(TAG, "onClick: lab add and lab id " + patientAddressdataToPass + labIDTopass);
                             SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
                             saveDetails.putString("name", nameString);
@@ -8259,6 +8631,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                             saveDetails.putString("WOEbrand", brandNames);
                             saveDetails.putString("SR_NO", getVial_numbver);
                             saveDetails.putString("pincode", pincode_pass);
+                            saveDetails.putString("Communication", Global.Communication);
+                            saveDetails.putString("CommModes", Global.CommModes);
                             saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
                             saveDetails.commit();
                             sDialog.dismissWithAnimation();
@@ -8275,6 +8649,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             i.putExtra("date", getFinalDate);
             GlobalClass.setReferenceBy_Name = referenceBy;
             startActivity(i);
+            Global.CommModes = TextUtils.join(",", typeArray);
             Log.e(TAG, "onClick: lab add and lab id " + patientAddressdataToPass + labIDTopass);
             SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
             saveDetails.putString("name", nameString);
@@ -8297,6 +8672,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             saveDetails.putString("WOEbrand", brandNames);
             saveDetails.putString("SR_NO", getVial_numbver);
             saveDetails.putString("pincode", pincode_pass);
+            saveDetails.putString("Communication", Global.Communication);
+            saveDetails.putString("CommModes", Global.CommModes);
             saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
             saveDetails.commit();
         }
@@ -8371,6 +8748,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                             }
 
                             Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
+                            Global.CommModes = TextUtils.join(",", typeArray);
                             i.putExtra("name", nameString);
                             i.putExtra("age", getFinalAge);
                             i.putExtra("gender", saveGenderId);
@@ -8400,6 +8778,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                             saveDetails.putString("WOEbrand", brandNames);
                             saveDetails.putString("SR_NO", getVial_numbver);
                             saveDetails.putString("pincode", pincode_pass);
+                            saveDetails.putString("Communication", Global.Communication);
+                            saveDetails.putString("CommModes", Global.CommModes);
                             saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
                             saveDetails.commit();
                             sDialog.dismissWithAnimation();
@@ -8414,6 +8794,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             }
 
             Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
+            Global.CommModes = TextUtils.join(",", typeArray);
             i.putExtra("name", nameString);
             i.putExtra("age", getFinalAge);
             i.putExtra("gender", saveGenderId);
@@ -8443,6 +8824,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             saveDetails.putString("WOEbrand", brandNames);
             saveDetails.putString("SR_NO", getVial_numbver);
             saveDetails.putString("pincode", pincode_pass);
+            saveDetails.putString("Communication", Global.Communication);
+            saveDetails.putString("CommModes", Global.CommModes);
             saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
             saveDetails.commit();
         }
@@ -8532,6 +8915,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             GlobalClass.setReferenceBy_Name = referenceBy;
             startActivity(i);
 
+            Global.CommModes = TextUtils.join(",", typeArray);
             Log.e(TAG, "onClick: lab add and lab id " + labAddressTopass + labIDTopass);
             SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
             saveDetails.putString("name", nameString);
@@ -8554,6 +8938,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             saveDetails.putString("WOEbrand", brandNames);
             saveDetails.putString("SR_NO", getVial_numbver);
             saveDetails.putString("pincode", "");
+            saveDetails.putString("Communication", Global.Communication);
+            saveDetails.putString("CommModes", Global.CommModes);
             saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
             saveDetails.commit();
             //  sDialog.dismissWithAnimation();
@@ -8570,6 +8956,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             GlobalClass.setReferenceBy_Name = referenceBy;
             startActivity(i);
 
+            Global.CommModes = TextUtils.join(",", typeArray);
 //            GlobalClass.Req_Date_Req(getFinalTime, "hh:mm a", "HH:mm:ss");
             Log.e(TAG, "onClick: lab add and lab id " + labAddressTopass + labIDTopass);
             SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
@@ -8593,6 +8980,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             saveDetails.putString("WOEbrand", brandNames);
             saveDetails.putString("SR_NO", getVial_numbver);
             saveDetails.putString("pincode", "");
+            saveDetails.putString("Communication", Global.Communication);
+            saveDetails.putString("CommModes", Global.CommModes);
             saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
             saveDetails.commit();
         }
@@ -8806,7 +9195,6 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             requestQueue.add(jsonObjectRequest2);
             jsonObjectRequest2.setShouldCache(false);
             GlobalClass.volleyRetryPolicy(jsonObjectRequest2);
-            Log.e(TAG, "getTspNumber: URL" + jsonObjectRequest2);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -9336,7 +9724,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
         int versionCode = pInfo.versionCode;
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(getContext());
-        PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(getActivity(), Api.THYROCARE).create(PostAPIInteface.class);
+        PostAPIInterface apiInterface = RetroFit_APIClient.getInstance().getClient(getActivity(), Api.THYROCARE).create(PostAPIInterface.class);
         OTPrequest otPrequest = new OTPrequest();
         otPrequest.setAppId(OTPAPPID);
         otPrequest.setPurpose("OTP");
@@ -9374,9 +9762,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     private void callsendOTP(String token, String requestId) {
 
         if (et_mobno.getText().toString().equals("")) {
-            Toast.makeText(getActivity(), "Please enter Mobile Number", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Please enter mobile number", Toast.LENGTH_SHORT).show();
         } else if (et_mobno.getText().toString().length() < 10) {
-            Toast.makeText(getActivity(), "Please enter valid Mobile Number", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Please enter valid mobile number", Toast.LENGTH_SHORT).show();
             lin_otp.setVisibility(View.GONE);
         } else {
 
@@ -9741,12 +10129,14 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             }
             dateShow.setText(dd11 + "-" + mm11 + "-" + year);
         }
+
     }
 
     private void LeadIdwoe() {
         Enablefields();
         vial_number.getText().toString();
         id_for_woe.getText().clear();
+        ll_communication_main.setVisibility(View.GONE);
         ll_mobileno_otp.setVisibility(View.GONE);
         ll_email.setVisibility(View.GONE);
         tv_mob_note.setVisibility(View.GONE);

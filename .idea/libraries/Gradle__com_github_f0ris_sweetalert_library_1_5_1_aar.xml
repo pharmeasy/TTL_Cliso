@@ -1,24 +1,11 @@
 <component name="libraryTable">
   <library name="Gradle: com.github.f0ris.sweetalert:library:1.5.1@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/library-1.5.1.aar/a568cd62fe93c4e0285f2044e6d95768/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/library-1.5.1.aar/a568cd62fe93c4e0285f2044e6d95768/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/library-1.5.1.aar/a568cd62fe93c4e0285f2044e6d95768/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/library-1.5.1.aar/97914391742a8ddf75b7a5c08157dfd3/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/library-1.5.1.aar/97914391742a8ddf75b7a5c08157dfd3/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/library-1.5.1.aar/97914391742a8ddf75b7a5c08157dfd3/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/library-1.5.1.aar/2392139a326461c8064e03d39fee56c7/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/library-1.5.1.aar/2392139a326461c8064e03d39fee56c7/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/library-1.5.1.aar/2392139a326461c8064e03d39fee56c7/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a665c00ab9c76f08d4a22e6bb757debe/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a665c00ab9c76f08d4a22e6bb757debe/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a665c00ab9c76f08d4a22e6bb757debe/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e4216a73f97c4982a79f0ecc41dc2b4e/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e4216a73f97c4982a79f0ecc41dc2b4e/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e4216a73f97c4982a79f0ecc41dc2b4e/AndroidManifest.xml" />
     </CLASSES>
-    <JAVADOC>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.f0ris.sweetalert/library/1.5.1/3271b7c01b8909d776ae7bfdc36104b0d9646c57/library-1.5.1-javadoc.jar!/" />
-    </JAVADOC>
-    <SOURCES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.f0ris.sweetalert/library/1.5.1/88fd2f7eecfc597fde6e7db1a147029d89f22cfc/library-1.5.1-sources.jar!/" />
-    </SOURCES>
+    <JAVADOC />
+    <SOURCES />
   </library>
 </component>

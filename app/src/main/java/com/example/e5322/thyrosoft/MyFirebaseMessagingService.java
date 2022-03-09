@@ -3,15 +3,18 @@ package com.example.e5322.thyrosoft;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import android.text.TextUtils;
-import com.example.e5322.thyrosoft.Controller.Log;
 
 import com.example.e5322.thyrosoft.API.Constants;
+import com.example.e5322.thyrosoft.Controller.Log;
+import com.example.e5322.thyrosoft.Models.PincodeMOdel.AppPreferenceManager;
 import com.example.e5322.thyrosoft.startscreen.SplashScreen;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.io.File;
 import java.util.HashMap;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
@@ -98,44 +101,26 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 resultIntent.putExtra("IsFromNotification", true);
                 resultIntent.putExtra("Screen_category", Screen_category);
 
-
-             /*   if (Screen_category == 0) {
-                    resultIntent.putExtra("Screen_category", Screen_category);
-                } else if (Screen_category > 0 && Screen_category <= 100) {
-                    if (!GlobalClass.isNull(Order_ID)) {
-                        resultIntent.putExtra("TechsoID", Screen_category);
-                        resultIntent.putExtra("Screen_category", Constants.SCR_1);
-                        resultIntent.putExtra("Order_ID", Order_ID);
-                    } else {
-                        resultIntent.putExtra("Screen_category", 0);
-                    }
-                } else if (Screen_category > 100) {
-                    int position = Screen_category - 100;
-                    resultIntent.putExtra("Screen_category", position);
-                    if (position == Constants.SCR_1) {
-                        resultIntent.putExtra("Order_ID", Order_ID);
-                    }
-                } else {
-                    resultIntent.putExtra("Screen_category", 0);
-                }*/
-
-
                 SharedPreferences prefs_user = getApplicationContext().getSharedPreferences("login_detail", 0);
                 String loginMobileNumber = prefs_user.getString("mobile", "");
 
-                if (!GlobalClass.isNull(mobile)) {
-                    if (mobile.equalsIgnoreCase(loginMobileNumber)) {
+                if (Screen_category == Constants.SCR_Logout) {
+                    logout();
+                }else {
+                    if (!GlobalClass.isNull(mobile)) {
+                        if (mobile.equalsIgnoreCase(loginMobileNumber)) {
+                            if (GlobalClass.isNull(imageUrl)) {
+                                showNotificationMessage(getApplicationContext(), title, message, timestamp, resultIntent, NotificationID, onGoing, autoCancel, bigText, Screen_category, Product_name);
+                            } else {
+                                showNotificationMessageWithBigImage(getApplicationContext(), title, message, timestamp, resultIntent, imageUrl, NotificationID, onGoing, autoCancel, bigText, Screen_category, Product_name);
+                            }
+                        }
+                    } else {
                         if (GlobalClass.isNull(imageUrl)) {
                             showNotificationMessage(getApplicationContext(), title, message, timestamp, resultIntent, NotificationID, onGoing, autoCancel, bigText, Screen_category, Product_name);
                         } else {
                             showNotificationMessageWithBigImage(getApplicationContext(), title, message, timestamp, resultIntent, imageUrl, NotificationID, onGoing, autoCancel, bigText, Screen_category, Product_name);
                         }
-                    }
-                } else {
-                    if (GlobalClass.isNull(imageUrl)) {
-                        showNotificationMessage(getApplicationContext(), title, message, timestamp, resultIntent, NotificationID, onGoing, autoCancel, bigText, Screen_category, Product_name);
-                    } else {
-                        showNotificationMessageWithBigImage(getApplicationContext(), title, message, timestamp, resultIntent, imageUrl, NotificationID, onGoing, autoCancel, bigText, Screen_category, Product_name);
                     }
                 }
             }
@@ -158,4 +143,102 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         notificationUtils.showNotificationMessage(title, message, timeStamp, intent, imageUrl, notificationID, onGoing, autoCancel, bigText, Screen_category, Product_name);
     }
+
+
+    public void logout() {
+        try {
+            AppPreferenceManager appPreferenceManager = new AppPreferenceManager(getApplicationContext());
+            appPreferenceManager.clearAllPreferences();
+
+            SharedPreferences.Editor getProfileName = getSharedPreferences("profilename", MODE_PRIVATE).edit();
+            getProfileName.clear();
+            getProfileName.commit();
+
+            SharedPreferences.Editor profile = getSharedPreferences("profile", MODE_PRIVATE).edit();
+            profile.clear();
+            profile.commit();
+
+
+            SharedPreferences.Editor getprodutcs = getSharedPreferences("MyObject", MODE_PRIVATE).edit();
+            getprodutcs.clear();
+            getprodutcs.commit();
+
+
+            SharedPreferences.Editor editor1 = getSharedPreferences("profilename", 0).edit();
+            editor1.clear();
+            editor1.commit();
+
+            SharedPreferences.Editor editor = getSharedPreferences("Userdetails", 0).edit();
+            editor.clear();
+            editor.commit();
+
+            SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
+            prefsEditor1.clear();
+            prefsEditor1.commit();
+
+            ClearScpSRFData();
+            clearApplicationData();
+
+            Constants.covidwoe_flag = "0";
+            Constants.covidfrag_flag = "0";
+            Constants.ratfrag_flag = "0";
+            Constants.pushrat_flag = 0;
+            Constants.universal = 0;
+            Constants.PUSHNOT_FLAG = false;
+
+            Intent f = new Intent(getApplicationContext(), SplashScreen.class);
+            f.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(f);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void ClearScpSRFData() {
+        try {
+            SharedPreferences.Editor asdas = getSharedPreferences("SCPDATA", 0).edit();
+            asdas.clear();
+            asdas.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void clearApplicationData() {
+        try {
+            File cacheDirectory = getCacheDir();
+            File applicationDirectory = new File(cacheDirectory.getParent());
+            if (applicationDirectory.exists()) {
+                String[] fileNames = applicationDirectory.list();
+                for (String fileName : fileNames) {
+                    if (!fileName.equals("lib")) {
+                        deleteFile(new File(applicationDirectory, fileName));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static boolean deleteFile(File file) {
+        boolean deletedAll = true;
+        try {
+            if (file != null) {
+                if (file.isDirectory()) {
+                    String[] children = file.list();
+                    for (int i = 0; i < children.length; i++) {
+                        deletedAll = deleteFile(new File(file, children[i])) && deletedAll;
+                    }
+                } else {
+                    deletedAll = file.delete();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return deletedAll;
+    }
+
 }

@@ -1,37 +1,37 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /media/cplf1040-pc/New Volume/Cliso_V1.0.1.95/Cliso_backupbeforePayment/Cliso_beforePayment/libraryViewPagerIndicator/src/main/AndroidManifest.xml:3:1-9:12
-INJECTED from /media/cplf1040-pc/New Volume/Cliso_V1.0.1.95/Cliso_backupbeforePayment/Cliso_beforePayment/libraryViewPagerIndicator/src/main/AndroidManifest.xml:3:1-9:12
-INJECTED from /media/cplf1040-pc/New Volume/Cliso_V1.0.1.95/Cliso_backupbeforePayment/Cliso_beforePayment/libraryViewPagerIndicator/src/main/AndroidManifest.xml:3:1-9:12
-INJECTED from /media/cplf1040-pc/New Volume/Cliso_V1.0.1.95/Cliso_backupbeforePayment/Cliso_beforePayment/libraryViewPagerIndicator/src/main/AndroidManifest.xml:3:1-9:12
-INJECTED from /media/cplf1040-pc/New Volume/Cliso_V1.0.1.95/Cliso_backupbeforePayment/Cliso_beforePayment/libraryViewPagerIndicator/src/main/AndroidManifest.xml:3:1-9:12
-INJECTED from /media/cplf1040-pc/New Volume/Cliso_V1.0.1.95/Cliso_backupbeforePayment/Cliso_beforePayment/libraryViewPagerIndicator/src/main/AndroidManifest.xml:3:1-9:12
-INJECTED from /media/cplf1040-pc/New Volume/Cliso_V1.0.1.95/Cliso_backupbeforePayment/Cliso_beforePayment/libraryViewPagerIndicator/src/main/AndroidManifest.xml:3:1-9:12
+ADDED from D:\AndroidStudioProjects\ClisoApp\libraryViewPagerIndicator\src\main\AndroidManifest.xml:3:1-9:12
+INJECTED from D:\AndroidStudioProjects\ClisoApp\libraryViewPagerIndicator\src\main\AndroidManifest.xml:3:1-9:12
+INJECTED from D:\AndroidStudioProjects\ClisoApp\libraryViewPagerIndicator\src\main\AndroidManifest.xml:3:1-9:12
+INJECTED from D:\AndroidStudioProjects\ClisoApp\libraryViewPagerIndicator\src\main\AndroidManifest.xml:3:1-9:12
+INJECTED from D:\AndroidStudioProjects\ClisoApp\libraryViewPagerIndicator\src\main\AndroidManifest.xml:3:1-9:12
+INJECTED from D:\AndroidStudioProjects\ClisoApp\libraryViewPagerIndicator\src\main\AndroidManifest.xml:3:1-9:12
+INJECTED from D:\AndroidStudioProjects\ClisoApp\libraryViewPagerIndicator\src\main\AndroidManifest.xml:3:1-9:12
 	package
-		ADDED from /media/cplf1040-pc/New Volume/Cliso_V1.0.1.95/Cliso_backupbeforePayment/Cliso_beforePayment/libraryViewPagerIndicator/src/main/AndroidManifest.xml:4:5-37
-		INJECTED from /media/cplf1040-pc/New Volume/Cliso_V1.0.1.95/Cliso_backupbeforePayment/Cliso_beforePayment/libraryViewPagerIndicator/src/main/AndroidManifest.xml
-		INJECTED from /media/cplf1040-pc/New Volume/Cliso_V1.0.1.95/Cliso_backupbeforePayment/Cliso_beforePayment/libraryViewPagerIndicator/src/main/AndroidManifest.xml
+		ADDED from D:\AndroidStudioProjects\ClisoApp\libraryViewPagerIndicator\src\main\AndroidManifest.xml:4:5-37
+		INJECTED from D:\AndroidStudioProjects\ClisoApp\libraryViewPagerIndicator\src\main\AndroidManifest.xml
+		INJECTED from D:\AndroidStudioProjects\ClisoApp\libraryViewPagerIndicator\src\main\AndroidManifest.xml
 	android:versionName
-		ADDED from /media/cplf1040-pc/New Volume/Cliso_V1.0.1.95/Cliso_backupbeforePayment/Cliso_beforePayment/libraryViewPagerIndicator/src/main/AndroidManifest.xml:6:5-32
-		INJECTED from /media/cplf1040-pc/New Volume/Cliso_V1.0.1.95/Cliso_backupbeforePayment/Cliso_beforePayment/libraryViewPagerIndicator/src/main/AndroidManifest.xml
-		INJECTED from /media/cplf1040-pc/New Volume/Cliso_V1.0.1.95/Cliso_backupbeforePayment/Cliso_beforePayment/libraryViewPagerIndicator/src/main/AndroidManifest.xml
+		ADDED from D:\AndroidStudioProjects\ClisoApp\libraryViewPagerIndicator\src\main\AndroidManifest.xml:6:5-32
+		INJECTED from D:\AndroidStudioProjects\ClisoApp\libraryViewPagerIndicator\src\main\AndroidManifest.xml
+		INJECTED from D:\AndroidStudioProjects\ClisoApp\libraryViewPagerIndicator\src\main\AndroidManifest.xml
 	xmlns:android
-		ADDED from /media/cplf1040-pc/New Volume/Cliso_V1.0.1.95/Cliso_backupbeforePayment/Cliso_beforePayment/libraryViewPagerIndicator/src/main/AndroidManifest.xml:3:11-69
+		ADDED from D:\AndroidStudioProjects\ClisoApp\libraryViewPagerIndicator\src\main\AndroidManifest.xml:3:11-69
 	android:versionCode
-		ADDED from /media/cplf1040-pc/New Volume/Cliso_V1.0.1.95/Cliso_backupbeforePayment/Cliso_beforePayment/libraryViewPagerIndicator/src/main/AndroidManifest.xml:5:5-29
-		INJECTED from /media/cplf1040-pc/New Volume/Cliso_V1.0.1.95/Cliso_backupbeforePayment/Cliso_beforePayment/libraryViewPagerIndicator/src/main/AndroidManifest.xml
-		INJECTED from /media/cplf1040-pc/New Volume/Cliso_V1.0.1.95/Cliso_backupbeforePayment/Cliso_beforePayment/libraryViewPagerIndicator/src/main/AndroidManifest.xml
+		ADDED from D:\AndroidStudioProjects\ClisoApp\libraryViewPagerIndicator\src\main\AndroidManifest.xml:5:5-29
+		INJECTED from D:\AndroidStudioProjects\ClisoApp\libraryViewPagerIndicator\src\main\AndroidManifest.xml
+		INJECTED from D:\AndroidStudioProjects\ClisoApp\libraryViewPagerIndicator\src\main\AndroidManifest.xml
 uses-sdk
-INJECTED from /media/cplf1040-pc/New Volume/Cliso_V1.0.1.95/Cliso_backupbeforePayment/Cliso_beforePayment/libraryViewPagerIndicator/src/main/AndroidManifest.xml reason: use-sdk injection requested
-INJECTED from /media/cplf1040-pc/New Volume/Cliso_V1.0.1.95/Cliso_backupbeforePayment/Cliso_beforePayment/libraryViewPagerIndicator/src/main/AndroidManifest.xml
-INJECTED from /media/cplf1040-pc/New Volume/Cliso_V1.0.1.95/Cliso_backupbeforePayment/Cliso_beforePayment/libraryViewPagerIndicator/src/main/AndroidManifest.xml
-INJECTED from /media/cplf1040-pc/New Volume/Cliso_V1.0.1.95/Cliso_backupbeforePayment/Cliso_beforePayment/libraryViewPagerIndicator/src/main/AndroidManifest.xml
-INJECTED from /media/cplf1040-pc/New Volume/Cliso_V1.0.1.95/Cliso_backupbeforePayment/Cliso_beforePayment/libraryViewPagerIndicator/src/main/AndroidManifest.xml
+INJECTED from D:\AndroidStudioProjects\ClisoApp\libraryViewPagerIndicator\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from D:\AndroidStudioProjects\ClisoApp\libraryViewPagerIndicator\src\main\AndroidManifest.xml
+INJECTED from D:\AndroidStudioProjects\ClisoApp\libraryViewPagerIndicator\src\main\AndroidManifest.xml
+INJECTED from D:\AndroidStudioProjects\ClisoApp\libraryViewPagerIndicator\src\main\AndroidManifest.xml
+INJECTED from D:\AndroidStudioProjects\ClisoApp\libraryViewPagerIndicator\src\main\AndroidManifest.xml
 	android:targetSdkVersion
-		INJECTED from /media/cplf1040-pc/New Volume/Cliso_V1.0.1.95/Cliso_backupbeforePayment/Cliso_beforePayment/libraryViewPagerIndicator/src/main/AndroidManifest.xml
-		ADDED from /media/cplf1040-pc/New Volume/Cliso_V1.0.1.95/Cliso_backupbeforePayment/Cliso_beforePayment/libraryViewPagerIndicator/src/main/AndroidManifest.xml
-		INJECTED from /media/cplf1040-pc/New Volume/Cliso_V1.0.1.95/Cliso_backupbeforePayment/Cliso_beforePayment/libraryViewPagerIndicator/src/main/AndroidManifest.xml
+		INJECTED from D:\AndroidStudioProjects\ClisoApp\libraryViewPagerIndicator\src\main\AndroidManifest.xml
+		ADDED from D:\AndroidStudioProjects\ClisoApp\libraryViewPagerIndicator\src\main\AndroidManifest.xml
+		INJECTED from D:\AndroidStudioProjects\ClisoApp\libraryViewPagerIndicator\src\main\AndroidManifest.xml
 	android:minSdkVersion
-		INJECTED from /media/cplf1040-pc/New Volume/Cliso_V1.0.1.95/Cliso_backupbeforePayment/Cliso_beforePayment/libraryViewPagerIndicator/src/main/AndroidManifest.xml
-		ADDED from /media/cplf1040-pc/New Volume/Cliso_V1.0.1.95/Cliso_backupbeforePayment/Cliso_beforePayment/libraryViewPagerIndicator/src/main/AndroidManifest.xml
-		INJECTED from /media/cplf1040-pc/New Volume/Cliso_V1.0.1.95/Cliso_backupbeforePayment/Cliso_beforePayment/libraryViewPagerIndicator/src/main/AndroidManifest.xml
+		INJECTED from D:\AndroidStudioProjects\ClisoApp\libraryViewPagerIndicator\src\main\AndroidManifest.xml
+		ADDED from D:\AndroidStudioProjects\ClisoApp\libraryViewPagerIndicator\src\main\AndroidManifest.xml
+		INJECTED from D:\AndroidStudioProjects\ClisoApp\libraryViewPagerIndicator\src\main\AndroidManifest.xml

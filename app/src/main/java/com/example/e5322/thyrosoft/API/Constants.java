@@ -1,18 +1,19 @@
 package com.example.e5322.thyrosoft.API;
 
+import static com.example.e5322.thyrosoft.API.Api.BASE_URL_TOCHECK;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.example.e5322.thyrosoft.Models.ResponseModels.PatientDetailsAPiResponseModel;
 
-import static com.example.e5322.thyrosoft.API.Api.BASE_URL_TOCHECK;
-
 /**
  * Created by e5426@thyrocare.com on 10/1/18.
  */
 
 public class Constants {
+    public static final String TEST_CODE_EGFR = "EGFRED";
     public static String HEADER_USER_AGENT = "User-Agent";
     public static String PRODUCT_POP = "POP";
     public static String PRODUCT_PROFILE = "PROFILE";
@@ -35,7 +36,7 @@ public class Constants {
     public static final String WOE = "WOE";
     public static final String REGISTRATION = "REGISTRATION";
     public static final String REPORT_DOWNLOAD = "REPORT DOWNLOAD";
-    public static String LEAD = "LEAD" ;
+    public static String LEAD = "LEAD";
 
     public static String PROFILEPREF = "profile";
 
@@ -53,6 +54,7 @@ public class Constants {
     public static int SCR_4 = 4; // CHN module
     public static int SCR_5 = 5; //Result module
     public static int SCR_6 = 6;//CRAT Module
+    public static int SCR_Logout = 100;//Logout
 
     public static String caps_invalidApikey = "INVALID API KEY";
     public static String small_invalidApikey = "Invalid API Key";
@@ -393,7 +395,6 @@ public class Constants {
     public static final String MAINURL = "https://b2capi.thyrocare.com/APIs/";
 
 
-
     public static final String PARAMETER_SEP = "&";
     public static final String PARAMETER_EQUALS = "=";
     public static final String TRANS_URL = "https://secure.ccavenue.com/transaction/initTrans";
@@ -440,6 +441,7 @@ public class Constants {
     public static String HBA_name_1 = "HbA1c";
 
     public static String setSCPmsg = "Select Technician*";
+    public static String setSCPmsg1 = "Select Technician";
 
     public static String TECHSO_RECEIPTS_API = "/api/Ledger/OrderReceipt/";
     public static String GENERATE_PAYMENT_COLLECTION_LINK = VERSION_API_URL + "/PayThyrocare/StartTransaction";
@@ -485,6 +487,7 @@ public class Constants {
     public static final String INDUSTRY_TYPE_ID = MAINURL.equalsIgnoreCase(BASE_URL_TOCHECK) ? "Retail92" : "Retail";
     public static final String WEBSITE = MAINURL.equalsIgnoreCase(BASE_URL_TOCHECK) ? "APPPROD" : "APP_STAGING";
     public static final String CALLBACK_URL = MAINURL.equalsIgnoreCase(BASE_URL_TOCHECK) ? "https://securegw.paytm.in/theia/paytmCallback?ORDER_ID=" : "https://pguat.paytm.com/paytmchecksum/paytmCallback.jsp";
+    public static final String CALLBACK_URLPAYTM = MAINURL.equalsIgnoreCase(BASE_URL_TOCHECK) ? "https://securegw.paytm.in" : "https://securegw-stage.paytm.in";
 
     public static final String M_ID_NHL = MAINURL.equalsIgnoreCase(BASE_URL_TOCHECK) ? "NOTGIVEN" : "Nuecle44833388083843";
 
@@ -602,8 +605,8 @@ public class Constants {
 
     public static int Imagepadding = 25;
 
-    public static int PAYAMOUNT = 5000;
-//    public static int PAYAMOUNT = 1;
+    //    public static int PAYAMOUNT = 5000;
+    public static int PAYAMOUNT = 1;
 
     public static String THYROTEST = "Thyro";
     public static String THYRONAME = "";

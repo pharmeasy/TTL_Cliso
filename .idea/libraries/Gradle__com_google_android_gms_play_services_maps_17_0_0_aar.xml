@@ -1,22 +1,11 @@
 <component name="libraryTable">
   <library name="Gradle: com.google.android.gms:play-services-maps:17.0.0@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-maps-17.0.0.aar/ee7254bb727496642e0dc69e51ddb73f/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-maps-17.0.0.aar/ee7254bb727496642e0dc69e51ddb73f/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-maps-17.0.0.aar/ee7254bb727496642e0dc69e51ddb73f/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-maps-17.0.0.aar/6169cf4b8eedd06e78743ed7b1020ee6/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-maps-17.0.0.aar/6169cf4b8eedd06e78743ed7b1020ee6/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-maps-17.0.0.aar/6169cf4b8eedd06e78743ed7b1020ee6/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-maps-17.0.0.aar/006e65ce51fbd3dddfd8f49620e151ce/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-maps-17.0.0.aar/006e65ce51fbd3dddfd8f49620e151ce/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-maps-17.0.0.aar/006e65ce51fbd3dddfd8f49620e151ce/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cfadedf07bcc42f429a2893b4bdf6a0d/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cfadedf07bcc42f429a2893b4bdf6a0d/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cfadedf07bcc42f429a2893b4bdf6a0d/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cbe6e47b6d2bf254e6522b62808f704d/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cbe6e47b6d2bf254e6522b62808f704d/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cbe6e47b6d2bf254e6522b62808f704d/AndroidManifest.xml" />
     </CLASSES>
-    <JAVADOC>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.android.gms/play-services-maps/17.0.0/d997ae8f2b0b4a330bcafcba55f8af323c816562/play-services-maps-17.0.0-javadoc.jar!/" />
-    </JAVADOC>
+    <JAVADOC />
     <SOURCES />
   </library>
 </component>

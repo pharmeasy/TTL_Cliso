@@ -37,7 +37,7 @@ import com.example.e5322.thyrosoft.Models.COVfiltermodel;
 import com.example.e5322.thyrosoft.Models.CovidMIS_req;
 import com.example.e5322.thyrosoft.Models.Covidmis_response;
 import com.example.e5322.thyrosoft.R;
-import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
+import com.example.e5322.thyrosoft.Retrofit.PostAPIInterface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.ToastFile;
 
@@ -195,8 +195,8 @@ public class Covidentered_frag extends Fragment {
 
     private void getfilterapilist() {
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
-        Call<COVfiltermodel> coVfiltermodelCall = postAPIInteface.getfilter();
+        PostAPIInterface postAPIInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInterface.class);
+        Call<COVfiltermodel> coVfiltermodelCall = postAPIInterface.getfilter();
         coVfiltermodelCall.enqueue(new Callback<COVfiltermodel>() {
             @Override
             public void onResponse(Call<COVfiltermodel> call, Response<COVfiltermodel> response) {
@@ -258,11 +258,11 @@ public class Covidentered_frag extends Fragment {
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
         SharedPreferences preferences = activity.getSharedPreferences("Userdetails", Context.MODE_PRIVATE);
         String usercode = preferences.getString("USER_CODE", null);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
+        PostAPIInterface postAPIInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInterface.class);
         CovidMIS_req covidMIS_req = new CovidMIS_req();
         covidMIS_req.setSdate(from_formateDate);
         covidMIS_req.setSourceCode(usercode);
-        final Call<Covidmis_response> covidmis_responseCall = postAPIInteface.getcovidmis(covidMIS_req);
+        final Call<Covidmis_response> covidmis_responseCall = postAPIInterface.getcovidmis(covidMIS_req);
         covidmis_responseCall.enqueue(new Callback<Covidmis_response>() {
             @Override
             public void onResponse(Call<Covidmis_response> call, Response<Covidmis_response> response) {

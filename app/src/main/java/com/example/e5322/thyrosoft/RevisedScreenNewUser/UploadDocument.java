@@ -332,6 +332,8 @@ public class UploadDocument extends AbstractActivity {
                 Intent intent = new Intent(Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(intent, 0);
+//                GlobalClass.cropImageFullScreenActivity(UploadDocument.this, 2);
+
             }
         });
 
@@ -478,7 +480,7 @@ public class UploadDocument extends AbstractActivity {
         user = prefs.getString("Username", null);
         api_key = prefs.getString("API_KEY", null);
         APi_key = api_key;
-        title.setText("YOUR CLIENT KYC/FLEGO UPLOAD");
+        title.setText("YOUR CLIENT/FLEBO KYC UPLOAD");
 
         finalsetfromdate = appPreferenceManager.getLeaveFromDate();
         try {

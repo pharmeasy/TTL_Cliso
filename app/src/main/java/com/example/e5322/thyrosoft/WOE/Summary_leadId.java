@@ -1,5 +1,7 @@
 package com.example.e5322.thyrosoft.WOE;
 
+import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
+
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -14,16 +16,21 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import com.example.e5322.thyrosoft.Activity.MessageConstants;
 import com.example.e5322.thyrosoft.Adapter.GetPatientSampleDetails;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
@@ -50,12 +57,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
 
 public class Summary_leadId extends AppCompatActivity {
     public static com.android.volley.RequestQueue POstQue;
@@ -194,7 +195,7 @@ public class Summary_leadId extends AppCompatActivity {
         leadOrderIdMainModel = (LeadOrderIdMainModel) getIntent().getParcelableExtra("MyClass");
         finalspecimenttypewiselist = new ArrayList<>();
         if (fromcome.equalsIgnoreCase("adapter")) {
-            if ( leadOrderIdMainModel!=null && leadOrderIdMainModel.getLeads()!=null){
+            if (leadOrderIdMainModel != null && leadOrderIdMainModel.getLeads() != null) {
                 for (int i = 0; i < leadOrderIdMainModel.getLeads().length; i++) {
                     if (leadOrderIdMainModel.getLeads()[i].getLEAD_ID().equalsIgnoreCase(leadLEAD_ID)) {
 
@@ -275,7 +276,7 @@ public class Summary_leadId extends AppCompatActivity {
         } else {
             SharedPreferences sharedPreferences = getSharedPreferences("LeadOrderID", MODE_PRIVATE);
             leadAddress = sharedPreferences.getString("ADDRESS", null);
-            brandtype=sharedPreferences.getString("brandtype",null);
+            brandtype = sharedPreferences.getString("brandtype", null);
             leadAGE = sharedPreferences.getString("AGE", null);
             leadAGE_TYPE = sharedPreferences.getString("AGE_TYPE", null);
             leadBCT = sharedPreferences.getString("BCT", null);
@@ -329,7 +330,7 @@ public class Summary_leadId extends AppCompatActivity {
         //display the current version in a TextView
         RequestQueue requestQueue = GlobalClass.setVolleyReq(this);
 
-        JsonObjectRequest jsonObjectRequestfetchData = new JsonObjectRequest(Request.Method.GET, Api.SOURCEils + "" + api_key + "/" + "" + user + "/B2BAPP/getclients", new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequestfetchData = new JsonObjectRequest(Request.Method.GET, Api.Cloud_base + api_key + "/" + "" + user + "/B2BAPP/getclients", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
 
@@ -338,17 +339,33 @@ public class Summary_leadId extends AppCompatActivity {
                 getReferenceNmae = new ArrayList<>();
                 getLabNmae = new ArrayList<>();
                 sourceILSMainModel = gson.fromJson(response.toString(), SourceILSMainModel.class);
-                if (sourceILSMainModel.getMASTERS().getLABS().length != 0) {
-                    for (int i = 0; i < sourceILSMainModel.getMASTERS().getLABS().length; i++) {
-                        getLabNmae.add(sourceILSMainModel.getMASTERS().getLABS()[i].getLabName());
-                        labs = sourceILSMainModel.getMASTERS().getLABS();
+
+                if (sourceILSMainModel != null) {
+                    if (GlobalClass.checkEqualIgnoreCase(sourceILSMainModel.getRES_ID(), Constants.RES0000)) {
+                        if (sourceILSMainModel.getMASTERS() != null) {
+                            if (GlobalClass.isArrayNotNull(sourceILSMainModel.getMASTERS().getLABS())) {
+                                for (int i = 0; i < sourceILSMainModel.getMASTERS().getLABS().length; i++) {
+                                    getLabNmae.add(sourceILSMainModel.getMASTERS().getLABS()[i].getLabName());
+                                    labs = sourceILSMainModel.getMASTERS().getLABS();
+                                }
+                            }
+                            if (GlobalClass.isArrayNotNull(sourceILSMainModel.getMASTERS().getREF_DR())) {
+                                for (int j = 0; j < sourceILSMainModel.getMASTERS().getREF_DR().length; j++) {
+                                    getReferenceNmae.add(sourceILSMainModel.getMASTERS().getREF_DR()[j].getName());
+                                    ref_drs = sourceILSMainModel.getMASTERS().getREF_DR();
+                                }
+                            }
+                        } else {
+                            GlobalClass.showTastyToast(Summary_leadId.this, sourceILSMainModel.getRESPONSE(), 2);
+                        }
+                    } else if (GlobalClass.checkEqualIgnoreCase(sourceILSMainModel.getRESPONSE(), caps_invalidApikey)) {
+                        GlobalClass.showTastyToast(Summary_leadId.this, sourceILSMainModel.getRESPONSE(), 2);
+                        GlobalClass.redirectToLogin(Summary_leadId.this);
+                    } else {
+                        GlobalClass.showTastyToast(Summary_leadId.this, sourceILSMainModel.getRESPONSE(), 2);
                     }
-                }
-                if (sourceILSMainModel.getMASTERS().getREF_DR().length != 0) {
-                    for (int j = 0; j < sourceILSMainModel.getMASTERS().getREF_DR().length; j++) {
-                        getReferenceNmae.add(sourceILSMainModel.getMASTERS().getREF_DR()[j].getName());
-                        ref_drs = sourceILSMainModel.getMASTERS().getREF_DR();
-                    }
+                } else {
+                    GlobalClass.showTastyToast(Summary_leadId.this, MessageConstants.SOMETHING_WENT_WRONG, 2);
                 }
             }
 
@@ -358,7 +375,6 @@ public class Summary_leadId extends AppCompatActivity {
                 if (error.networkResponse == null) {
                     if (error.getClass().equals(TimeoutError.class)) {
                         // Show timeout error message
-
                     }
                 }
             }
@@ -385,7 +401,7 @@ public class Summary_leadId extends AppCompatActivity {
             }
         }
 
-        pat_type.setText(brandtype+"/"+ leadTYPE);
+        pat_type.setText(brandtype + "/" + leadTYPE);
         pat_name.setText(leadNAME);
         pat_sct.setText(leadSCT);
         pat_ref.setText(leadREF_BY);
@@ -413,12 +429,12 @@ public class Summary_leadId extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
 
         finalspecimenttypewiselist = bundle.getParcelableArrayList("leadArraylist");
-        leadTESTS="";
+        leadTESTS = "";
 
-        if (finalspecimenttypewiselist!=null && finalspecimenttypewiselist.size()>0) {
-            for (int i = 0; i <finalspecimenttypewiselist.size() ; i++) {
-                leadTESTS+=finalspecimenttypewiselist.get(i).getProducts()+",";
-                Log.e(TAG,"leadTESTS---"+leadTESTS);
+        if (finalspecimenttypewiselist != null && finalspecimenttypewiselist.size() > 0) {
+            for (int i = 0; i < finalspecimenttypewiselist.size(); i++) {
+                leadTESTS += finalspecimenttypewiselist.get(i).getProducts() + ",";
+                Log.e(TAG, "leadTESTS---" + leadTESTS);
             }
             try {
                 if (leadTESTS.endsWith(",")) {
@@ -458,30 +474,13 @@ public class Summary_leadId extends AppCompatActivity {
     }
 
     private void saveandClose() {
-        /*DateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
-        DateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy");
-
-        Date date = null;
-        try {
-            date = inputFormat.parse(samplCollectiondate);
-        } catch (ParseException e) {
-            Log.e("TAG", e.getLocalizedMessage());
-        }
-        outputDateStr = outputFormat.format(date);
-        //sampleCollectionTime
-        GlobalClass.Req_Date_Req(getDate_and_time, "hh:mm a", "HH:mm:ss");
-
-        Log.e(TAG, "fetchData: " + outputDateStr);*/
-
-        //  sendFinalWoe();
-
         try {
             labName = leadLAB_NAME;
             if (labName.equals("")) {
                 leadLABAddress = "";
             } else {
                 if (sourceILSMainModel != null) {
-                    if (sourceILSMainModel.getMASTERS()!=null){
+                    if (sourceILSMainModel.getMASTERS() != null) {
                         if (sourceILSMainModel.getMASTERS().getLABS() != null) {
                             for (int i = 0; i < sourceILSMainModel.getMASTERS().getLABS().length; i++) {
                                 if (labName.equals(sourceILSMainModel.getMASTERS().getLABS()[i].getLabName())) {
@@ -499,7 +498,7 @@ public class Summary_leadId extends AppCompatActivity {
 
             if (referenceBy != null) {
                 if (sourceILSMainModel != null) {
-                    if (sourceILSMainModel.getMASTERS()!=null){
+                    if (sourceILSMainModel.getMASTERS() != null) {
                         if (sourceILSMainModel.getMASTERS().getREF_DR().length != 0 && sourceILSMainModel.getMASTERS().getREF_DR() != null) {
                             for (int j = 0; j < sourceILSMainModel.getMASTERS().getREF_DR().length; j++) {
                                 if (referenceBy.equalsIgnoreCase(sourceILSMainModel.getMASTERS().getREF_DR()[j].getName())) {
@@ -583,7 +582,11 @@ public class Summary_leadId extends AppCompatActivity {
 
         for (int i = 0; i < finalspecimenttypewiselist.size(); i++) {
             barcodelist = new BarcodelistModel();
-            barcodelist.setSAMPLE_TYPE(finalspecimenttypewiselist.get(i).getSpecimen_type());
+            if (GlobalClass.checkEqualIgnoreCase(finalspecimenttypewiselist.get(i).getSpecimen_type(), "(PPBS)FLUORIDE") || GlobalClass.checkEqualIgnoreCase(finalspecimenttypewiselist.get(i).getSpecimen_type(), "(FBS)FLUORIDE")) {
+                barcodelist.setSAMPLE_TYPE("FLUORIDE");
+            } else {
+                barcodelist.setSAMPLE_TYPE(finalspecimenttypewiselist.get(i).getSpecimen_type());
+            }
             barcodelist.setBARCODE(finalspecimenttypewiselist.get(i).getBarcode());
             barcodelist.setTESTS(finalspecimenttypewiselist.get(i).getProducts());
             barcodelists.add(barcodelist);

@@ -47,4 +47,5 @@ public class MessageConstants {
     public static String REMARKS_SHOULD_NOT_START_SPACE = "Remarks should not start with space";
     public static String INVALID_EMAIL = "Invalid email ID";
     public static String ABSURD_VALUE = "Absurd Value. Redo and Re enter";
+    public static String VALID_LANDLINE_NUMBER = "Please enter valid phone number";
 }

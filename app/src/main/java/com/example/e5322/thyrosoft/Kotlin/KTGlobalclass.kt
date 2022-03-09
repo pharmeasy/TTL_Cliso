@@ -658,9 +658,9 @@ class KTGlobalclass {
             request.retryPolicy = policy
         }
 
-        fun isNull(str: String?): Boolean {
+       /* fun isNull(str: String?): Boolean {
             return if (str == null || str == null || str.trim { it <= ' ' } == "" || str.trim { it <= ' ' } == "null" || str.trim { it <= ' ' } === "" || str.trim { it <= ' ' } === "null") true else false
-        }
+        }*/
 
         fun showProgressDialog(activity: Activity?): ProgressDialog? {
             if (progressDialog != null && !progressDialog!!.isShowing) if (!(context as Activity).isFinishing) {

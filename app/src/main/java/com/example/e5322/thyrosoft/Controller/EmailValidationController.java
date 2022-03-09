@@ -12,10 +12,9 @@ import com.example.e5322.thyrosoft.Activity.frags.BS_EntryFragment;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.EmailModel;
 import com.example.e5322.thyrosoft.Models.EmailValidationResponse;
-import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
+import com.example.e5322.thyrosoft.Retrofit.PostAPIInterface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.RevisedScreenNewUser.Sgc_Pgc_Entry_Activity;
-import com.google.gson.GsonBuilder;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -51,7 +50,7 @@ public class EmailValidationController {
 
     public void emailvalidationapi(String email) {
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(mactivity);
-        PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(mactivity, Api.THYROCARE).create(PostAPIInteface.class);
+        PostAPIInterface apiInterface = RetroFit_APIClient.getInstance().getClient(mactivity, Api.THYROCARE).create(PostAPIInterface.class);
         EmailModel emailModel = new EmailModel();
         emailModel.setAppID("5");
         emailModel.setEmailID(email);
@@ -63,16 +62,20 @@ public class EmailValidationController {
             public void onResponse(Call<EmailValidationResponse> call, Response<EmailValidationResponse> response) {
                 GlobalClass.hideProgress(mactivity, progressDialog);
                 try {
-                    if (!GlobalClass.isNull(response.body().getSucess()) && response.body().getSucess().equalsIgnoreCase("TRUE")) {
-                        if (flag == 1) {
-                            bs_entryFragment.getemailresponse();
-                        } else if (flag == 2) {
-                            sgc_pgc_entry_activity.getemailresponse(type);
-                        } else if (flag == 3) {
-                            handBillform.getemailresponse();
+                    if (response.isSuccessful()) {
+                        if (!GlobalClass.isNull(response.body().getSucess()) && response.body().getSucess().equalsIgnoreCase("TRUE")) {
+                            if (flag == 1) {
+                                bs_entryFragment.getemailresponse();
+                            } else if (flag == 2) {
+                                sgc_pgc_entry_activity.getemailresponse(type);
+                            } else if (flag == 3) {
+                                handBillform.getemailresponse();
+                            }
+                        } else {
+                            Toast.makeText(mactivity, MessageConstants.Kdly_entee_emaliID, Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Toast.makeText(mactivity, MessageConstants.Kdly_entee_emaliID, Toast.LENGTH_SHORT).show();
+                        GlobalClass.showTastyToast(mactivity, MessageConstants.SOMETHING_WENT_WRONG, 2);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -81,7 +84,8 @@ public class EmailValidationController {
 
             @Override
             public void onFailure(Call<EmailValidationResponse> call, Throwable t) {
-
+                GlobalClass.hideProgress(mactivity, progressDialog);
+                GlobalClass.showTastyToast(mactivity, MessageConstants.SOMETHING_WENT_WRONG, 2);
             }
         });
     }

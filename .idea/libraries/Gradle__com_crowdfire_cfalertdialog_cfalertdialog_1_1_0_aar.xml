@@ -1,96 +1,11 @@
 <component name="libraryTable">
   <library name="Gradle: com.crowdfire.cfalertdialog:cfalertdialog:1.1.0@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/c304e6f96d1f3e0dec2bf0d445cd5f62/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/c304e6f96d1f3e0dec2bf0d445cd5f62/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/c304e6f96d1f3e0dec2bf0d445cd5f62/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/033ab6499d41ea0fcf648b808f1f808b/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/033ab6499d41ea0fcf648b808f1f808b/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/033ab6499d41ea0fcf648b808f1f808b/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/347167825c48449238ec5f58a20219c9/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/347167825c48449238ec5f58a20219c9/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/347167825c48449238ec5f58a20219c9/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/d30992492a5014cfc8b661410e4ac2a2/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/d30992492a5014cfc8b661410e4ac2a2/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/d30992492a5014cfc8b661410e4ac2a2/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/16fcd928917aa89d42d19345be5bb4b8/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/16fcd928917aa89d42d19345be5bb4b8/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/16fcd928917aa89d42d19345be5bb4b8/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/040298ca5dc74246c1d0be6c1c0767fc/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/040298ca5dc74246c1d0be6c1c0767fc/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/040298ca5dc74246c1d0be6c1c0767fc/jars/classes.jar!/" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/122b24ff591e5c7aede5cb9311b12d4c/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/122b24ff591e5c7aede5cb9311b12d4c/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/122b24ff591e5c7aede5cb9311b12d4c/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/94e40b0370d671c9ab6183edc580e921/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/94e40b0370d671c9ab6183edc580e921/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/94e40b0370d671c9ab6183edc580e921/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/75a0542204144c621336e459d81a20c9/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/75a0542204144c621336e459d81a20c9/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/75a0542204144c621336e459d81a20c9/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/d03235955b1061f29285479bbc124196/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/d03235955b1061f29285479bbc124196/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/d03235955b1061f29285479bbc124196/jars/classes.jar!/" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/d77d2e3231447336fcce272d0d41583f/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/d77d2e3231447336fcce272d0d41583f/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/d77d2e3231447336fcce272d0d41583f/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/4c4d455eaaffc5183932f1dc5f47a44b/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/4c4d455eaaffc5183932f1dc5f47a44b/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/4c4d455eaaffc5183932f1dc5f47a44b/jars/classes.jar!/" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/4ceea4ff1d334bc95619e6558029c52c/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/4ceea4ff1d334bc95619e6558029c52c/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/4ceea4ff1d334bc95619e6558029c52c/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/4573c8be24277b4621f68fa019ccfe04/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/4573c8be24277b4621f68fa019ccfe04/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/4573c8be24277b4621f68fa019ccfe04/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/72dadeb3202b7d6b815be7bad63e43b3/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/72dadeb3202b7d6b815be7bad63e43b3/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/72dadeb3202b7d6b815be7bad63e43b3/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/8836b9022382c2ef04dcc75b0c024be3/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/8836b9022382c2ef04dcc75b0c024be3/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/8836b9022382c2ef04dcc75b0c024be3/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/a0482f3473216c3752d52101f8b18466/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/a0482f3473216c3752d52101f8b18466/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/a0482f3473216c3752d52101f8b18466/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/83c6282563e232af0fb54d3ee9d7b36c/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/83c6282563e232af0fb54d3ee9d7b36c/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/83c6282563e232af0fb54d3ee9d7b36c/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/80e750e66964290fcd2795a4a5d65657/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/80e750e66964290fcd2795a4a5d65657/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/80e750e66964290fcd2795a4a5d65657/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/8e55269fd9289e1072601acc6d5f40ae/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/8e55269fd9289e1072601acc6d5f40ae/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/8e55269fd9289e1072601acc6d5f40ae/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/3a7fb4d771c5f033f7c3304b10be71df/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/3a7fb4d771c5f033f7c3304b10be71df/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/3a7fb4d771c5f033f7c3304b10be71df/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/0f7985ab63c9a875135ff6bb429a488d/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/0f7985ab63c9a875135ff6bb429a488d/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/0f7985ab63c9a875135ff6bb429a488d/jars/classes.jar!/" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/b630c841fba60b2524683f6aacfdd2ab/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/b630c841fba60b2524683f6aacfdd2ab/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/b630c841fba60b2524683f6aacfdd2ab/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/6bcec1654d802e8e8ef7405391208956/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/6bcec1654d802e8e8ef7405391208956/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/6bcec1654d802e8e8ef7405391208956/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/91062faf16001cf434d2d8a5df225091/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/91062faf16001cf434d2d8a5df225091/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/91062faf16001cf434d2d8a5df225091/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/711e707a83158ceae12582c190aaa2fd/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/711e707a83158ceae12582c190aaa2fd/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/711e707a83158ceae12582c190aaa2fd/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6913e2cdbed5431a63abbb42b99ba139/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6913e2cdbed5431a63abbb42b99ba139/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6913e2cdbed5431a63abbb42b99ba139/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6f2fef868928afe84aa2a163643c03b7/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6f2fef868928afe84aa2a163643c03b7/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6f2fef868928afe84aa2a163643c03b7/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/864f87e61737da165c6210257a24ed2c/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/864f87e61737da165c6210257a24ed2c/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/864f87e61737da165c6210257a24ed2c/AndroidManifest.xml" />
     </CLASSES>
-    <JAVADOC>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.crowdfire.cfalertdialog/cfalertdialog/1.1.0/fae86a0523972085ce0d09ecde348d62a8272bf9/cfalertdialog-1.1.0-javadoc.jar!/" />
-    </JAVADOC>
-    <SOURCES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.crowdfire.cfalertdialog/cfalertdialog/1.1.0/ce201f80f9f19e85dea81897e5ef666a3d250bad/cfalertdialog-1.1.0-sources.jar!/" />
-    </SOURCES>
+    <JAVADOC />
+    <SOURCES />
   </library>
 </component>

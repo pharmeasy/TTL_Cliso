@@ -1,5 +1,7 @@
 package com.example.e5322.thyrosoft.Fragment;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -87,8 +89,6 @@ import java.util.regex.Pattern;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static android.content.Context.MODE_PRIVATE;
 
 public class PETCT_Frag extends Fragment {
 
@@ -217,7 +217,12 @@ public class PETCT_Frag extends Fragment {
         initUI(view);
         generateToken();
         initListners();
-        getProfileDetails(context);
+
+        if (cd.isConnectingToInternet()) {
+            getProfileDetails(context);
+        } else {
+            GlobalClass.toastyError(getContext(), MessageConstants.CHECK_INTERNET_CONN, false);
+        }
 
         return view;
     }
@@ -249,26 +254,19 @@ public class PETCT_Frag extends Fragment {
     }
 
     public void getProfileDetails(final Context context) {
-
         RequestQueue queue = GlobalClass.setVolleyReq(context);
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(context);
         Log.e(TAG, "Get my Profile ---->" + Api.Cloud_base + api_key + "/" + user + "/" + "getmyprofile");
-
-
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, Api.Cloud_base + api_key + "/" + user + "/" + "getmyprofile",
                 new com.android.volley.Response.Listener<JSONObject>() {
-                    public String tsp_img;
-
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
+                            GlobalClass.hideProgress(context, progressDialog);
                             if (response != null) {
-                                GlobalClass.hideProgress(context, progressDialog);
-
                                 SharedPreferences.Editor saveProfileDetails = getActivity().getSharedPreferences("profile", 0).edit();
                                 saveProfileDetails.putString("balance", response.getString(Constants.balance));
                                 saveProfileDetails.commit();
-
                                 if (!GlobalClass.isNull(response.getString(Constants.balance))) {
                                     closingbal = response.getString(Constants.balance);
                                     GlobalClass.SetText(txt_ledgerbal, getResources().getString(R.string.str_legderbal) + " : " + "Rs " + GlobalClass.currencyFormat(response.getString(Constants.balance)));
@@ -276,13 +274,9 @@ public class PETCT_Frag extends Fragment {
                                     txt_ledgerbal.setText("");
                                     closingbal = "0";
                                 }
-
-
                             } else {
                                 Toast.makeText(context, "Something Went Wrong", Toast.LENGTH_SHORT).show();
                             }
-
-
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -291,7 +285,7 @@ public class PETCT_Frag extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 try {
-
+                    GlobalClass.hideProgress(context, progressDialog);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

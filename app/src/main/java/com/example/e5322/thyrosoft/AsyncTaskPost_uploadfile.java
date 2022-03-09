@@ -192,7 +192,7 @@ public class AsyncTaskPost_uploadfile extends AsyncTask<Void, Void, String> {
                     if (flag == 1)
                         scan_barcode_ils_new.getUploadFileResponse();
                     if (flag == 2) {
-                        offline_woe = new Offline_woe();
+                        offline_woe.getUploadFileResponse();
                     }
                     if (flag == 3) {
                         scan_barcode_outlabs_activity.getUploadFileResponse();

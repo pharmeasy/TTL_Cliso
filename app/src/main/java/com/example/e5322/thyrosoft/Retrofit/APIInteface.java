@@ -15,6 +15,8 @@ import com.example.e5322.thyrosoft.Models.ConvertBTBNRequestModel;
 import com.example.e5322.thyrosoft.Models.ConvertBTBNResponseModel;
 import com.example.e5322.thyrosoft.Models.DyanamicPaymentReqModel;
 import com.example.e5322.thyrosoft.Models.DynamicPaymentResponseModel;
+import com.example.e5322.thyrosoft.Models.FeedbackPostQuestionsRequestModel;
+import com.example.e5322.thyrosoft.Models.FeedbackQuestionsResponseModel;
 import com.example.e5322.thyrosoft.Models.FirebaseModel;
 import com.example.e5322.thyrosoft.Models.Firebasepost;
 import com.example.e5322.thyrosoft.Models.GetLeadgerBalnce;
@@ -40,9 +42,15 @@ import com.example.e5322.thyrosoft.Models.PaitientdataRequestModel;
 import com.example.e5322.thyrosoft.Models.PayUReqModel;
 import com.example.e5322.thyrosoft.Models.PostValidateRequest;
 import com.example.e5322.thyrosoft.Models.PostVideoTime_module;
+import com.example.e5322.thyrosoft.Models.RequestModels.GetBaselineDetailsRequestModel;
+import com.example.e5322.thyrosoft.Models.ResponseModels.FeedbackPostQuestionsResponseModel;
+import com.example.e5322.thyrosoft.Models.ResponseModels.FeedbackQuestionRequestModel;
+import com.example.e5322.thyrosoft.Models.ResponseModels.GetBaselineDetailsResponseModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.GetBroadcastsResponseModel;
+import com.example.e5322.thyrosoft.Models.ResponseModels.GetTermsResponseModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.HandbillsResponse;
 import com.example.e5322.thyrosoft.Models.ResponseModels.OTPCreditResponseModel;
+import com.example.e5322.thyrosoft.Models.ResponseModels.PostTermsRequestModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.TemplateResponse;
 import com.example.e5322.thyrosoft.Models.ResponseModels.WOEResponseModel;
 import com.example.e5322.thyrosoft.Models.ScanBarcodeResponseModel;
@@ -105,7 +113,6 @@ public interface APIInteface {
 
     @GET("LedgerDetails/{SourceCode}")
     Call<GetLeadgerBalnce> getLedgerDetails(@Path("SourceCode") String SourceCode);
-
 
 
     @GET("ORDER.svc/{SourceCode}/CovidBarcodeDetails")
@@ -221,6 +228,19 @@ public interface APIInteface {
     @POST("FAQ.svc/GetContacts")
     Call<ConatctsResponseModel> GetConatcts(@Body ContactsReqModel contactsReqModel);
 
+    @POST("GetQuestions")
+    Call<FeedbackQuestionsResponseModel> GetFeedbackQuestions(@Body FeedbackQuestionRequestModel feedbackQuestionRequestModel);
 
+    @POST("Postfeddetails")
+    Call<FeedbackPostQuestionsResponseModel> PostFeedbackQuestions(@Body FeedbackPostQuestionsRequestModel feedbackPostQuestionsRequestModels);
+
+    @POST("GetBaselineDeatils")
+    Call<GetBaselineDetailsResponseModel> GetBaselineDetails(@Body GetBaselineDetailsRequestModel getBaselineDetailsRequestModel);
+
+    @POST("GetTermsDeatils")
+    Call<GetTermsResponseModel> GetTermsDetails(@Body GetBaselineDetailsRequestModel getBaselineDetailsRequestModel);
+
+    @POST("PostTermsDeatils")
+    Call<GetTermsResponseModel> PostTermsDetails(@Body PostTermsRequestModel requestModel);
 
 }

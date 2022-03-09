@@ -46,6 +46,7 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.Activity.MessageConstants;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
 import com.example.e5322.thyrosoft.Controller.EmailValidationController;
 import com.example.e5322.thyrosoft.Controller.Log;
@@ -55,6 +56,7 @@ import com.example.e5322.thyrosoft.Models.RequestModels.ClientRegisterRequestMod
 import com.example.e5322.thyrosoft.Models.ResponseModels.ClientRegisterResponseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
+import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.libraries.places.api.Places;
@@ -68,6 +70,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -229,6 +232,9 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                     } else if (get_incharge_name.length() < 2) {
                         incharge_name.requestFocus();
                         TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, "Please enter correct incharge name", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    } else if (!GlobalClass.isNull(get_phone_number) && GlobalClass.LongestStringSequence(get_phone_number) > 8) {
+                        phone_number.requestFocus();
+                        TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, MessageConstants.VALID_LANDLINE_NUMBER, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (image == null) {
                         cross_img.setVisibility(View.VISIBLE);
                         correct_img.setVisibility(View.GONE);
@@ -312,6 +318,9 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                     } else if (get_Address.length() < 25) {
                         addressEdt.requestFocus();
                         TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, ToastFile.addre25long, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    } else if (!GlobalClass.isNull(get_phone_number) && GlobalClass.LongestStringSequence(get_phone_number) > 8) {
+                        phone_number.requestFocus();
+                        TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, MessageConstants.VALID_LANDLINE_NUMBER, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (image == null) {
                         cross_img.setVisibility(View.VISIBLE);
                         correct_img.setVisibility(View.GONE);
@@ -550,10 +559,11 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//                Intent intent = new Intent(Intent.ACTION_PICK,
+//                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//                startActivityForResult(intent, 0);
+                GlobalClass.cropImageFullScreenActivity(Sgc_Pgc_Entry_Activity.this, 2);
 
-                startActivityForResult(intent, 0);
             }
         });
 
@@ -572,7 +582,7 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                         || enteredString.startsWith("6") || enteredString.startsWith("7") || enteredString.startsWith("8")
                         || enteredString.startsWith("9")) {
                     Toast.makeText(Sgc_Pgc_Entry_Activity.this,
-                            ToastFile.crt_mob_num,
+                            ToastFile.crt_phone_num,
                             Toast.LENGTH_SHORT).show();
                     if (enteredString.length() > 0) {
                         phone_number.setText(enteredString.substring(1));
@@ -803,20 +813,23 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
         sgc_brand_adapter.setDropDownViewResource(R.layout.pop_up_spin_sgc);
         brand_spinner.setAdapter(sgc_brand_adapter);
 
+        int maxLength = 30;
+        InputFilter[] FilterArray = new InputFilter[3];
+        FilterArray[0] = new InputFilter.LengthFilter(maxLength);
+        FilterArray[1] =filter1;
+        FilterArray[2] = EMOJI_FILTER;
+        client_name_edt.setFilters(FilterArray);
+
         email_edt.setFilters(new InputFilter[]{filter1});
-        client_name_edt.setFilters(new InputFilter[]{filter1});
+//        client_name_edt.setFilters(new InputFilter[]{filter1});
         incharge_name.setFilters(new InputFilter[]{filter1});
-
         dr_name_edt.setFilters(new InputFilter[]{filter1});
-
         website_edt.setFilters(new InputFilter[]{filter1});
-
         email_edt.setFilters(new InputFilter[]{EMOJI_FILTER});
-        client_name_edt.setFilters(new InputFilter[]{EMOJI_FILTER});
+//        client_name_edt.setFilters(new InputFilter[]{EMOJI_FILTER});
         incharge_name.setFilters(new InputFilter[]{EMOJI_FILTER});
         barProgressDialog = GlobalClass.progress(activity, false);
         dr_name_edt.setFilters(new InputFilter[]{EMOJI_FILTER});
-
         website_edt.setFilters(new InputFilter[]{EMOJI_FILTER});
     }
 
@@ -997,8 +1010,19 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                     e.printStackTrace();
                 }
             }
+        } else if (requestCode == ImagePicker.REQUEST_CODE && resultCode == RESULT_OK) {
+            try {
+                image = ImagePicker.Companion.getFile(data).toString();
+                File file = new File(image);
+                imageName = file.getName();
+                Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+                image = ConvertBitmapToString(myBitmap);
+                correct_img.setVisibility(View.VISIBLE);
+                cross_img.setVisibility(View.GONE);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-
     }
 
     @Override

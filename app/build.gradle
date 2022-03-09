@@ -17,8 +17,8 @@ android {
         minSdkVersion 19
         targetSdkVersion 29
         multiDexEnabled true
-        versionCode 129
-        versionName "1.0.2.29"
+        versionCode 146
+        versionName "1.0.2.46"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         useLibrary 'org.apache.http.legacy' // used for HTTP client
         vectorDrawables.useSupportLibrary = true
@@ -27,7 +27,6 @@ android {
     configurations {
         all*.exclude group: 'com.android.volley'
     }
-
 
     dexOptions
             {
@@ -81,6 +80,11 @@ android {
         exclude 'META-INF/dependencies.txt'
         exclude 'META-INF/LGPL2.1'
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 repositories
         {
@@ -91,7 +95,6 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'com.google.android.libraries.places:places:2.2.0'
     implementation 'androidx.multidex:multidex:2.0.1'
-    implementation files('libs/PGSDK_V2.1.jar')
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
@@ -136,7 +139,8 @@ dependencies {
     //these two lines are added
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.2.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.12.1'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.4.1'
+    implementation "com.squareup.okhttp3:okhttp:4.9.1"
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel:2.0.0'
     annotationProcessor 'androidx.lifecycle:lifecycle-compiler:2.0.0'
@@ -174,8 +178,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics:18.0.3'
 
     implementation 'com.google.android.gms:play-services-mlkit-text-recognition:16.1.3'
-
-
+    implementation 'com.paytm.appinvokesdk:appinvokesdk:1.6.3'
 
 }
 

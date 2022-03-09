@@ -7,7 +7,7 @@ import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.PayTmChecksumRequestModel;
 import com.example.e5322.thyrosoft.Models.PayTmChecksumResponseModel;
-import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
+import com.example.e5322.thyrosoft.Retrofit.PostAPIInterface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.RevisedScreenNewUser.Payment_Activity;
 
@@ -32,7 +32,7 @@ public class GeneratePayTMchecksum {
 
     public void CallAPI(final PayTmChecksumRequestModel payTmChecksumRequestModel) {
         progress.show();
-        PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.THYROCARE).create(PostAPIInteface.class);
+        PostAPIInterface apiInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.THYROCARE).create(PostAPIInterface.class);
         Call<PayTmChecksumResponseModel> responseCall = apiInterface.GetPayTmCheckSum(payTmChecksumRequestModel);
 
         responseCall.enqueue(new Callback<PayTmChecksumResponseModel>() {

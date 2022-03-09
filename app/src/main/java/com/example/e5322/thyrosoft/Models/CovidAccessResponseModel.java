@@ -8,7 +8,15 @@ public class CovidAccessResponseModel {
     private  boolean Srf;
     private  boolean CovidRegistration;
     private  boolean DRC;
+    private  boolean CovidOtpAllow;
 
+    public boolean isCovidOtpAllow() {
+        return CovidOtpAllow;
+    }
+
+    public void setCovidOtpAllow(boolean covidOtpAllow) {
+        CovidOtpAllow = covidOtpAllow;
+    }
 
     public boolean isDRC() {
         return DRC;

@@ -8,7 +8,7 @@ import com.example.e5322.thyrosoft.BroadcastDetailsActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.RequestModels.AckBroadcastMsgRequestModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.AckBroadcastMsgResponseModel;
-import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
+import com.example.e5322.thyrosoft.Retrofit.PostAPIInterface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.ToastFile;
 
@@ -30,7 +30,7 @@ public class AckBroadcastMsgController {
         ProgressDialog progressDialog = null;
         try {
             progressDialog = GlobalClass.ShowprogressDialog(mactivity);
-            PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(mactivity, Api.BROADCAST).create(PostAPIInteface.class);
+            PostAPIInterface apiInterface = RetroFit_APIClient.getInstance().getClient(mactivity, Api.BROADCAST).create(PostAPIInterface.class);
             Call<AckBroadcastMsgResponseModel> responseCall = apiInterface.PostAckBroadcastMsgAPI(requestModel);
 
             final ProgressDialog finalProgressDialog = progressDialog;

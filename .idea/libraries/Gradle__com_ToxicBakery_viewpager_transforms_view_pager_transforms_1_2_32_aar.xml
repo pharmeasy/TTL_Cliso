@@ -1,106 +1,11 @@
 <component name="libraryTable">
   <library name="Gradle: com.ToxicBakery.viewpager.transforms:view-pager-transforms:1.2.32@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/9a39d09c7a174d01de25d9da1c5ad0f4/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/9a39d09c7a174d01de25d9da1c5ad0f4/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/9a39d09c7a174d01de25d9da1c5ad0f4/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/55820ea9775b8d84b0e056840ac1acf5/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/55820ea9775b8d84b0e056840ac1acf5/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/55820ea9775b8d84b0e056840ac1acf5/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/956afc429c2c4c659b49a1810a078810/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/956afc429c2c4c659b49a1810a078810/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/956afc429c2c4c659b49a1810a078810/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/7c915220b0026b32fa22e97d95c05d1f/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/7c915220b0026b32fa22e97d95c05d1f/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/7c915220b0026b32fa22e97d95c05d1f/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/f362f6e78d5938c387e0d0e73bcea35c/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/f362f6e78d5938c387e0d0e73bcea35c/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/f362f6e78d5938c387e0d0e73bcea35c/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/6bb7d4eeb8dd46f2186bd641680a137b/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/111b7f117c8cd218f83b8b845a1c91f3/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/111b7f117c8cd218f83b8b845a1c91f3/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/111b7f117c8cd218f83b8b845a1c91f3/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/f2f49a1a5fd3f849198f01c60928921d/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/f2f49a1a5fd3f849198f01c60928921d/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/f2f49a1a5fd3f849198f01c60928921d/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/5fa6d034f6fe678fb46eb8e88ca77c76/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/5fa6d034f6fe678fb46eb8e88ca77c76/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/5fa6d034f6fe678fb46eb8e88ca77c76/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/6754b3fe3a8d480d8c5794098618044e/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/6754b3fe3a8d480d8c5794098618044e/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/6754b3fe3a8d480d8c5794098618044e/jars/classes.jar!/" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/1d2a1bf1e7370841161dd1ec12b9744c/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/1d2a1bf1e7370841161dd1ec12b9744c/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/1d2a1bf1e7370841161dd1ec12b9744c/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/949c00fc7c51a419b3d4b41bc0e40460/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/949c00fc7c51a419b3d4b41bc0e40460/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/949c00fc7c51a419b3d4b41bc0e40460/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/6bf237ff734f632df7ad38902492f74f/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/6bf237ff734f632df7ad38902492f74f/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/6bf237ff734f632df7ad38902492f74f/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/ad3ac6655fee942ee9c5b47762d52eff/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/ad3ac6655fee942ee9c5b47762d52eff/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/ad3ac6655fee942ee9c5b47762d52eff/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/21595d7a72333672f33e923b653cff71/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/21595d7a72333672f33e923b653cff71/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/21595d7a72333672f33e923b653cff71/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/d72a2c74b9c7cdf0861be7224ea9d1af/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/d72a2c74b9c7cdf0861be7224ea9d1af/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/d72a2c74b9c7cdf0861be7224ea9d1af/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/d74b643ee739ad127059bdbd064b9c71/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/d74b643ee739ad127059bdbd064b9c71/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/d74b643ee739ad127059bdbd064b9c71/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/e5eda4a85ee8185f425350f55ea9f801/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/e5eda4a85ee8185f425350f55ea9f801/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/e5eda4a85ee8185f425350f55ea9f801/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/bfebfd280f638afdc5fe16816279a2fa/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/bfebfd280f638afdc5fe16816279a2fa/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/bfebfd280f638afdc5fe16816279a2fa/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/0b14b1662a50e9751e189500f5721717/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/0b14b1662a50e9751e189500f5721717/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/0b14b1662a50e9751e189500f5721717/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/26ac24f0e5c59e22631a70d5b98ee90d/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/26ac24f0e5c59e22631a70d5b98ee90d/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/26ac24f0e5c59e22631a70d5b98ee90d/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/3e21eeb11fcff7fc712d62642f998c9a/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/3e21eeb11fcff7fc712d62642f998c9a/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/3e21eeb11fcff7fc712d62642f998c9a/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/57b9c11cbf99d87543cd403016752fea/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/57b9c11cbf99d87543cd403016752fea/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/57b9c11cbf99d87543cd403016752fea/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/505ed1cc1001e678147aad077074475e/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/505ed1cc1001e678147aad077074475e/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/505ed1cc1001e678147aad077074475e/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/d42e06dd65b69d05b294f0d1f6288585/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/d42e06dd65b69d05b294f0d1f6288585/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/d42e06dd65b69d05b294f0d1f6288585/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/d395e74868b3dbc899d879920ea088a5/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/d395e74868b3dbc899d879920ea088a5/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/d395e74868b3dbc899d879920ea088a5/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/00fa43f82b5a240219e89682bba40b6b/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/590b376f01647458b61d5ac881407e09/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/8a0e86692c2ac1e87efc6bbb9618f051/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6a346df9d06301adfed7ab5e0b5e2526/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e94662b67407e3309a90ca8a663455a3/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e380d3a71dd636837853de1829c84f35/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/35be40e5505c41a7d39586511d04cfbe/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/0618a61a94923a4fdabf01980f14ea02/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/0618a61a94923a4fdabf01980f14ea02/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/0618a61a94923a4fdabf01980f14ea02/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/b4707dc9238b0a49ef71e6cbb8dd34eb/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/55ddc985f895862ba3311dec53643ce3/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4cac0f31bb3ac797520f6899b7158655/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4cac0f31bb3ac797520f6899b7158655/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4cac0f31bb3ac797520f6899b7158655/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ebf6e195cc74d231e9ee083f94f69f1d/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ebf6e195cc74d231e9ee083f94f69f1d/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ebf6e195cc74d231e9ee083f94f69f1d/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4650dfd483f03645223822c8cdc0da04/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4650dfd483f03645223822c8cdc0da04/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4650dfd483f03645223822c8cdc0da04/AndroidManifest.xml" />
     </CLASSES>
-    <JAVADOC>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.ToxicBakery.viewpager.transforms/view-pager-transforms/1.2.32/50788cc6dc23c6c591bfd6df4712732a3a44a2/view-pager-transforms-1.2.32-javadoc.jar!/" />
-    </JAVADOC>
-    <SOURCES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.ToxicBakery.viewpager.transforms/view-pager-transforms/1.2.32/d59a4c11e83fd8646853d59f853508296c3f69da/view-pager-transforms-1.2.32-sources.jar!/" />
-    </SOURCES>
+    <JAVADOC />
+    <SOURCES />
   </library>
 </component>

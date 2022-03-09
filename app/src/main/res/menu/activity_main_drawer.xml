@@ -157,7 +157,15 @@
             android:icon="@drawable/sgc_pgc_d"
             android:title="SGC/PGC REGISTRATION" />
     </group>
-
+    <group
+        android:id="@+id/group14t"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/matrix_Details"
+            android:icon="@drawable/ic_escalationmatrix"
+            android:visible="true"
+            android:title="@string/str_escalation_matrix"/>
+    </group>
     <group
         android:id="@+id/groupbsbp"
         android:checkableBehavior="single">
@@ -435,8 +443,23 @@
             android:visible="false" />
 
     </group>
-
-
+    <group
+        android:id="@+id/grp_agreement"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/item_agreement"
+            android:icon="@drawable/ic_agreement"
+            android:title="AGREEMENT"
+            android:visible="false" />
+    </group>
+    <group
+        android:id="@+id/grp_rewards"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/item_rewards"
+            android:icon="@drawable/ic_menu_rewards"
+            android:title="REWARDS" />
+    </group>
 
     <group
         android:id="@+id/group27"

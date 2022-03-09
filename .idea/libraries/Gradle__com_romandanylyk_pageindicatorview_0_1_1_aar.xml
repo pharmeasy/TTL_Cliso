@@ -1,96 +1,11 @@
 <component name="libraryTable">
   <library name="Gradle: com.romandanylyk:pageindicatorview:0.1.1@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/3a677b73c0b2a085f5a1dee0352059ec/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/3a677b73c0b2a085f5a1dee0352059ec/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/3a677b73c0b2a085f5a1dee0352059ec/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/53c9738bc7a7028cda8046bc1c6b2fb1/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/53c9738bc7a7028cda8046bc1c6b2fb1/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/53c9738bc7a7028cda8046bc1c6b2fb1/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/ba1222d649c53da542dd154531f2e911/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/ba1222d649c53da542dd154531f2e911/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/ba1222d649c53da542dd154531f2e911/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/710796f02859c393ba900efb27e30107/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/710796f02859c393ba900efb27e30107/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/710796f02859c393ba900efb27e30107/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/1e3465b4f3e62ac4beeb629f233a3ec7/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/1e3465b4f3e62ac4beeb629f233a3ec7/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/1e3465b4f3e62ac4beeb629f233a3ec7/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/25302be31e806f954f0f92fb741518b3/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/25302be31e806f954f0f92fb741518b3/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/25302be31e806f954f0f92fb741518b3/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/a42e5231b020608d674886bc1f51ff59/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/a42e5231b020608d674886bc1f51ff59/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/a42e5231b020608d674886bc1f51ff59/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/992b1244619c12429735aa7c88ab2681/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/992b1244619c12429735aa7c88ab2681/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/992b1244619c12429735aa7c88ab2681/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/6dfd2ae793d768cd9d4334515ab780b1/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/6dfd2ae793d768cd9d4334515ab780b1/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/6dfd2ae793d768cd9d4334515ab780b1/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/6a335ce5fd5bda1dd6800ff569b20c4d/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/6a335ce5fd5bda1dd6800ff569b20c4d/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/6a335ce5fd5bda1dd6800ff569b20c4d/jars/classes.jar!/" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/6a59d0b9474a1fd08a719b9306d2fe36/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/6a59d0b9474a1fd08a719b9306d2fe36/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/6a59d0b9474a1fd08a719b9306d2fe36/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/8a0f3f4d3dfd43ae6b9bf420257a22c4/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/8a0f3f4d3dfd43ae6b9bf420257a22c4/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/8a0f3f4d3dfd43ae6b9bf420257a22c4/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/7bf238352bbf5fc002ce434f2f52c264/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/7bf238352bbf5fc002ce434f2f52c264/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/7bf238352bbf5fc002ce434f2f52c264/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/5a992a067f157debf0e4da761c5a38b2/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/5a992a067f157debf0e4da761c5a38b2/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/5a992a067f157debf0e4da761c5a38b2/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/808e4a4c6e36d4b943d063659bb75eab/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/808e4a4c6e36d4b943d063659bb75eab/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/808e4a4c6e36d4b943d063659bb75eab/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/23373880e713f100ca35dcf26ffc374a/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/23373880e713f100ca35dcf26ffc374a/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/23373880e713f100ca35dcf26ffc374a/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/dde991631876fb9de63a6eb297bb9a05/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/dde991631876fb9de63a6eb297bb9a05/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/dde991631876fb9de63a6eb297bb9a05/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/ea255e4526232896286ea7a6dc6435c4/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/ea255e4526232896286ea7a6dc6435c4/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/ea255e4526232896286ea7a6dc6435c4/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/20df906dc7cce1a272df66be5a1264ad/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/20df906dc7cce1a272df66be5a1264ad/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/20df906dc7cce1a272df66be5a1264ad/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/5687929e67114af296f442cd36f8ce6d/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/5687929e67114af296f442cd36f8ce6d/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/5687929e67114af296f442cd36f8ce6d/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/106e31c32400c603f13337ce633280c4/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/106e31c32400c603f13337ce633280c4/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/106e31c32400c603f13337ce633280c4/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/93832460c55ed249adf53b8ae27f58a7/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/93832460c55ed249adf53b8ae27f58a7/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/93832460c55ed249adf53b8ae27f58a7/jars/classes.jar!/" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/d14466628dc58a32bab5c4135de858db/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/d14466628dc58a32bab5c4135de858db/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/d14466628dc58a32bab5c4135de858db/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/4a233e78d03738c79c5367bb326d6eb3/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/4a233e78d03738c79c5367bb326d6eb3/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/4a233e78d03738c79c5367bb326d6eb3/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/f711611685d8a9267cdc3e4ce35b2a2b/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/f711611685d8a9267cdc3e4ce35b2a2b/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/f711611685d8a9267cdc3e4ce35b2a2b/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/3ad9e126aafd28dff591eb0fd6f2f65f/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/3ad9e126aafd28dff591eb0fd6f2f65f/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-pageindicatorview-0.1.1.aar/3ad9e126aafd28dff591eb0fd6f2f65f/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2bbeca0e2f610ebc92838822f28a53bd/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2bbeca0e2f610ebc92838822f28a53bd/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2bbeca0e2f610ebc92838822f28a53bd/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/7bac7b246347a286e3cf9ff22c65f9a6/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/7bac7b246347a286e3cf9ff22c65f9a6/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/7bac7b246347a286e3cf9ff22c65f9a6/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/07e0bd841e448aabe7bc9aaa924db72e/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/07e0bd841e448aabe7bc9aaa924db72e/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/07e0bd841e448aabe7bc9aaa924db72e/AndroidManifest.xml" />
     </CLASSES>
-    <JAVADOC>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.romandanylyk/pageindicatorview/0.1.1/7944068b503ce9a5d70de320cf5d2047135c0b94/pageindicatorview-0.1.1-javadoc.jar!/" />
-    </JAVADOC>
-    <SOURCES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.romandanylyk/pageindicatorview/0.1.1/e6533a0d6fb1ba64e239348431190adf1c3b8ae/pageindicatorview-0.1.1-sources.jar!/" />
-    </SOURCES>
+    <JAVADOC />
+    <SOURCES />
   </library>
 </component>

@@ -2,16 +2,9 @@ package com.example.e5322.thyrosoft.Controller;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import com.example.e5322.thyrosoft.API.Api;
+
 import com.example.e5322.thyrosoft.Activity.LeadGenerationActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
-import com.example.e5322.thyrosoft.Models.LeadRequestModel;
-import com.example.e5322.thyrosoft.Models.LeadResponseModel;
-import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
-import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class LeadController {
 
