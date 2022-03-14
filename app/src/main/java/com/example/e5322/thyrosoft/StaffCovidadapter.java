@@ -47,49 +47,43 @@ public class StaffCovidadapter extends FragmentPagerAdapter {
                 // First Fragment of First Tab
                 result = new CovidReg_Activity();
                 break;
-
             case 1:
                 // First Fragment of First Tab
                 result = new RATWOEActivity();
                 break;
-
             case 2:
                 // First Fragment of First Tab
                 result = new Start_New_Woe();
                 break;
             case 3:
+                // First Fragment of Third Tab
+                result = new RateCalculatorFragment();
+                break;
+            case 4:
                 // First Fragment of Second Tab
 //                result = new Offline_woe();
 //                break;
                 result = new TrackDetails();
                 break;
-            case 4:
+            case 5:
                 // First Fragment of Third Tab
                 result = new FilterReport();
                 break;
-            case 5:
+            case 6:
                 // First Fragment of Third Tab
                 result = new NHFFragment();
                 break;
-
-            case 6:
+            case 7:
                 // First Fragment of Third Tab
                 result = new Wind_up_fragment();
                 break;
-
-            case 7:
+            case 8:
                 // First Fragment of Third Tab
                 result = new CHNfragment();
                 break;
-            case 8:
-                // First Fragment of Third Tab
-                result = new RateCalculatorFragment();
-                break;
-
             default:
                 result = null;
                 break;
-
         }
 
         return result;
@@ -110,22 +104,18 @@ public class StaffCovidadapter extends FragmentPagerAdapter {
             case 2:
                 return resources.getString(R.string.page_1);
             case 3:
+                return resources.getString(R.string.page_9);
+            case 4:
 //                return resources.getString(R.string.page_2);
                 return resources.getString(R.string.page_3);
-            case 4:
-                return resources.getString(R.string.page_4);
-
             case 5:
-                return resources.getString(R.string.petct);
-
+                return resources.getString(R.string.page_4);
             case 6:
-                return resources.getString(R.string.page_6);
+                return resources.getString(R.string.petct);
             case 7:
-                return resources.getString(R.string.page_7);
+                return resources.getString(R.string.page_6);
             case 8:
-                return resources.getString(R.string.page_9);
-
-
+                return resources.getString(R.string.page_7);
             default:
                 return null;
         }

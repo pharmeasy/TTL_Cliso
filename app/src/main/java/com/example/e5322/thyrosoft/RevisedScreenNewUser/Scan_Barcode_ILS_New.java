@@ -887,9 +887,9 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                     } else if (ll_letterhead.getVisibility() == View.VISIBLE) {
                         if (GlobalClass.isNull(getBrand_name)) {
                             Toast.makeText(mActivity, "Select Brand", Toast.LENGTH_SHORT).show();
-                        } else if (vialimg_file == null) {
+                        } /*else if (vialimg_file == null) {
                             Toast.makeText(mActivity, "Upload Vial Image", Toast.LENGTH_SHORT).show();
-                        } else if (isprescition) {
+                        }*/ else if (isprescition) {
                             if (presc_file != null) {
                                 checklistData();
                             } else {
@@ -901,9 +901,9 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                     } else if (location_radio_grp.getVisibility() == View.VISIBLE) {
                         if (setLocation == null) {
                             TastyToast.makeText(Scan_Barcode_ILS_New.this, "Please select location", TastyToast.LENGTH_SHORT, TastyToast.WARNING);
-                        } else if (vialimg_file == null) {
+                        } /*else if (vialimg_file == null) {
                             Toast.makeText(mActivity, "Upload Vial Image", Toast.LENGTH_SHORT).show();
-                        } else if (isprescition) {
+                        }*/ else if (isprescition) {
                             if (presc_file != null) {
                                 checklistData();
                             } else {
@@ -912,9 +912,9 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                         } else {
                             checklistData();
                         }
-                    } else if (vialimg_file == null) {
+                    } /*else if (vialimg_file == null) {
                         Toast.makeText(mActivity, "Upload Vial Image", Toast.LENGTH_SHORT).show();
-                    } else if (isprescition) {
+                    }*/ else if (isprescition) {
                         if (presc_file != null) {
                             checklistData();
                         } else {
@@ -934,17 +934,17 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                     } else if (ll_letterhead.getVisibility() == View.VISIBLE) {
                         if (GlobalClass.isNull(getBrand_name)) {
                             Toast.makeText(mActivity, "Select Brand", Toast.LENGTH_SHORT).show();
-                        } else if (vialimg_file == null) {
+                        }/* else if (vialimg_file == null) {
                             Toast.makeText(mActivity, "Upload Vial Image", Toast.LENGTH_SHORT).show();
-                        } else {
+                        }*/ else {
                             checklistData();
                         }
                     } else if (location_radio_grp.getVisibility() == View.VISIBLE) {
                         if (setLocation == null) {
                             TastyToast.makeText(Scan_Barcode_ILS_New.this, "Please select location", TastyToast.LENGTH_SHORT, TastyToast.WARNING);
-                        } else if (vialimg_file == null) {
+                        }/* else if (vialimg_file == null) {
                             Toast.makeText(mActivity, "Upload Vial Image", Toast.LENGTH_SHORT).show();
-                        } else if (isprescition) {
+                        }*/ else if (isprescition) {
                             if (presc_file != null) {
                                 checklistData();
                             } else {
@@ -953,9 +953,9 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                         } else {
                             checklistData();
                         }
-                    } else if (vialimg_file == null) {
+                    } /*else if (vialimg_file == null) {
                         Toast.makeText(mActivity, "Upload Vial Image", Toast.LENGTH_SHORT).show();
-                    } else if (isprescition) {
+                    }*/ else if (isprescition) {
                         if (presc_file != null) {
                             checklistData();
                         } else {
@@ -1547,11 +1547,11 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                                                     } else {
                                                         TastyToast.makeText(Scan_Barcode_ILS_New.this, "" + Response, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                                                     }
-                                                    //   if (trflist.size() > 0)
-                                                    new AsyncTaskPost_uploadfile(Scan_Barcode_ILS_New.this, mActivity, api_key, user, barcode_patient_id, trflist, vialimg_file).execute();
-//                                                            else {
-//                                                                getUploadFileResponse();
-//                                                            }
+                                                    if (trflist.size() > 0) {
+                                                        new AsyncTaskPost_uploadfile(Scan_Barcode_ILS_New.this, mActivity, api_key, user, barcode_patient_id, trflist, vialimg_file).execute();
+                                                    } else {
+                                                        getUploadFileResponse();
+                                                    }
                                                 } catch (JSONException e) {
                                                     TastyToast.makeText(Scan_Barcode_ILS_New.this, "", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                                                     e.printStackTrace();
