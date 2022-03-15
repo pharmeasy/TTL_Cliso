@@ -31,7 +31,7 @@ public class Base_Model_Rate_Calculator implements Parcelable {
 
     String code;
     String isCPL;
-
+    String trf;
     String type;
     private int isAB;
 
@@ -51,6 +51,7 @@ public class Base_Model_Rate_Calculator implements Parcelable {
         isAB = in.readInt();
         isCart = in.readString();
         is_lock = in.readString();
+        trf = in.readString();
     }
 
     @Override
@@ -69,6 +70,7 @@ public class Base_Model_Rate_Calculator implements Parcelable {
         dest.writeInt(isAB);
         dest.writeString(isCart);
         dest.writeString(is_lock);
+        dest.writeString(trf);
     }
 
     @Override
@@ -215,6 +217,14 @@ public class Base_Model_Rate_Calculator implements Parcelable {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getTrf() {
+        return trf;
+    }
+
+    public void setTrf(String trf) {
+        this.trf = trf;
     }
 
     public class Barcodes implements Parcelable {

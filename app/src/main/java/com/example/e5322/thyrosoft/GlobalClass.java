@@ -1344,9 +1344,9 @@ public class GlobalClass {
     }
 
 
-    public static void StoresyncProduct(Context context) {
+    public static void StoresyncProduct(Activity activity) {
         try {
-            AppPreferenceManager appPreferenceManager = new AppPreferenceManager(context);
+            AppPreferenceManager appPreferenceManager = new AppPreferenceManager(activity);
             appPreferenceManager.setSynProductCount(appPreferenceManager.getVersionResponseModel().getSyncproduct());
         } catch (Exception e) {
             e.printStackTrace();
@@ -1841,7 +1841,8 @@ public class GlobalClass {
     }
 
     public static boolean allowForOfflineUse(String user_code) {
-        return !isNull(user_code) && checkEqualIgnoreCase(user_code, "PUN52");
+        return !isNull(user_code) && (checkEqualIgnoreCase(user_code, "PUN52") || checkEqualIgnoreCase(user_code, "PJ011")
+                || checkEqualIgnoreCase(user_code, "PUN43") || checkEqualIgnoreCase(user_code, "PUN48"));
     }
 
     public static int LongestStringSequence(String message) {

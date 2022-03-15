@@ -704,14 +704,14 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                                 Toast.makeText(Scan_Barcode_Outlabs.this, "Confirm Amount Collected", Toast.LENGTH_SHORT).show();
                             } else if (!edt_confirm_amt.getText().toString().equalsIgnoreCase(getWrittenAmt)) {
                                 Toast.makeText(Scan_Barcode_Outlabs.this, "Amount Mismatched", Toast.LENGTH_SHORT).show();
-                            } else if (vialimg_file == null || !vialimg_file.exists()) {
+                            }/* else if (vialimg_file == null || !vialimg_file.exists()) {
                                 Toast.makeText(Scan_Barcode_Outlabs.this, ToastFile.vialimage, Toast.LENGTH_SHORT).show();
-                            } else if (ll_letterhead.getVisibility() == View.VISIBLE) {
+                            } */else if (ll_letterhead.getVisibility() == View.VISIBLE) {
                                 if (GlobalClass.isNull(getBrand_name)) {
                                     Toast.makeText(mActivity, "Select Brand", Toast.LENGTH_SHORT).show();
-                                } else if (vialimg_file == null) {
+                                }/* else if (vialimg_file == null) {
                                     Toast.makeText(mActivity, "Upload Vial Image", Toast.LENGTH_SHORT).show();
-                                } else if (isprescition) {
+                                }*/ else if (isprescition) {
                                     if (presc_file != null) {
                                         checklistData();
                                     } else {
@@ -894,6 +894,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         });
 
         enter_barcode.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
+        reenter.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
 
         reenter.addTextChangedListener(new TextWatcher() {
             @Override
@@ -1762,15 +1763,15 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                                 message = woeResponseModel.getMessage();
                                 if (woeResponseModel != null) {
                                     if (!GlobalClass.isNull(woeResponseModel.getStatus()) && woeResponseModel.getStatus().equalsIgnoreCase("SUCCESS")) {
-                                        // if (trflist.size() > 0)
-                                        new LogUserActivityTagging(mActivity, "WOE-NOVID", barcode_patient_id);
+                                        if (trflist.size() > 0) {
+                                            new LogUserActivityTagging(mActivity, "WOE-NOVID", barcode_patient_id);
 
-                                        Global.OTPVERIFIED = false;
-                                        GlobalClass.transID = "";
-                                        new AsyncTaskPost_uploadfile(Scan_Barcode_Outlabs.this, mActivity, api_key, user, barcode_patient_id, trflist, vialimg_file).execute();
-                                        /*else {
+                                            Global.OTPVERIFIED = false;
+                                            GlobalClass.transID = "";
+                                            new AsyncTaskPost_uploadfile(Scan_Barcode_Outlabs.this, mActivity, api_key, user, barcode_patient_id, trflist, vialimg_file).execute();
+                                        } else {
                                             getUploadFileResponse();
-                                        }*/
+                                        }
                                     } else if (!GlobalClass.isNull(woeResponseModel.getStatus()) && woeResponseModel.getStatus().equalsIgnoreCase(caps_invalidApikey)) {
                                         GlobalClass.redirectToLogin(Scan_Barcode_Outlabs.this);
                                     } else {
@@ -1803,11 +1804,11 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                     Log.e(TAG, "saveandClose: URL" + jsonObjectRequest1);
                     Log.e(TAG, "saveandClose: json" + jsonObj);
                 } else {
-                    //  if (trflist.size() > 0)
-                    new AsyncTaskPost_uploadfile(Scan_Barcode_Outlabs.this, mActivity, api_key, user, barcode_patient_id, trflist, vialimg_file).execute();
-//                    else {
-//                        getUploadFileResponse();
-//                    }
+                    if (trflist.size() > 0) {
+                        new AsyncTaskPost_uploadfile(Scan_Barcode_Outlabs.this, mActivity, api_key, user, barcode_patient_id, trflist, vialimg_file).execute();
+                    } else {
+                        getUploadFileResponse();
+                    }
                 }
             }
         }

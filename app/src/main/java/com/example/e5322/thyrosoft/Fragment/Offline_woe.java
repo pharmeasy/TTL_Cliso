@@ -605,9 +605,8 @@ public class Offline_woe extends Fragment {
     }
 
     private void uploadTRf(ArrayList<TRFModel> trflist, File vialimage) {
-        //    if (trflist.size() > 0)
-        new AsyncTaskPost_uploadfile(Offline_woe.this, activity, api_key, user, barcode_patient_id, trflist, vialimage).execute();
-
+        if (trflist.size() > 0)
+            new AsyncTaskPost_uploadfile(Offline_woe.this, activity, api_key, user, barcode_patient_id, trflist, vialimage).execute();
     }
 
     private void progressDialog() {

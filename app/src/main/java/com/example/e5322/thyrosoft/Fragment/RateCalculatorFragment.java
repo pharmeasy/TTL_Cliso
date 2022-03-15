@@ -611,9 +611,9 @@ public class RateCalculatorFragment extends Fragment {
         JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.getAllTests + api_key + "/ALL/getproducts", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                GlobalClass.hideProgress(getActivity(), progressDialog);
+                GlobalClass.hideProgress(mContext, progressDialog);
                 Log.e(TAG, "onResponse for All products :::: " + response);
-                GlobalClass.StoresyncProduct(getActivity());
+                GlobalClass.StoresyncProduct(mActivity);
                 String getResponse = response.optString("RESPONSE", "");
                 if (getResponse.equalsIgnoreCase(caps_invalidApikey)) {
                     redirectToLogin(mContext);

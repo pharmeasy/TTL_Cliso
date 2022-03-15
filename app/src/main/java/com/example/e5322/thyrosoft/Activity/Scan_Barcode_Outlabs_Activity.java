@@ -587,9 +587,9 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                         Toast.makeText(Scan_Barcode_Outlabs_Activity.this, "Confirm Amount Collected", Toast.LENGTH_SHORT).show();
                     } else if (!edt_confirm_amt.getText().toString().equalsIgnoreCase(getCollectedAmt)) {
                         Toast.makeText(Scan_Barcode_Outlabs_Activity.this, "Amount Mismatched", Toast.LENGTH_SHORT).show();
-                    } else if (vialimg_file == null || !vialimg_file.exists()) {
+                    }/* else if (vialimg_file == null || !vialimg_file.exists()) {
                         Toast.makeText(mActivity, "Upload Vial Image", Toast.LENGTH_SHORT).show();
-                    } else if (isprescition) {
+                    }*/ else if (isprescition) {
                         if (presc_file != null) {
                             checklistData();
                         } else {
@@ -1320,11 +1320,11 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                                         new LogUserActivityTagging(mActivity, "WOE-NOVID", barcode_patient_id);
 
                                         Log.e(TAG, "onResponse message --->: " + message);
-                                        //                                                if (trflist.size() > 0)
-                                        new AsyncTaskPost_uploadfile(Scan_Barcode_Outlabs_Activity.this, mActivity, api_key, user, barcode_patient_id, trflist, vialimg_file).execute();
-//                                                else {
-//                                                    getUploadFileResponse();
-//                                                }
+                                        if (trflist.size() > 0) {
+                                            new AsyncTaskPost_uploadfile(Scan_Barcode_Outlabs_Activity.this, mActivity, api_key, user, barcode_patient_id, trflist, vialimg_file).execute();
+                                        } else {
+                                            getUploadFileResponse();
+                                        }
                                     } else if (!GlobalClass.isNull(woeResponseModel.getStatus()) && woeResponseModel.getStatus().equalsIgnoreCase(caps_invalidApikey)) {
                                         GlobalClass.redirectToLogin(Scan_Barcode_Outlabs_Activity.this);
                                     } else {
@@ -1357,11 +1357,11 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                     Log.e(TAG, "saveandClose: URL" + jsonObjectRequest1);
                     Log.e(TAG, "saveandClose: json" + jsonObj);
                 } else {
-//                            if (trflist.size() > 0)
-                    new AsyncTaskPost_uploadfile(Scan_Barcode_Outlabs_Activity.this, mActivity, api_key, user, barcode_patient_id, trflist, vialimg_file).execute();
-//                            else {
-//                                getUploadFileResponse();
-//                            }
+                    if (trflist.size() > 0) {
+                        new AsyncTaskPost_uploadfile(Scan_Barcode_Outlabs_Activity.this, mActivity, api_key, user, barcode_patient_id, trflist, vialimg_file).execute();
+                    } else {
+                        getUploadFileResponse();
+                    }
                 }
             }
         }

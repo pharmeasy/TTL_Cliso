@@ -1,5 +1,7 @@
 package com.example.e5322.thyrosoft.Adapter;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -52,8 +54,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
-
-import static android.content.Context.MODE_PRIVATE;
 
 public class Offline_Woe_Adapter extends RecyclerView.Adapter<Offline_Woe_Adapter.ViewHolder> {
     Context mContext;
@@ -450,12 +450,12 @@ public class Offline_Woe_Adapter extends RecyclerView.Adapter<Offline_Woe_Adapte
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        uploadTRf(trflist,myPojoWoe.get(finalI).getVialimage());
+        uploadTRf(trflist, myPojoWoe.get(finalI).getVialimage());
     }
 
     private void uploadTRf(ArrayList<TRFModel> trflist, File vialimage) {
-//        if (trflist.size() > 0)
-        new AsyncTaskPost_uploadfile(offline_woe, activity1, api_key, user, barcode_patient_id, trflist,vialimage).execute();
+        if (trflist.size() > 0)
+            new AsyncTaskPost_uploadfile(offline_woe, activity1, api_key, user, barcode_patient_id, trflist, vialimage).execute();
     }
 
 
