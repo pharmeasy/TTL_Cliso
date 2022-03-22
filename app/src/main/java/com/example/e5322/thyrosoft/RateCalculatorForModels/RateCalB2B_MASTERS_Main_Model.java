@@ -3,12 +3,9 @@ package com.example.e5322.thyrosoft.RateCalculatorForModels;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.example.e5322.thyrosoft.MainModelForAllTests.B2B_MASTERSMainModel;
-import com.example.e5322.thyrosoft.MainModelForAllTests.MPL;
 import com.example.e5322.thyrosoft.MainModelForAllTests.OUTLAB_TESTLIST_GETALLTESTS;
 import com.example.e5322.thyrosoft.MainModelForAllTests.SAMPLE_TYPESList;
 import com.example.e5322.thyrosoft.MainModelForAllTests.WHATER_TESTLIST;
-import com.example.e5322.thyrosoft.Models.BaseModel;
 
 import java.util.ArrayList;
 
@@ -25,7 +22,7 @@ public class RateCalB2B_MASTERS_Main_Model implements Parcelable{
     ArrayList<Base_Model_Rate_Calculator> SMT;
     ArrayList<SAMPLE_TYPESList> SAMPLE_TYPES;
     ArrayList<Base_Model_Rate_Calculator>  TESTS;
-    ArrayList<com.example.e5322.thyrosoft.MainModelForAllTests.WHATER_TESTLIST> WHATER_TESTLIST;
+    ArrayList<WHATER_TESTLIST> WHATER_TESTLIST;
 
 
     protected RateCalB2B_MASTERS_Main_Model(Parcel in) {

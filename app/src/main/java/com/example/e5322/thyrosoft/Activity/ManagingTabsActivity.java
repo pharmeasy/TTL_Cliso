@@ -445,7 +445,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         }
 
         if (appPreferenceManager.getTermsFlag() != null) {
-
             if (!appPreferenceManager.getTermsFlag()) {
                 navigationView.getMenu().findItem(R.id.item_agreement).setVisible(true);
             } else {

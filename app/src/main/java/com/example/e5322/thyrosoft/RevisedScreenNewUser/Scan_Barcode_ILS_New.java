@@ -1620,7 +1620,9 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                     Log.e(TAG, "fetchData: URL" + jsonObjectRequest1);
                     Log.e(TAG, "fetchData: JSON" + jsonObj);
                 } else {
-                    new AsyncTaskPost_uploadfile(Scan_Barcode_ILS_New.this, mActivity, api_key, user, barcode_patient_id, trflist, vialimg_file).execute();
+                    if (trflist.size() > 0) {
+                        new AsyncTaskPost_uploadfile(Scan_Barcode_ILS_New.this, mActivity, api_key, user, barcode_patient_id, trflist, vialimg_file).execute();
+                    }
                 }
             }
         }

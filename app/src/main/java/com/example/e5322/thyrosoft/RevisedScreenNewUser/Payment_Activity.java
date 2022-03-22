@@ -846,14 +846,11 @@ public class Payment_Activity extends AppCompatActivity {
 
         public AsyncTask_Log_Payment_Request(JSONObject result) {
             this.postdata = result;
-
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
-
         }
 
         @Override

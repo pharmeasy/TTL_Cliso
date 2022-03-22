@@ -14,29 +14,26 @@ import java.util.ArrayList;
 public class Base_Model_Rate_Calculator implements Parcelable {
 
     String product;
-
     String billrate;
-
     String gettotalcount;
-
     Barcodes[] barcodes;
-
     Rate rate;
-
     String name;
-
     String fasting;
-
     Childs[] childs;
-
     String code;
     String isCPL;
     String trf;
     String type;
     private int isAB;
-
+    private boolean isPOCT;
+    private boolean isPrescription;
+    private String location;
+    private int isNHL;
+    private String subtypes;
     private ArrayList<BaseModel.BrandDtlsDTO> BrandDtls;
-
+    String isCart;
+    String is_lock;
 
     protected Base_Model_Rate_Calculator(Parcel in) {
         product = in.readString();
@@ -52,6 +49,11 @@ public class Base_Model_Rate_Calculator implements Parcelable {
         isCart = in.readString();
         is_lock = in.readString();
         trf = in.readString();
+        isPOCT = in.readByte() != 0;
+        isPrescription = in.readByte() != 0;
+        location = in.readString();
+        isNHL = in.readInt();
+        subtypes = in.readString();
     }
 
     @Override
@@ -71,6 +73,11 @@ public class Base_Model_Rate_Calculator implements Parcelable {
         dest.writeString(isCart);
         dest.writeString(is_lock);
         dest.writeString(trf);
+        dest.writeByte((byte) (isPOCT ? 1 : 0));
+        dest.writeByte((byte) (isPrescription ? 1 : 0));
+        dest.writeString(location);
+        dest.writeInt(isNHL);
+        dest.writeString(subtypes);
     }
 
     @Override
@@ -115,9 +122,6 @@ public class Base_Model_Rate_Calculator implements Parcelable {
         this.isCart = isCart;
     }
 
-    String isCart;
-    String is_lock;
-
     public String getIs_lock() {
         return is_lock;
     }
@@ -125,8 +129,6 @@ public class Base_Model_Rate_Calculator implements Parcelable {
     public void setIs_lock(String is_lock) {
         this.is_lock = is_lock;
     }
-
-
 
     public String getGettotalcount() {
         return gettotalcount;
@@ -225,6 +227,46 @@ public class Base_Model_Rate_Calculator implements Parcelable {
 
     public void setTrf(String trf) {
         this.trf = trf;
+    }
+
+    public boolean isPOCT() {
+        return isPOCT;
+    }
+
+    public void setPOCT(boolean POCT) {
+        isPOCT = POCT;
+    }
+
+    public boolean isPrescription() {
+        return isPrescription;
+    }
+
+    public void setPrescription(boolean prescription) {
+        isPrescription = prescription;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public int getIsNHL() {
+        return isNHL;
+    }
+
+    public void setIsNHL(int isNHL) {
+        this.isNHL = isNHL;
+    }
+
+    public String getSubtypes() {
+        return subtypes;
+    }
+
+    public void setSubtypes(String subtypes) {
+        this.subtypes = subtypes;
     }
 
     public class Barcodes implements Parcelable {
@@ -339,16 +381,17 @@ public class Base_Model_Rate_Calculator implements Parcelable {
 
     public class Rate implements Parcelable {
         String b2c;
-
         String b2b;
         String cplr;
         String rplr;
+        String NHLRate;
 
         protected Rate(Parcel in) {
             b2c = in.readString();
             b2b = in.readString();
             cplr = in.readString();
             rplr = in.readString();
+            NHLRate = in.readString();
         }
 
         public final Creator<Rate> CREATOR = new Creator<Rate>() {
@@ -395,6 +438,14 @@ public class Base_Model_Rate_Calculator implements Parcelable {
             this.b2b = b2b;
         }
 
+        public String getNHLRate() {
+            return NHLRate;
+        }
+
+        public void setNHLRate(String NHLRate) {
+            this.NHLRate = NHLRate;
+        }
+
         @Override
         public String toString() {
             return "ClassPojo [b2c = " + b2c + ", b2b = " + b2b + "+]";
@@ -411,7 +462,7 @@ public class Base_Model_Rate_Calculator implements Parcelable {
             dest.writeString(b2b);
             dest.writeString(cplr);
             dest.writeString(rplr);
-
+            dest.writeString(NHLRate);
         }
     }
 
