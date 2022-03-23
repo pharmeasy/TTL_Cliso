@@ -30,6 +30,7 @@ public class MessageConstants {
     public static String PLEASE_WAIT = "Please wait..";
     public static String CHECK_INTERNET_CONN = "Check your internet connection";
     public static String SOMETHING_WENT_WRONG = "Something went wrong. Please try after sometime";
+    public static String RETRY = "Something went wrong. Please retry";
     public static String OTP_GEN_SUCCESS = "OTP generated Successfully";
     public static String TOKEN_NOT_FOUND = "Token not found";
     public static CharSequence AUTH_FAILED = "Authorization has been denied for this request.";

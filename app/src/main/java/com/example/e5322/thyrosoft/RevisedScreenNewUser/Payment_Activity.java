@@ -74,6 +74,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
+import com.example.e5322.thyrosoft.Activity.MessageConstants;
 import com.example.e5322.thyrosoft.Controller.DynamicPaymentController;
 import com.example.e5322.thyrosoft.Controller.GeneratePayTMchecksum;
 import com.example.e5322.thyrosoft.Controller.Log;
@@ -153,6 +154,7 @@ public class Payment_Activity extends AppCompatActivity {
     private String unbillwoe, unbillmt, crd_amt;
     private String CLIENT_TYP = "";
     private int PaytmrequestCode = 83745;
+    private String selGateway = "";
 
     @SuppressLint("NewApi")
     @Override
@@ -273,21 +275,23 @@ public class Payment_Activity extends AppCompatActivity {
         btn_payu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                proceedWithPayment("");
+//                proceedWithPayment();
             }
         });
 
         img_add_money_payU.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                proceedWithPayment("payU");
+                selGateway = "payU";
+                proceedWithPayment();
             }
         });
 
         img_add_money_payTm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                proceedWithPayment("payTm");
+                selGateway = "payTm";
+                proceedWithPayment();
             }
         });
     }
@@ -304,7 +308,7 @@ public class Payment_Activity extends AppCompatActivity {
     }
 
 
-    private void proceedWithPayment(String gateway) {
+    private void proceedWithPayment() {
         amountTopass = edt_enter_amt.getText().toString();
         Log.e(TAG, "Entered Amount ----->" + amountTopass);
         Log.e(TAG, "CB Amount ----->" + CBamount);
@@ -312,7 +316,7 @@ public class Payment_Activity extends AppCompatActivity {
             Toast.makeText(Payment_Activity.this, "Please enter amount", Toast.LENGTH_SHORT).show();
         } else if (CBamount < Constants.PAYAMOUNT) {
             if (Integer.parseInt(amountTopass) >= Constants.PAYAMOUNT) {
-                gotopayGatway(gateway);
+                gotopayGatway();
             } else {
                 new SweetAlertDialog(Payment_Activity.this, SweetAlertDialog.WARNING_TYPE)
                         .setContentText(getString(R.string.amt_str))
@@ -327,7 +331,7 @@ public class Payment_Activity extends AppCompatActivity {
             }
         } else if (Constants.PAYAMOUNT <= CBamount) {
             if (Integer.parseInt(amountTopass) >= CBamount) {
-                gotopayGatway(gateway);
+                gotopayGatway();
             } else {
                 new SweetAlertDialog(Payment_Activity.this, SweetAlertDialog.WARNING_TYPE)
                         .setContentText("Enter Minimum Amount of Rs " + CBamount + " to Proceed")
@@ -343,7 +347,7 @@ public class Payment_Activity extends AppCompatActivity {
         }
     }
 
-    private void gotopayGatway(final String gateway) {
+    private void gotopayGatway() {
         if (cd.isConnectingToInternet()) {
             final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(Payment_Activity.this);
             try {
@@ -363,9 +367,9 @@ public class Payment_Activity extends AppCompatActivity {
                             RES_ID = parentObjectOtp.getString("RES_ID");
                             ordno = parentObjectOtp.getString("ordno");
                             if (!GlobalClass.isNull(RESPONSE) && RESPONSE.equals("SUCCESS")) {
-                                if (gateway.equalsIgnoreCase("payU")) {
+                                if (selGateway.equalsIgnoreCase("payU")) {
                                     startPayUTransaction(name_tsp, "", amountTopass, ordno);
-                                } else if (gateway.equalsIgnoreCase("payTm")) {
+                                } else if (selGateway.equalsIgnoreCase("payTm")) {
                                     generatePayTmChecksum(amountTopass, ordno);
                                 }
                             }
@@ -758,7 +762,7 @@ public class Payment_Activity extends AppCompatActivity {
                 if (result != null) {
                     Log.e(TAG, "onPostExecute: result" + result);
                     if (result.getString("RESPONSE").equalsIgnoreCase("SUCCESS")) {
-                        if (result.getString("encCheckSum") != null && !result.getString("encCheckSum").isEmpty()) {
+                        if (!GlobalClass.isNull(result.getString("encCheckSum"))) {
                             PayuHashes payuHashes = new PayuHashes();
                             Iterator<String> payuHashIterator = result.keys();
                             while (payuHashIterator.hasNext()) {
@@ -815,12 +819,10 @@ public class Payment_Activity extends AppCompatActivity {
                                 postdata.put(NAME, mPayment_Params.getFirstName());
                                 postdata.put(GATEWAY, PAYUMONEY_REQUEST);
 
-                                new AsyncTask_Log_Payment_Request(postdata).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                                new AsyncTask_Log_Payment_Request(postdata, payuHashes, "").executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                             } else {
                                 GlobalClass.showCustomToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet), 0);
                             }
-
-                            launchSdkUI(payuHashes);// Start PayU transaction request.
 
                         } else {
                             System.out.println("Success but no Checksum");
@@ -828,7 +830,6 @@ public class Payment_Activity extends AppCompatActivity {
                     } else {
                         System.out.println("failed to generate Checksum 1");
                     }
-
                 } else {
                     System.out.println("failed to generate Checksum 2");
                 }
@@ -843,9 +844,13 @@ public class Payment_Activity extends AppCompatActivity {
     class AsyncTask_Log_Payment_Request extends AsyncTask<Void, Void, JSONObject> {
 
         JSONObject postdata = new JSONObject();
+        PayuHashes payuHashes;
+        String checksum_token = "";
 
-        public AsyncTask_Log_Payment_Request(JSONObject result) {
+        public AsyncTask_Log_Payment_Request(JSONObject result, PayuHashes payuHashes1, String checksum_token1) {
             this.postdata = result;
+            this.payuHashes = payuHashes1;
+            this.checksum_token = checksum_token1;
         }
 
         @Override
@@ -905,24 +910,29 @@ public class Payment_Activity extends AppCompatActivity {
                         String value = result.optString("RESPONSE", "");
                         String res_id = result.optString("RES_ID", "");
                         System.out.println("Response from server: " + value);
-                        if (value.equalsIgnoreCase("SUCCESS")) {
-
+                        if (GlobalClass.checkEqualIgnoreCase(value, "SUCCESS")) {
                             GlobalClass.showCustomToast(Payment_Activity.this, "Redirecting to Payment gateway..", 0);
                             System.out.println("Successful");
-
+                            if (selGateway.equalsIgnoreCase("payU")) {
+                                launchSdkUI(payuHashes);// Start PayU transaction request.
+                            } else if (selGateway.equalsIgnoreCase("payTm")) {
+                                start_paytm_transaction(checksum_token, postdata.optString(AMOUNT, ""), postdata.optString(ORDER_NO, ""));
+                            }
                         } else {
                             System.out.println("Unsuccessful");
+                            GlobalClass.showCustomToast(Payment_Activity.this, MessageConstants.RETRY, 0);
                         }
                     } else {
                         System.out.println("failed result is null ");
+                        GlobalClass.showCustomToast(Payment_Activity.this, MessageConstants.RETRY, 0);
                     }
                 } else {
                     System.out.println("failed status code ");
+                    GlobalClass.showCustomToast(Payment_Activity.this, MessageConstants.RETRY, 0);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
         }
     }
 
@@ -1231,7 +1241,7 @@ public class Payment_Activity extends AppCompatActivity {
     public void getChecksumResponse(PayTmChecksumResponseModel responseModel, String txtAmount, String txtORDID) {
         if (!GlobalClass.isNull(responseModel.getRES_ID()) && responseModel.getRES_ID().equalsIgnoreCase(Constants.RES0001)) {
             if (!GlobalClass.isNull(responseModel.getTransToken())) {
-                start_paytm_transaction(responseModel.getTransToken(), txtAmount, txtORDID, responseModel.getRESPONSE());
+                logPaymentRequest(responseModel.getTransToken(), txtAmount, txtORDID, responseModel.getRESPONSE());
             } else {
                 GlobalClass.showCustomToast(Payment_Activity.this, "Checksum token generation failed", 0);
             }
@@ -1240,7 +1250,32 @@ public class Payment_Activity extends AppCompatActivity {
         }
     }
 
-    private void start_paytm_transaction(String Checksum_token, String orderamount, String orderno, String response) {
+    private void logPaymentRequest(String Checksum_token, String orderamount, String orderno, String response) {
+        try {
+            if (cd.isConnectingToInternet()) {
+                JSONObject jobj1 = new JSONObject();
+                jobj1.put(PAYUMONEYKEY_APIKEY, api_key);
+                jobj1.put(PAYUMONEYKEY_REQUEST_CHECKSUM, Checksum_token);
+                JSONObject postdata = new JSONObject();
+                postdata.put(DICTIONARY, jobj1.toString());
+                postdata.put(ORDER_NO, orderno);
+                postdata.put(PAYMENTSTATUS, response);
+                postdata.put(ORDER_TYPE, "TSP");
+                postdata.put(DOMAIN, "CLISOAPP");
+                postdata.put(AMOUNT, orderamount);
+                postdata.put(MOBILE, user);
+                postdata.put(NAME, name_tsp);
+                postdata.put(GATEWAY, Constants.PAYTM_REQUEST);
+                new AsyncTask_Log_Payment_Request(postdata, null, Checksum_token).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            } else {
+                GlobalClass.showCustomToast(mActivity, getResources().getString(R.string.plz_chk_internet), 0);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void start_paytm_transaction(String Checksum_token, String orderamount, String orderno) {
        /* PaytmPGService Service;
         if (Api.THYROCARE.contains("APIs")) {
             Service = PaytmPGService.getProductionService();//live ---
@@ -1273,28 +1308,9 @@ public class Payment_Activity extends AppCompatActivity {
         paramMap.put("MOBILE_NO", mobile_pref);
         paramMap.put("CHECKSUMHASH", Checksum_token);
 //        PaytmOrder Order = new PaytmOrder(paramMap);
-        try {
-            if (cd.isConnectingToInternet()) {
-                JSONObject jobj1 = new JSONObject();
-                jobj1.put(PAYUMONEYKEY_APIKEY, api_key);
-                jobj1.put(PAYUMONEYKEY_REQUEST_CHECKSUM, Checksum_token);
-                JSONObject postdata = new JSONObject();
-                postdata.put(DICTIONARY, jobj1.toString());
-                postdata.put(ORDER_NO, orderno);
-                postdata.put(PAYMENTSTATUS, response);
-                postdata.put(ORDER_TYPE, "TSP");
-                postdata.put(DOMAIN, "CLISOAPP");
-                postdata.put(AMOUNT, orderamount);
-                postdata.put(MOBILE, user);
-                postdata.put(NAME, name_tsp);
-                postdata.put(GATEWAY, Constants.PAYTM_REQUEST);
-                new AsyncTask_Log_Payment_Request(postdata).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            } else {
-                GlobalClass.showCustomToast(mActivity, getResources().getString(R.string.plz_chk_internet), 0);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+        //TODO Earlier Log request API call
+
        /* try {
             Service.initialize(Order, null);
             GlobalClass.showCustomToast(mActivity, ToastFile.PAYTM_REDITECTION, 0);
@@ -1380,8 +1396,7 @@ public class Payment_Activity extends AppCompatActivity {
             TransactionManager transactionManager = new TransactionManager(paytmOrder, new PaytmPaymentTransactionCallback() {
                 @Override
                 public void onTransactionResponse(@Nullable @org.jetbrains.annotations.Nullable Bundle inResponse) {
-                    // Toast.makeText(getApplicationContext(), "Payment Transaction response " + inResponse.toString(), Toast.LENGTH_LONG).show();
-
+                    System.out.println("onTransactionResponse >> " + inResponse);
                     String STATUS, CHECKSUMHASH, BANKNAME, ORDERID, TXNAMOUNT, TXNDATE, MID, TXNID, RESPCODE, PAYMENTMODE, BANKTXNID, CURRENCY, GATEWAYNAME, RESPMSG;
                     STATUS = inResponse.getString("STATUS");
                     CHECKSUMHASH = inResponse.getString("CHECKSUMHASH");
