@@ -405,4 +405,9 @@ public class Global {
     public static boolean testsNotAllowedBelow18(String code, String age) {
         return Integer.parseInt(age) < 18 && GlobalClass.checkEqualIgnoreCase(code, Constants.TEST_CODE_EGFR);
     }
+
+    public static int getLoginType(Activity activity) {
+        SharedPreferences preferences = activity.getSharedPreferences("Userdetails", Context.MODE_PRIVATE);
+        return GlobalClass.checkEqualIgnoreCase(preferences.getString("SOURCE_TYPE", ""), "PE DAC") ? Constants.PEflag : Constants.TCflag;
+    }
 }

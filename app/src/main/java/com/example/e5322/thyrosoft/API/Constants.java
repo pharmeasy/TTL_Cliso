@@ -662,6 +662,8 @@ public class Constants {
     public static String BP_MAX = "BP_MAX";
     public static String BS_MSG = "BS_MSG";
     public static String BP_MSG = "BP_MSG";
+    public static int PEflag = 1;
+    public static int TCflag = 0;
 
     public static String returnToken(Activity mContext) {
         String str = "";

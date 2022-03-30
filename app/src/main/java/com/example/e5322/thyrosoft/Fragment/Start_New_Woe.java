@@ -378,6 +378,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     TextView tv_baseline;
     String Baseline, CMT, Shortage;
     GetBaselineDetailsResponseModel getBaselineDetailsResponseModel;
+    Activity activity;
 
     public Start_New_Woe() {
         // Required empty public constructor
@@ -407,7 +408,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         SetCurrenttime();
         listner();
         showBaselineDetails();
-        showRewardsDialog();
+        if (Global.getLoginType(activity) != Constants.PEflag) {
+            showRewardsDialog();
+        }
 
         return viewMain;
     }
@@ -427,7 +430,6 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         }
                     }
                 }
-
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -689,7 +691,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         tv_help.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Global.SetBottomSheet(getActivity());
+                Global.SetBottomSheet(activity);
             }
         });
 
@@ -702,13 +704,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         if (cd.isConnectingToInternet()) {
                             validateotp();
                         } else {
-                            GlobalClass.showCustomToast(getActivity(), MessageConstants.CHECK_INTERNET_CONN, 0);
+                            GlobalClass.showCustomToast(activity, MessageConstants.CHECK_INTERNET_CONN, 0);
                         }
                     } else {
-                        GlobalClass.showCustomToast(getActivity(), "Kindly enter otp", 0);
+                        GlobalClass.showCustomToast(activity, "Kindly enter otp", 0);
                     }
                 } else {
-                    GlobalClass.showCustomToast(getActivity(), "Kindly enter mobile number", 0);
+                    GlobalClass.showCustomToast(activity, "Kindly enter mobile number", 0);
                 }
             }
         });
@@ -737,13 +739,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 samplecollectionponit.setHint("SEARCH SAMPLE COLLECTION POINT*");
 
                 Constants.covidwoe_flag = "1";
-                Intent intent = new Intent(getActivity(), ManagingTabsActivity.class);
+                Intent intent = new Intent(activity, ManagingTabsActivity.class);
                 intent.putExtra("passToWoefragment", "frgamnebt");
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
 
              /*   Start_New_Woe fragment = new Start_New_Woe();
-                getActivity().getSupportFragmentManager().beginTransaction()
+                activity.getSupportFragmentManager().beginTransaction()
 //                        .replace(R.id.fragment_mainLayout, fragment, fragment.getClass().getSimpleName()).addToBackStack(null).commitAllowingStateLoss();
                         .replace(R.id.fragment_mainLayout, fragment, fragment.getClass().getSimpleName()).addToBackStack(null).commit();*/
             }
@@ -758,7 +760,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         enteredString.startsWith("#") || enteredString.startsWith("$") ||
                         enteredString.startsWith("%") || enteredString.startsWith("^") ||
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".") || enteredString.startsWith("0")) {
-                    Toast.makeText(getActivity(),
+                    Toast.makeText(activity,
                             ToastFile.vial_no,
                             Toast.LENGTH_SHORT).show();
                     if (enteredString.length() > 0) {
@@ -782,7 +784,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         dateShow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), R.style.DialogTheme, date, myCalendar
+                DatePickerDialog datePickerDialog = new DatePickerDialog(activity, R.style.DialogTheme, date, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH));
                 datePickerDialog.getDatePicker().setMinDate(minDate);
@@ -838,7 +840,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
                         || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")
                 ) {
-                    TastyToast.makeText(getActivity(), ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    TastyToast.makeText(activity, ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 
                     if (enteredString.length() > 0) {
                         et_mobno.setText(enteredString.substring(1));
@@ -858,13 +860,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 if (flag == true) {
                     if (s.length() == 10) {
 
-                        if (!GlobalClass.isNetworkAvailable(getActivity())) {
+                        if (!GlobalClass.isNetworkAvailable(activity)) {
                             flag = false;
                             et_mobno.setText(s);
                         } else {
                             flag = false;
-                            barProgressDialog = GlobalClass.ShowprogressDialog(getActivity());
-                            RequestQueue reques5tQueueCheckNumber = GlobalClass.setVolleyReq(getActivity());
+                            barProgressDialog = GlobalClass.ShowprogressDialog(activity);
+                            RequestQueue reques5tQueueCheckNumber = GlobalClass.setVolleyReq(activity);
                             StringRequest jsonObjectRequestPop = new StringRequest(StringRequest.Method.GET, Api.checkNumber + s, new
                                     Response.Listener<String>() {
                                         @Override
@@ -874,7 +876,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             String getResponse = response;
                                             if (response.equals("\"proceed\"")) {
 
-                                                GlobalClass.hideProgress(getActivity(), barProgressDialog);
+                                                GlobalClass.hideProgress(activity, barProgressDialog);
                                                 et_mobno.setText(s);
                                                 mobno_verify = true;
 
@@ -886,9 +888,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                             } else {
                                                 mobno_verify = false;
-                                                GlobalClass.hideProgress(getActivity(), barProgressDialog);
+                                                GlobalClass.hideProgress(activity, barProgressDialog);
                                                 et_mobno.setText("");
-                                                TastyToast.makeText(getActivity(), getResponse, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                                TastyToast.makeText(activity, getResponse, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 
                                             }
                                         }
@@ -957,7 +959,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         enteredString.startsWith("%") || enteredString.startsWith("^") ||
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
                         || enteredString.startsWith("0")) {
-                    TastyToast.makeText(getActivity(), ToastFile.crt_pincode, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    TastyToast.makeText(activity, ToastFile.crt_pincode, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 
                     if (enteredString.length() > 0) {
                         pincode_edt.setText(enteredString.substring(1));
@@ -992,7 +994,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
                         || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
                         || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")) {
-                    TastyToast.makeText(getActivity(), ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    TastyToast.makeText(activity, ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 
                     if (enteredString.length() > 0) {
                         home_kyc_format.setText(enteredString.substring(1));
@@ -1025,7 +1027,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
                         || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")
                         || enteredString.startsWith("6") || enteredString.startsWith("7") || enteredString.startsWith("8") || enteredString.startsWith("9")) {
-                    TastyToast.makeText(getActivity(), "Enter correct Ref By", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    TastyToast.makeText(activity, "Enter correct Ref By", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 
                     if (enteredString.length() > 0) {
                         referedbyText.setText(enteredString.substring(1));
@@ -1067,7 +1069,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         enteredString.startsWith("#") || enteredString.startsWith("$") ||
                         enteredString.startsWith("%") || enteredString.startsWith("^") ||
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
-                    Toast.makeText(getActivity(), ToastFile.crt_name, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
 
                     if (enteredString.length() > 0) {
                         name.setText(enteredString.substring(1));
@@ -1099,7 +1101,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         enteredString.startsWith("#") || enteredString.startsWith("$") ||
                         enteredString.startsWith("%") || enteredString.startsWith("^") ||
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
-                    Toast.makeText(getActivity(), ToastFile.crt_addr, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity, ToastFile.crt_addr, Toast.LENGTH_SHORT).show();
                     if (enteredString.length() > 0) {
                         patientAddress.setText(enteredString.substring(1));
                     } else {
@@ -1250,8 +1252,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
     private void init() {
         mContext = getContext();
-        cd = new ConnectionDetector(getActivity());
-        appPreferenceManager = new AppPreferenceManager(getActivity());
+        activity = getActivity();
+        cd = new ConnectionDetector(activity);
+        appPreferenceManager = new AppPreferenceManager(activity);
 
         covidacc = appPreferenceManager.getCovidAccessResponseModel().isCovidRegistration();
 
@@ -1369,9 +1372,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         cb_kyc_verification = (CheckBox) viewMain.findViewById(R.id.cb_kyc_verification);
         tv_baseline = viewMain.findViewById(R.id.tv_baseline);
 
-        getshared = getActivity().getApplicationContext().getSharedPreferences("profile", MODE_PRIVATE);
+        getshared = activity.getApplicationContext().getSharedPreferences("profile", MODE_PRIVATE);
 
-        prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
+        prefs = activity.getSharedPreferences("Userdetails", MODE_PRIVATE);
         user = prefs.getString("Username", "");
         passwrd = prefs.getString("password", "");
         CLIENT_TYPE = prefs.getString("CLIENT_TYPE", "");
@@ -1429,7 +1432,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             scrollView2.setVisibility(View.VISIBLE);
         }
 
-        GlobalClass.isAutoTimeSelected(getActivity());
+        GlobalClass.isAutoTimeSelected(activity);
 
 //        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
 //            Log.e("SDK_INT", "" + Build.VERSION.SDK_INT);
@@ -1480,7 +1483,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         }
 
 
-        SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+        SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext());
         Gson gson = new Gson();
         myPojo = new MyPojo();
         String json = appSharedPrefs.getString("saveAlldata", "");
@@ -1508,7 +1511,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                 if (myPojo.getMASTERS().getTSP_MASTER() != null) {
                                     String TspNumber = myPojo.getMASTERS().getTSP_MASTER().getNumber();
-                                    SharedPreferences.Editor editor = getActivity().getSharedPreferences("TspNumber", 0).edit();
+                                    SharedPreferences.Editor editor = activity.getSharedPreferences("TspNumber", 0).edit();
                                     editor.putString("TSPMobileNumber", TspNumber);
                                     editor.commit();
                                 }
@@ -1611,7 +1614,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                             }
 
-                            SharedPreferences appSharedPrefsdata = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                            SharedPreferences appSharedPrefsdata = PreferenceManager.getDefaultSharedPreferences(activity);
                             Gson gsondata = new Gson();
                             String jsondata = appSharedPrefsdata.getString("savelabnames", "");
                             obj = new SourceILSMainModel();
@@ -1639,7 +1642,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                     if (myPojo != null && myPojo.getMASTERS() != null && myPojo.getMASTERS().getTSP_MASTER() != null) {
                         getAddress = myPojo.getMASTERS().getTSP_MASTER().getAddress();
-                        SharedPreferences.Editor ScpAddress = getActivity().getSharedPreferences("ScpAddress", 0).edit();
+                        SharedPreferences.Editor ScpAddress = activity.getSharedPreferences("ScpAddress", 0).edit();
                         ScpAddress.putString("scp_addrr", getAddress);
                         ScpAddress.commit();
                     }
@@ -1655,7 +1658,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
 
                 } else {
-                    if (!GlobalClass.isNetworkAvailable(getActivity())) {
+                    if (!GlobalClass.isNetworkAvailable(activity)) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                         // Set the Alert Dialog Message
                         builder.setMessage(ToastFile.intConnection)
@@ -1684,7 +1687,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             e.printStackTrace();
         }
 
-        SharedPreferences appSharedPrefsbtech = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        SharedPreferences appSharedPrefsbtech = PreferenceManager.getDefaultSharedPreferences(activity);
         Gson gsonbtech = new Gson();
         String jsonbtech = appSharedPrefsbtech.getString("getBtechnames", "");
         myPojo = gsonbtech.fromJson(jsonbtech, MyPojo.class);
@@ -1698,7 +1701,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                     getBtechList.add(myPojo.getMASTERS().getBCT_LIST()[j]);
                 }
             } else {
-                TastyToast.makeText(getActivity(), "Please register NED", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                TastyToast.makeText(activity, "Please register NED", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
             }
 
             try {
@@ -1715,7 +1718,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                     getCampNames.add(myPojo.getMASTERS().getCAMP_LIST()[k].getVENUE());
                 }
                 if (getCampNames != null) {
-//                    camp_spinner_olc.setAdapter(new ArrayAdapter<String>(getActivity(), R.layout.spinnerproperty, getCampNames));
+//                    camp_spinner_olc.setAdapter(new ArrayAdapter<String>(activity, R.layout.spinnerproperty, getCampNames));
                     ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(
                             mContext, R.layout.spinnerproperty, getCampNames);
                     camp_spinner_olc.setAdapter(adapter2);
@@ -1727,7 +1730,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             for (int i = 0; i < getBtechList.size(); i++) {
                 btechSpinner.add(getBtechList.get(i).getNAME());
                 if (btechSpinner.size() != 0) {
-                    btechname.setAdapter(new ArrayAdapter<String>(getActivity(), R.layout.spinnerproperty, btechSpinner));
+                    btechname.setAdapter(new ArrayAdapter<String>(activity, R.layout.spinnerproperty, btechSpinner));
                 }
             }
 
@@ -1752,8 +1755,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         }
 
         if (getLabNmae != null && getReferenceNmae != null) {
-            spinnerDialogRef = new SpinnerDialog(getActivity(), getReferenceNmae, "Search Ref by", "Close");// With No Animation
-            spinnerDialogRef = new SpinnerDialog(getActivity(), getReferenceNmae, "Search Ref by", R.style.DialogAnimations_SmileWindow, "Close");// With
+            spinnerDialogRef = new SpinnerDialog(activity, getReferenceNmae, "Search Ref by", "Close");// With No Animation
+            spinnerDialogRef = new SpinnerDialog(activity, getReferenceNmae, "Search Ref by", R.style.DialogAnimations_SmileWindow, "Close");// With
 
             spinnerDialogRef.bindOnSpinerListener(new OnSpinerItemClick() {
                 @Override
@@ -1872,7 +1875,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
     private void requestJsonObject() {
         try {
-            barProgressDialog = new ProgressDialog(getActivity());
+            barProgressDialog = new ProgressDialog(activity);
             barProgressDialog.setTitle("Kindly wait ...");
             barProgressDialog.setMessage(ToastFile.processing_request);
             barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
@@ -1888,7 +1891,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 @Override
                 public void onResponse(JSONObject response) {
                     try {
-                        GlobalClass.hideProgress(getActivity(), barProgressDialog);
+                        GlobalClass.hideProgress(activity, barProgressDialog);
                         Log.e(TAG, "onResponse: RESPONSE" + response);
                         if (response != null) {
                             //Sushil Store data on success
@@ -1899,10 +1902,10 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                             if (myPojo != null && !GlobalClass.isNull(myPojo.getRESPONSE()) && myPojo.getRESPONSE().equalsIgnoreCase(caps_invalidApikey)) {
 
-                                GlobalClass.redirectToLogin(getActivity());
+                                GlobalClass.redirectToLogin(activity);
                             } else {
-                                GlobalClass.hideProgress(getActivity(), barProgressDialog);
-                                SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                                GlobalClass.hideProgress(activity, barProgressDialog);
+                                SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(activity);
                                 SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
                                 Gson gson22 = new Gson();
                                 String json22 = gson22.toJson(myPojo);
@@ -1926,7 +1929,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             camp_lists = myPojo.getMASTERS().getCAMP_LIST();
                                             // GlobalClass.getcamp_lists=camp_lists;
                                             String TspNumber = myPojo.getMASTERS().getTSP_MASTER().getNumber();
-                                            SharedPreferences.Editor editor = getActivity().getSharedPreferences("TspNumber", 0).edit();
+                                            SharedPreferences.Editor editor = activity.getSharedPreferences("TspNumber", 0).edit();
                                             editor.putString("TSPMobileNumber", TspNumber);
                                             editor.apply();
                                         }
@@ -2002,7 +2005,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         if (myPojo.getMASTERS() != null && myPojo.getMASTERS().getTSP_MASTER() != null) {
                                             String getAddress = myPojo.getMASTERS().getTSP_MASTER().getAddress();
 
-                                            SharedPreferences.Editor ScpAddress = getActivity().getSharedPreferences("ScpAddress", 0).edit();
+                                            SharedPreferences.Editor ScpAddress = activity.getSharedPreferences("ScpAddress", 0).edit();
                                             ScpAddress.putString("scp_addrr", getAddress);
                                             ScpAddress.commit();
                                         }
@@ -2035,14 +2038,14 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         }
                     } catch (JsonSyntaxException e) {
                         e.printStackTrace();
-                        Toast.makeText(getActivity(), "" + e, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity, "" + e, Toast.LENGTH_SHORT).show();
                     }
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     if (error.networkResponse == null) {
-                        GlobalClass.hideProgress(getActivity(), barProgressDialog);
+                        GlobalClass.hideProgress(activity, barProgressDialog);
 
                     }
                 }
@@ -2069,7 +2072,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 if (cd.isConnectingToInternet()) {
                     mobileverify(edt_missed_mobile.getText().toString());
                 } else {
-                    GlobalClass.showCustomToast(getActivity(), MessageConstants.CHECK_INTERNET_CONN, 0);
+                    GlobalClass.showCustomToast(activity, MessageConstants.CHECK_INTERNET_CONN, 0);
                 }
             } else {
                 mobileverify(edt_missed_mobile.getText().toString());
@@ -2080,17 +2083,17 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
     private boolean mobilenovalidation() {
         if (edt_missed_mobile.getText().toString().length() == 0) {
-            Global.showCustomToast(getActivity(), ToastFile.ENTER_MOBILE);
+            Global.showCustomToast(activity, ToastFile.ENTER_MOBILE);
             edt_missed_mobile.requestFocus();
             return false;
         }
         if (edt_missed_mobile.getText().toString().length() < 10) {
-            Global.showCustomToast(getActivity(), ToastFile.MOBILE_10_DIGITS);
+            Global.showCustomToast(activity, ToastFile.MOBILE_10_DIGITS);
             edt_missed_mobile.requestFocus();
             return false;
         }
         if (edt_missed_mobile.getText().toString().length() > 10) {
-            Global.showCustomToast(getActivity(), ToastFile.MOBILE_10_DIGITS);
+            Global.showCustomToast(activity, ToastFile.MOBILE_10_DIGITS);
             edt_missed_mobile.requestFocus();
             return false;
         }
@@ -2099,8 +2102,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
     private void mobileverify(String mobileno) {
 
-        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(getActivity());
-        PostAPIInterface postAPIInterface = RetroFit_APIClient.getInstance().getClient(getActivity(), Api.Cloud_base).create(PostAPIInterface.class);
+        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
+        PostAPIInterface postAPIInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInterface.class);
         CoVerifyMobReq coVerifyMobReq = new CoVerifyMobReq();
         coVerifyMobReq.setApi_key(api_key);
         coVerifyMobReq.setMobile(mobileno);
@@ -2113,7 +2116,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             @Override
             public void onResponse(Call<COVerifyMobileResponse> call, retrofit2.Response<COVerifyMobileResponse> response) {
                 Log.e(TAG, "on Response-->" + response.body().getResponse());
-                GlobalClass.hideProgress(getActivity(), progressDialog);
+                GlobalClass.hideProgress(activity, progressDialog);
                 try {
                     if (response.body().getResId().equalsIgnoreCase(Constants.RES0000)) {
                         if (response.body().getResponse().equalsIgnoreCase("NOT VERIFIED")) {
@@ -2181,7 +2184,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
             @Override
             public void onFailure(Call<COVerifyMobileResponse> call, Throwable t) {
-                GlobalClass.hideProgress(getActivity(), progressDialog);
+                GlobalClass.hideProgress(activity, progressDialog);
             }
         });
 
@@ -2194,14 +2197,14 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         requestModel.setMobile(edt_missed_mobile.getText().toString().trim());
         requestModel.setScode(user);
 
-        PostAPIInterface apiInterface = RetroFit_APIClient.getInstance().getClient(getActivity(), Api.Cloud_base).create(PostAPIInterface.class);
+        PostAPIInterface apiInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInterface.class);
         Call<PatientDetailsAPiResponseModel> responseModelCall = apiInterface.CallGetPatientDetailsAPI(requestModel);
-        final ProgressDialog progressDialog1 = GlobalClass.ShowprogressDialog(getActivity());
+        final ProgressDialog progressDialog1 = GlobalClass.ShowprogressDialog(activity);
         responseModelCall.enqueue(new Callback<PatientDetailsAPiResponseModel>() {
             @Override
             public void onResponse(Call<PatientDetailsAPiResponseModel> call, retrofit2.Response<PatientDetailsAPiResponseModel> response) {
                 try {
-                    GlobalClass.hideProgress(getActivity(), progressDialog1);
+                    GlobalClass.hideProgress(activity, progressDialog1);
                     if (response.body() != null) {
                         PatientDetailsAPiResponseModel responseModel = response.body();
                         if (!GlobalClass.isNull(responseModel.getResId()) && responseModel.getResId().equalsIgnoreCase(Constants.RES0000) && responseModel.getPatientInfo() != null && responseModel.getPatientInfo().size() > 0) {
@@ -2217,7 +2220,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
             @Override
             public void onFailure(Call<PatientDetailsAPiResponseModel> call, Throwable t) {
-                GlobalClass.hideProgress(getActivity(), progressDialog1);
+                GlobalClass.hideProgress(activity, progressDialog1);
             }
         });
     }
@@ -2377,8 +2380,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     }
 
     private void generateOtP(String mobileno) {
-        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(getActivity());
-        PostAPIInterface postAPIInterface = RetroFit_APIClient.getInstance().getClient(getActivity(), Api.Cloud_base).create(PostAPIInterface.class);
+        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
+        PostAPIInterface postAPIInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInterface.class);
 
         COVIDgetotp_req coviDgetotp_req = new COVIDgetotp_req();
         coviDgetotp_req.setApi_key(api_key);
@@ -2389,7 +2392,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         covidotpresponseCall.enqueue(new Callback<Covidotpresponse>() {
             @Override
             public void onResponse(Call<Covidotpresponse> call, retrofit2.Response<Covidotpresponse> response) {
-                GlobalClass.hideProgress(getActivity(), progressDialog);
+                GlobalClass.hideProgress(activity, progressDialog);
                 try {
                     if (response.body().getResId().equalsIgnoreCase(Constants.RES0000)) {
                         setCountDownTimernew();
@@ -2454,8 +2457,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
     private void validateotp() {
 
-        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(getActivity());
-        PostAPIInterface postAPIInterface = RetroFit_APIClient.getInstance().getClient(getActivity(), Api.Cloud_base).create(PostAPIInterface.class);
+        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
+        PostAPIInterface postAPIInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInterface.class);
         Covid_validateotp_req covid_validateotp_req = new Covid_validateotp_req();
         covid_validateotp_req.setApi_key(api_key);
         covid_validateotp_req.setMobile(edt_missed_mobile.getText().toString());
@@ -2466,7 +2469,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         covidotpresponseCall.enqueue(new Callback<Covid_validateotp_res>() {
             @Override
             public void onResponse(Call<Covid_validateotp_res> call, retrofit2.Response<Covid_validateotp_res> response) {
-                GlobalClass.hideProgress(getActivity(), progressDialog);
+                GlobalClass.hideProgress(activity, progressDialog);
                 try {
                     if (response.body().getResId().equalsIgnoreCase(Constants.RES0000)) {
                         disablefields();
@@ -2499,9 +2502,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         lin_ckotp.setVisibility(View.GONE);
                         Enablefields();
                         CallAPIToGetPatientDetails();
-                        Toast.makeText(getActivity(), "" + response.body().getResponse(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity, "" + response.body().getResponse(), Toast.LENGTH_SHORT).show();
                     } else {
-                        GlobalClass.showCustomToast(getActivity(), response.body().getResponse(), 0);
+                        GlobalClass.showCustomToast(activity, response.body().getResponse(), 0);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -2762,7 +2765,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             } else {
                                                /* if (Global.OTPVERIFIED) {
                                                     if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
-                                                        GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                        GlobalClass.showCustomToast(activity, MessageConstants.VALID_EMAIL, 1);
                                                         edt_email.requestFocus();
                                                     } else {
                                                         TTL_ILS();
@@ -2770,7 +2773,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 } else {*/
                                                 if (!GlobalClass.isNull(edt_email.getText().toString())) {
                                                     if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
-                                                        GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                        GlobalClass.showCustomToast(activity, MessageConstants.VALID_EMAIL, 1);
                                                         edt_email.requestFocus();
                                                     } else {
                                                         if (checkSelectMode()) {
@@ -2809,7 +2812,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         checkDuplicate();
                                         radiogrp2.check(by_sendsms.getId());
                                     } else {
-                                        GlobalClass.redirectToLogin(getActivity());
+                                        GlobalClass.redirectToLogin(activity);
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -2863,7 +2866,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                     enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
                                                     || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
                                                     || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")) {
-                                                TastyToast.makeText(getActivity(), ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                                TastyToast.makeText(activity, ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 
                                                 if (enteredString.length() > 0) {
                                                     kyc_format.setText(enteredString.substring(1));
@@ -2888,7 +2891,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             if (flag == true) {
                                                 if (checkNumber.length() == 10) {
 
-                                                    if (!GlobalClass.isNetworkAvailable(getActivity())) {
+                                                    if (!GlobalClass.isNetworkAvailable(activity)) {
                                                         flag = false;
                                                         kyc_format.setText(checkNumber);
                                                     } else {
@@ -2903,7 +2906,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                         barProgressDialog.setCanceledOnTouchOutside(false);
                                                         barProgressDialog.setCancelable(false);
 
-                                                        RequestQueue reques5tQueueCheckNumber = GlobalClass.setVolleyReq(getActivity());
+                                                        RequestQueue reques5tQueueCheckNumber = GlobalClass.setVolleyReq(activity);
                                                         StringRequest jsonObjectRequestPop = new StringRequest(StringRequest.Method.GET, Api.checkNumber + checkNumber, new
                                                                 Response.Listener<String>() {
                                                                     @Override
@@ -2913,12 +2916,12 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                                         String getResponse = response;
                                                                         if (response.equals("\"proceed\"")) {
 
-                                                                            GlobalClass.hideProgress(getActivity(), barProgressDialog);
+                                                                            GlobalClass.hideProgress(activity, barProgressDialog);
                                                                             kyc_format.setText(checkNumber);
                                                                         } else {
-                                                                            GlobalClass.hideProgress(getActivity(), barProgressDialog);
+                                                                            GlobalClass.hideProgress(activity, barProgressDialog);
                                                                             kyc_format.setText("");
-                                                                            TastyToast.makeText(getActivity(), getResponse, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                                                            TastyToast.makeText(activity, getResponse, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 
                                                                         }
                                                                     }
@@ -3123,13 +3126,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             } else if (pincode_pass.length() < 6) {
                                                 Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
                                             } else if (btechnameTopass.equalsIgnoreCase(ToastFile.slt_btech_name)) {
-                                                Toast.makeText(getActivity(), ToastFile.btech_name, Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(activity, ToastFile.btech_name, Toast.LENGTH_SHORT).show();
                                             } else if (referenceBy == null || referenceBy.equals("") || referenceBy.length() <= 1) {
                                                 Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
                                             } else {
                                               /*  if (Global.OTPVERIFIED) {
                                                     if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
-                                                        GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                        GlobalClass.showCustomToast(activity, MessageConstants.VALID_EMAIL, 1);
                                                         edt_email.requestFocus();
                                                     } else {
                                                         TTL_DPS();
@@ -3137,7 +3140,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 } else {*/
                                                 if (!GlobalClass.isNull(edt_email.getText().toString())) {
                                                     if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
-                                                        GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                        GlobalClass.showCustomToast(activity, MessageConstants.VALID_EMAIL, 1);
                                                         edt_email.requestFocus();
                                                     } else {
                                                         if (checkSelectMode()) {
@@ -3173,7 +3176,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         checkKYCIsChecked();
                                         radiogrp2.check(by_sendsms.getId());
                                     } else {
-                                        GlobalClass.redirectToLogin(getActivity());
+                                        GlobalClass.redirectToLogin(activity);
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -3383,13 +3386,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             } else if (pincode_pass.length() < 6) {
                                                 Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
                                             } else if (btechnameTopass.equalsIgnoreCase(ToastFile.slt_btech_name)) {
-                                                Toast.makeText(getActivity(), ToastFile.btech_name, Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(activity, ToastFile.btech_name, Toast.LENGTH_SHORT).show();
                                             } else if (referenceBy == null || referenceBy.equals("") || referenceBy.length() <= 1) {
                                                 Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
                                             } else {
                                             /*    if (Global.OTPVERIFIED) {
                                                     if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
-                                                        GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                        GlobalClass.showCustomToast(activity, MessageConstants.VALID_EMAIL, 1);
                                                         edt_email.requestFocus();
                                                     } else {
                                                         TTL_HOME();
@@ -3397,7 +3400,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 } else {*/
                                                 if (!GlobalClass.isNull(edt_email.getText().toString())) {
                                                     if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
-                                                        GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                        GlobalClass.showCustomToast(activity, MessageConstants.VALID_EMAIL, 1);
                                                         edt_email.requestFocus();
                                                     } else {
                                                         if (checkSelectMode()) {
@@ -3598,7 +3601,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 }*/ else if (referenceBy == null || referenceBy.equals("") || referenceBy.length() <= 1) {
                                                     Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
                                                 } else if (scpoint.equals("Select Camp")) {
-                                                    Toast.makeText(getActivity(), "Please select camp name", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(activity, "Please select camp name", Toast.LENGTH_SHORT).show();
                                                 } else if (dCompare.after(getCurrentDateandTime) && getCurrentDateandTime != null) {
                                                     Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
                                                 } else {
@@ -3768,8 +3771,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         }
                                         if (s.length() == 8) {
                                             String passBarcode = s.toString();
-                                            if (!GlobalClass.isNetworkAvailable(getActivity())) {
-                                                GlobalClass.showAlertDialog(getActivity());
+                                            if (!GlobalClass.isNetworkAvailable(activity)) {
+                                                GlobalClass.showAlertDialog(activity);
                                             } else {
                                                 RecheckType(passBarcode);
                                             }
@@ -3783,15 +3786,15 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                     public void onClick(View v) {
 
                                         if (type_string.equals("")) {
-                                            Toast.makeText(getActivity(), "Please select type name", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(activity, "Please select type name", Toast.LENGTH_SHORT).show();
                                         } else if (barcode_woe.getText().toString().equals("")) {
-                                            Toast.makeText(getActivity(), ToastFile.entr_brcd, Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(activity, ToastFile.entr_brcd, Toast.LENGTH_SHORT).show();
                                         } else {
                                             GlobalClass.branditem = brand_spinner.getSelectedItem().toString();
                                             GlobalClass.typeItem = selectTypeSpinner.getSelectedItem().toString();
                                             GlobalClass.id_value = id_for_woe.getText().toString();
 
-                                            SharedPreferences.Editor savePrefe = getActivity().getSharedPreferences("AddTestType", 0).edit();
+                                            SharedPreferences.Editor savePrefe = activity.getSharedPreferences("AddTestType", 0).edit();
                                             savePrefe.putString("ALERT", ALERT);
                                             savePrefe.putString("BARCODE", BARCODE);
                                             savePrefe.putString("BVT_HRS", BVT_HRS);
@@ -3809,7 +3812,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             savePrefe.putString("TESTS", TESTS);
                                             savePrefe.commit();
 
-                                            Intent a = new Intent(getActivity(), AddWOETestsForSerum.class);
+                                            Intent a = new Intent(activity, AddWOETestsForSerum.class);
                                             startActivity(a);
 
                                         }
@@ -3864,8 +3867,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             leadbarcodelayout.setVisibility(View.GONE);
                                         }
                                         if (s.length() == 8) {
-                                            if (!GlobalClass.isNetworkAvailable(getActivity())) {
-                                                GlobalClass.showAlertDialog(getActivity());
+                                            if (!GlobalClass.isNetworkAvailable(activity)) {
+                                                GlobalClass.showAlertDialog(activity);
                                             } else {
                                                 String passBarcode = s.toString();
                                                 RecheckType(passBarcode);
@@ -3880,13 +3883,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                     public void onClick(View v) {
 
                                         if (brand_string.equals("Select brand name")) {
-                                            Toast.makeText(getActivity(), "Please select brand name", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(activity, "Please select brand name", Toast.LENGTH_SHORT).show();
                                         } else if (type_string.equals("")) {
-                                            Toast.makeText(getActivity(), "Please select type name", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(activity, "Please select type name", Toast.LENGTH_SHORT).show();
                                         } else if (barcode_woe.getText().toString().equals("")) {
-                                            Toast.makeText(getActivity(), ToastFile.entr_brcd, Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(activity, ToastFile.entr_brcd, Toast.LENGTH_SHORT).show();
                                         } else {
-                                            SharedPreferences.Editor savePrefe = getActivity().getSharedPreferences("RecheckTestType", 0).edit();
+                                            SharedPreferences.Editor savePrefe = activity.getSharedPreferences("RecheckTestType", 0).edit();
                                             savePrefe.putString("ALERT", ALERT);
                                             savePrefe.putString("BARCODE", BARCODE);
                                             savePrefe.putString("BVT_HRS", BVT_HRS);
@@ -3906,7 +3909,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             savePrefe.commit();
                                             GlobalClass.branditem = brand_spinner.getSelectedItem().toString();
                                             GlobalClass.typeItem = selectTypeSpinner.getSelectedItem().toString();
-                                            Intent a = new Intent(getActivity(), RecheckAllTest.class);
+                                            Intent a = new Intent(activity, RecheckAllTest.class);
                                             startActivity(a);
 
                                         }
@@ -4147,7 +4150,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 } else {
                                                  /*   if (Global.OTPVERIFIED) {
                                                         if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
-                                                            GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                            GlobalClass.showCustomToast(activity, MessageConstants.VALID_EMAIL, 1);
                                                             edt_email.requestFocus();
                                                         } else {
                                                             TTL_ILS();
@@ -4155,7 +4158,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                     } else {*/
                                                     if (!GlobalClass.isNull(edt_email.getText().toString())) {
                                                         if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
-                                                            GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                            GlobalClass.showCustomToast(activity, MessageConstants.VALID_EMAIL, 1);
                                                             edt_email.requestFocus();
                                                         } else {
                                                             TTL_ILS();
@@ -4187,7 +4190,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             checkKYCIsChecked();
                                             radiogrp2.check(by_sendsms.getId());
                                         } else {
-                                            GlobalClass.redirectToLogin(getActivity());
+                                            GlobalClass.redirectToLogin(activity);
                                         }
                                     } catch (Exception e) {
                                         e.printStackTrace();
@@ -4241,7 +4244,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
                                                         || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
                                                         || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")) {
-                                                    TastyToast.makeText(getActivity(), ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                                    TastyToast.makeText(activity, ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 
                                                     if (enteredString.length() > 0) {
                                                         kyc_format.setText(enteredString.substring(1));
@@ -4266,7 +4269,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 if (flag == true) {
                                                     if (checkNumber.length() == 10) {
 
-                                                        if (!GlobalClass.isNetworkAvailable(getActivity())) {
+                                                        if (!GlobalClass.isNetworkAvailable(activity)) {
                                                             flag = false;
                                                             kyc_format.setText(checkNumber);
                                                         } else {
@@ -4281,7 +4284,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                             barProgressDialog.setCanceledOnTouchOutside(false);
                                                             barProgressDialog.setCancelable(false);
 
-                                                            RequestQueue reques5tQueueCheckNumber = GlobalClass.setVolleyReq(getActivity());
+                                                            RequestQueue reques5tQueueCheckNumber = GlobalClass.setVolleyReq(activity);
                                                             StringRequest jsonObjectRequestPop = new StringRequest(StringRequest.Method.GET, Api.checkNumber + checkNumber, new
                                                                     Response.Listener<String>() {
                                                                         @Override
@@ -4291,12 +4294,12 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                                             String getResponse = response;
                                                                             if (response.equals("\"proceed\"")) {
 
-                                                                                GlobalClass.hideProgress(getActivity(), barProgressDialog);
+                                                                                GlobalClass.hideProgress(activity, barProgressDialog);
                                                                                 kyc_format.setText(checkNumber);
                                                                             } else {
-                                                                                GlobalClass.hideProgress(getActivity(), barProgressDialog);
+                                                                                GlobalClass.hideProgress(activity, barProgressDialog);
                                                                                 kyc_format.setText("");
-                                                                                TastyToast.makeText(getActivity(), getResponse, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                                                                TastyToast.makeText(activity, getResponse, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 
                                                                             }
                                                                         }
@@ -4496,13 +4499,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 } else if (pincode_pass.length() < 6) {
                                                     Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
                                                 } else if (btechnameTopass.equalsIgnoreCase(ToastFile.slt_btech_name)) {
-                                                    Toast.makeText(getActivity(), ToastFile.btech_name, Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(activity, ToastFile.btech_name, Toast.LENGTH_SHORT).show();
                                                 } else if (referenceBy == null || referenceBy.equals("") || referenceBy.length() <= 1) {
                                                     Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
                                                 } else {
                                                     /*if (Global.OTPVERIFIED) {
                                                         if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
-                                                            GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                            GlobalClass.showCustomToast(activity, MessageConstants.VALID_EMAIL, 1);
                                                             edt_email.requestFocus();
                                                         } else {
                                                             TTL_DPS();
@@ -4510,7 +4513,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                     } else {*/
                                                     if (!GlobalClass.isNull(edt_email.getText().toString())) {
                                                         if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
-                                                            GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                            GlobalClass.showCustomToast(activity, MessageConstants.VALID_EMAIL, 1);
                                                             edt_email.requestFocus();
                                                         } else {
                                                             TTL_DPS();
@@ -4542,7 +4545,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             checkKYCIsChecked();
                                             radiogrp2.check(by_sendsms.getId());
                                         } else {
-                                            GlobalClass.redirectToLogin(getActivity());
+                                            GlobalClass.redirectToLogin(activity);
                                         }
                                     } catch (Exception e) {
                                         e.printStackTrace();
@@ -4750,13 +4753,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 } else if (pincode_pass.length() < 6) {
                                                     Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
                                                 } else if (btechnameTopass.equalsIgnoreCase(ToastFile.slt_btech_name)) {
-                                                    Toast.makeText(getActivity(), ToastFile.btech_name, Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(activity, ToastFile.btech_name, Toast.LENGTH_SHORT).show();
                                                 } else if (referenceBy == null || referenceBy.equals("") || referenceBy.length() <= 1) {
                                                     Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
                                                 } else {
                                                  /*   if (Global.OTPVERIFIED) {
                                                         if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
-                                                            GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                            GlobalClass.showCustomToast(activity, MessageConstants.VALID_EMAIL, 1);
                                                             edt_email.requestFocus();
                                                         } else {
                                                             TTL_HOME();
@@ -4764,7 +4767,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                     } else {*/
                                                     if (!GlobalClass.isNull(edt_email.getText().toString())) {
                                                         if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
-                                                            GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                            GlobalClass.showCustomToast(activity, MessageConstants.VALID_EMAIL, 1);
                                                             edt_email.requestFocus();
                                                         } else {
                                                             TTL_HOME();
@@ -4962,7 +4965,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 }*/ else if (referenceBy == null || referenceBy.equals("") || referenceBy.length() <= 1) {
                                                         Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
                                                     } else if (scpoint.equals("Select Camp")) {
-                                                        Toast.makeText(getActivity(), "Please select camp name", Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(activity, "Please select camp name", Toast.LENGTH_SHORT).show();
                                                     } else if (dCompare.after(getCurrentDateandTime) && getCurrentDateandTime != null) {
                                                         Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
                                                     } else {
@@ -5128,8 +5131,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             }
                                             if (s.length() == 8) {
                                                 String passBarcode = s.toString();
-                                                if (!GlobalClass.isNetworkAvailable(getActivity())) {
-                                                    GlobalClass.showAlertDialog(getActivity());
+                                                if (!GlobalClass.isNetworkAvailable(activity)) {
+                                                    GlobalClass.showAlertDialog(activity);
                                                 } else {
                                                     RecheckType(passBarcode);
                                                 }
@@ -5143,15 +5146,15 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         public void onClick(View v) {
 
                                             if (type_string.equals("")) {
-                                                Toast.makeText(getActivity(), "Please select type name", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(activity, "Please select type name", Toast.LENGTH_SHORT).show();
                                             } else if (barcode_woe.getText().toString().equals("")) {
-                                                Toast.makeText(getActivity(), ToastFile.entr_brcd, Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(activity, ToastFile.entr_brcd, Toast.LENGTH_SHORT).show();
                                             } else {
                                                 GlobalClass.branditem = brand_spinner.getSelectedItem().toString();
                                                 GlobalClass.typeItem = selectTypeSpinner.getSelectedItem().toString();
                                                 GlobalClass.id_value = id_for_woe.getText().toString();
 
-                                                SharedPreferences.Editor savePrefe = getActivity().getSharedPreferences("AddTestType", 0).edit();
+                                                SharedPreferences.Editor savePrefe = activity.getSharedPreferences("AddTestType", 0).edit();
                                                 savePrefe.putString("ALERT", ALERT);
                                                 savePrefe.putString("BARCODE", BARCODE);
                                                 savePrefe.putString("BVT_HRS", BVT_HRS);
@@ -5169,7 +5172,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 savePrefe.putString("TESTS", TESTS);
                                                 savePrefe.commit();
 
-                                                Intent a = new Intent(getActivity(), AddWOETestsForSerum.class);
+                                                Intent a = new Intent(activity, AddWOETestsForSerum.class);
                                                 startActivity(a);
 
                                             }
@@ -5223,8 +5226,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 leadbarcodelayout.setVisibility(View.GONE);
                                             }
                                             if (s.length() == 8) {
-                                                if (!GlobalClass.isNetworkAvailable(getActivity())) {
-                                                    GlobalClass.showAlertDialog(getActivity());
+                                                if (!GlobalClass.isNetworkAvailable(activity)) {
+                                                    GlobalClass.showAlertDialog(activity);
                                                 } else {
                                                     String passBarcode = s.toString();
                                                     RecheckType(passBarcode);
@@ -5239,13 +5242,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         public void onClick(View v) {
 
                                             if (brand_string.equals("Select brand name")) {
-                                                Toast.makeText(getActivity(), "Please select brand name", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(activity, "Please select brand name", Toast.LENGTH_SHORT).show();
                                             } else if (type_string.equals("")) {
-                                                Toast.makeText(getActivity(), "Please select type name", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(activity, "Please select type name", Toast.LENGTH_SHORT).show();
                                             } else if (barcode_woe.getText().toString().equals("")) {
-                                                Toast.makeText(getActivity(), ToastFile.entr_brcd, Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(activity, ToastFile.entr_brcd, Toast.LENGTH_SHORT).show();
                                             } else {
-                                                SharedPreferences.Editor savePrefe = getActivity().getSharedPreferences("RecheckTestType", 0).edit();
+                                                SharedPreferences.Editor savePrefe = activity.getSharedPreferences("RecheckTestType", 0).edit();
                                                 savePrefe.putString("ALERT", ALERT);
                                                 savePrefe.putString("BARCODE", BARCODE);
                                                 savePrefe.putString("BVT_HRS", BVT_HRS);
@@ -5265,7 +5268,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 savePrefe.commit();
                                                 GlobalClass.branditem = brand_spinner.getSelectedItem().toString();
                                                 GlobalClass.typeItem = selectTypeSpinner.getSelectedItem().toString();
-                                                Intent a = new Intent(getActivity(), RecheckAllTest.class);
+                                                Intent a = new Intent(activity, RecheckAllTest.class);
                                                 startActivity(a);
 
                                             }
@@ -5317,7 +5320,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             checkKYCIsChecked();
                                             radiogrp2.check(by_sendsms.getId());
                                         } else {
-                                            GlobalClass.redirectToLogin(getActivity());
+                                            GlobalClass.redirectToLogin(activity);
                                         }
                                     } catch (Exception e) {
                                         e.printStackTrace();
@@ -5370,7 +5373,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                     enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
                                                     || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
                                                     || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")) {
-                                                TastyToast.makeText(getActivity(), ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                                TastyToast.makeText(activity, ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 
                                                 if (enteredString.length() > 0) {
                                                     kyc_format.setText(enteredString.substring(1));
@@ -5395,7 +5398,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             if (flag == true) {
                                                 if (checkNumber.length() == 10) {
 
-                                                    if (!GlobalClass.isNetworkAvailable(getActivity())) {
+                                                    if (!GlobalClass.isNetworkAvailable(activity)) {
                                                         flag = false;
                                                         kyc_format.setText(checkNumber);
                                                     } else {
@@ -5410,7 +5413,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                         barProgressDialog.setCanceledOnTouchOutside(false);
                                                         barProgressDialog.setCancelable(false);
 
-                                                        RequestQueue reques5tQueueCheckNumber = GlobalClass.setVolleyReq(getActivity());
+                                                        RequestQueue reques5tQueueCheckNumber = GlobalClass.setVolleyReq(activity);
                                                         StringRequest jsonObjectRequestPop = new StringRequest(StringRequest.Method.GET, Api.checkNumber + checkNumber, new
                                                                 Response.Listener<String>() {
                                                                     @Override
@@ -5420,12 +5423,12 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                                         String getResponse = response;
                                                                         if (response.equals("\"proceed\"")) {
 
-                                                                            GlobalClass.hideProgress(getActivity(), barProgressDialog);
+                                                                            GlobalClass.hideProgress(activity, barProgressDialog);
                                                                             kyc_format.setText(checkNumber);
                                                                         } else {
-                                                                            GlobalClass.hideProgress(getActivity(), barProgressDialog);
+                                                                            GlobalClass.hideProgress(activity, barProgressDialog);
                                                                             kyc_format.setText("");
-                                                                            TastyToast.makeText(getActivity(), getResponse, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                                                            TastyToast.makeText(activity, getResponse, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 
                                                                         }
                                                                     }
@@ -5616,7 +5619,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             } else if (pincode_pass.length() < 6) {
                                                 Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
                                             } else if (btechnameTopass.equalsIgnoreCase(ToastFile.slt_btech_name)) {
-                                                Toast.makeText(getActivity(), ToastFile.btech_name, Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(activity, ToastFile.btech_name, Toast.LENGTH_SHORT).show();
                                             } else if (referenceBy == null || referenceBy.equals("") || referenceBy.length() <= 1) {
                                                 Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
                                             } else {
@@ -5640,9 +5643,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 }
 
                                             /*    if (kycdata.length() == 0) {
-                                                    Toast.makeText(getActivity(), ToastFile.crt_kyc_empty, Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(activity, ToastFile.crt_kyc_empty, Toast.LENGTH_SHORT).show();
                                                 } else if (kycdata.length() < 10) {
-                                                    Toast.makeText(getActivity(), ToastFile.crt_MOB_num, Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(activity, ToastFile.crt_MOB_num, Toast.LENGTH_SHORT).show();
                                                 } else {*/
 
                                                 try {
@@ -5782,7 +5785,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             checkKYCIsChecked();
                                             radiogrp2.check(by_sendsms.getId());
                                         } else {
-                                            GlobalClass.redirectToLogin(getActivity());
+                                            GlobalClass.redirectToLogin(activity);
                                         }
                                     } catch (Exception e) {
                                         e.printStackTrace();
@@ -5974,15 +5977,15 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             } else if (pincode_pass.length() < 6) {
                                                 Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
                                             } else if (btechnameTopass.equalsIgnoreCase(ToastFile.slt_btech_name)) {
-                                                Toast.makeText(getActivity(), ToastFile.btech_name, Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(activity, ToastFile.btech_name, Toast.LENGTH_SHORT).show();
                                             } else if (referenceBy == null || referenceBy.equals("") || referenceBy.length() <= 1) {
                                                 Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
                                             } else {
 
                                                /* if (kycdata.length() == 0) {
-                                                    Toast.makeText(getActivity(), ToastFile.crt_kyc_empty, Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(activity, ToastFile.crt_kyc_empty, Toast.LENGTH_SHORT).show();
                                                 } else if (kycdata.length() < 10) {
-                                                    Toast.makeText(getActivity(), ToastFile.crt_MOB_num, Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(activity, ToastFile.crt_MOB_num, Toast.LENGTH_SHORT).show();
                                                 } else {*/
 
                                                 if (woereferedby != null) {
@@ -6321,7 +6324,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             } else {
                                               /*  if (Global.OTPVERIFIED) {
                                                     if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
-                                                        GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                        GlobalClass.showCustomToast(activity, MessageConstants.VALID_EMAIL, 1);
                                                         edt_email.requestFocus();
                                                     } else {
                                                         OutLabs_Eqnx_ILS();
@@ -6329,7 +6332,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 } else {*/
                                                 if (!GlobalClass.isNull(edt_email.getText().toString())) {
                                                     if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
-                                                        GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                        GlobalClass.showCustomToast(activity, MessageConstants.VALID_EMAIL, 1);
                                                         edt_email.requestFocus();
                                                     } else {
                                                         OutLabs_Eqnx_ILS();
@@ -6362,7 +6365,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         checkKYCIsChecked();
                                         radiogrp2.check(by_sendsms.getId());
                                     } else {
-                                        GlobalClass.redirectToLogin(getActivity());
+                                        GlobalClass.redirectToLogin(activity);
                                     }
 
 
@@ -6410,7 +6413,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                     || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
                                                     || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")
                                             ) {
-                                                TastyToast.makeText(getActivity(), ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                                TastyToast.makeText(activity, ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 
                                                 if (enteredString.length() > 0) {
                                                     kyc_format.setText(enteredString.substring(1));
@@ -6433,12 +6436,12 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             }
                                             if (flag == true) {
                                                 if (checkNumber.length() == 10) {
-                                                    if (!GlobalClass.isNetworkAvailable(getActivity())) {
+                                                    if (!GlobalClass.isNetworkAvailable(activity)) {
                                                         flag = false;
                                                         kyc_format.setText(checkNumber);
                                                     } else {
                                                         flag = false;
-                                                        barProgressDialog = new ProgressDialog(getActivity());
+                                                        barProgressDialog = new ProgressDialog(activity);
                                                         barProgressDialog.setTitle("Kindly wait ...");
                                                         barProgressDialog.setMessage(ToastFile.processing_request);
                                                         barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
@@ -6447,7 +6450,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                         barProgressDialog.show();
                                                         barProgressDialog.setCanceledOnTouchOutside(false);
                                                         barProgressDialog.setCancelable(false);
-                                                        RequestQueue reques5tQueueCheckNumber = GlobalClass.setVolleyReq(getActivity());
+                                                        RequestQueue reques5tQueueCheckNumber = GlobalClass.setVolleyReq(activity);
                                                         StringRequest jsonObjectRequestPop = new StringRequest(StringRequest.Method.GET, Api.checkNumber + checkNumber, new
                                                                 Response.Listener<String>() {
                                                                     @Override
@@ -6464,7 +6467,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                                                 if (!((Activity) mContext).isFinishing())
                                                                                     barProgressDialog.dismiss();
                                                                             }*/
-                                                                            GlobalClass.hideProgress(getActivity(), barProgressDialog);
+                                                                            GlobalClass.hideProgress(activity, barProgressDialog);
                                                                             kyc_format.setText(checkNumber);
                                                                         } else {
                                                                             /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
@@ -6475,9 +6478,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                                                     barProgressDialog.dismiss();
                                                                             }*/
 
-                                                                            GlobalClass.hideProgress(getActivity(), barProgressDialog);
+                                                                            GlobalClass.hideProgress(activity, barProgressDialog);
                                                                             kyc_format.setText("");
-                                                                            TastyToast.makeText(getActivity(), getResponse, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                                                            TastyToast.makeText(activity, getResponse, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 
                                                                         }
                                                                     }
@@ -6651,14 +6654,14 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             } else if (referenceBy == null || referenceBy.equals("")) {
                                                 Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
                                             } else if (btechnameTopass.equalsIgnoreCase(ToastFile.slt_btech_name)) {
-                                                Toast.makeText(getActivity(), ToastFile.btech_name, Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(activity, ToastFile.btech_name, Toast.LENGTH_SHORT).show();
                                             } else if (dCompare.after(getCurrentDateandTime)) {
                                                 Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
                                             } else {
 
                                              /*   if (Global.OTPVERIFIED) {
                                                     if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
-                                                        GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                        GlobalClass.showCustomToast(activity, MessageConstants.VALID_EMAIL, 1);
                                                         edt_email.requestFocus();
                                                     } else {
                                                         Outlabs_EQNX_DPS();
@@ -6666,7 +6669,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 } else {*/
                                                 if (!GlobalClass.isNull(edt_email.getText().toString())) {
                                                     if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
-                                                        GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                        GlobalClass.showCustomToast(activity, MessageConstants.VALID_EMAIL, 1);
                                                         edt_email.requestFocus();
                                                     } else {
                                                         Outlabs_EQNX_DPS();
@@ -6699,7 +6702,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         checkKYCIsChecked();
                                         radiogrp2.check(by_sendsms.getId());
                                     } else {
-                                        GlobalClass.redirectToLogin(getActivity());
+                                        GlobalClass.redirectToLogin(activity);
                                     }
 //                                    edt_missed_mobile.setHint("Mobile Number*");
                                     ll_email.setVisibility(View.VISIBLE);
@@ -6879,22 +6882,22 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             }*/ else if (referenceBy == null || referenceBy.equals("")) {
                                                 Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
                                             } else if (patientAddressdataToPass.equals("")) {
-                                                Toast.makeText(getActivity(), ToastFile.ent_addre, Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(activity, ToastFile.ent_addre, Toast.LENGTH_SHORT).show();
                                             } else if (patientAddressdataToPass.length() < 25) {
-                                                Toast.makeText(getActivity(), ToastFile.addre25long, Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(activity, ToastFile.addre25long, Toast.LENGTH_SHORT).show();
                                             } else if (pincode_pass.equalsIgnoreCase("")) {
                                                 Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
                                             } else if (pincode_pass.length() < 6) {
                                                 Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
                                             } else if (btechnameTopass.equalsIgnoreCase(ToastFile.slt_btech_name)) {
-                                                Toast.makeText(getActivity(), ToastFile.btech_name, Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(activity, ToastFile.btech_name, Toast.LENGTH_SHORT).show();
                                             } else if (dCompare.after(getCurrentDateandTime)) {
                                                 Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
                                             } else {
 
                                               /*  if (Global.OTPVERIFIED) {
                                                     if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
-                                                        GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                        GlobalClass.showCustomToast(activity, MessageConstants.VALID_EMAIL, 1);
                                                         edt_email.requestFocus();
                                                     } else {
                                                         Outlab_EQNX_Home();
@@ -6902,7 +6905,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 } else {*/
                                                 if (!GlobalClass.isNull(edt_email.getText().toString())) {
                                                     if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
-                                                        GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                        GlobalClass.showCustomToast(activity, MessageConstants.VALID_EMAIL, 1);
                                                         edt_email.requestFocus();
                                                     } else {
                                                         Outlab_EQNX_Home();
@@ -7133,7 +7136,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             } else {
                                                /* if (Global.OTPVERIFIED) {
                                                     if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
-                                                        GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                        GlobalClass.showCustomToast(activity, MessageConstants.VALID_EMAIL, 1);
                                                         edt_email.requestFocus();
                                                     } else {
                                                         OutLabs_others_ILS();
@@ -7141,7 +7144,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 } else {*/
                                                 if (!GlobalClass.isNull(edt_email.getText().toString())) {
                                                     if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
-                                                        GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                        GlobalClass.showCustomToast(activity, MessageConstants.VALID_EMAIL, 1);
                                                         edt_email.requestFocus();
                                                     } else {
                                                         OutLabs_others_ILS();
@@ -7172,7 +7175,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         checkKYCIsChecked();
                                         radiogrp2.check(by_sendsms.getId());
                                     } else {
-                                        GlobalClass.redirectToLogin(getActivity());
+                                        GlobalClass.redirectToLogin(activity);
                                     }
 //                                    edt_missed_mobile.setHint("Mobile Number*");
                                     leadlayout.setVisibility(View.GONE);
@@ -7214,7 +7217,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                     || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
                                                     || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")
                                             ) {
-                                                TastyToast.makeText(getActivity(), ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                                TastyToast.makeText(activity, ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 
                                                 if (enteredString.length() > 0) {
                                                     kyc_format.setText(enteredString.substring(1));
@@ -7237,12 +7240,12 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             }
                                             if (flag) {
                                                 if (checkNumber.length() == 10) {
-                                                    if (!GlobalClass.isNetworkAvailable(getActivity())) {
+                                                    if (!GlobalClass.isNetworkAvailable(activity)) {
                                                         flag = false;
                                                         kyc_format.setText(checkNumber);
                                                     } else {
                                                         flag = false;
-                                                        barProgressDialog = new ProgressDialog(getActivity());
+                                                        barProgressDialog = new ProgressDialog(activity);
                                                         barProgressDialog.setTitle("Kindly wait ...");
                                                         barProgressDialog.setMessage(ToastFile.processing_request);
                                                         barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
@@ -7251,7 +7254,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                         barProgressDialog.show();
                                                         barProgressDialog.setCanceledOnTouchOutside(false);
                                                         barProgressDialog.setCancelable(false);
-                                                        RequestQueue reques5tQueueCheckNumber = GlobalClass.setVolleyReq(getActivity());
+                                                        RequestQueue reques5tQueueCheckNumber = GlobalClass.setVolleyReq(activity);
                                                         StringRequest jsonObjectRequestPop = new StringRequest(StringRequest.Method.GET, Api.checkNumber + checkNumber, new
                                                                 Response.Listener<String>() {
                                                                     @Override
@@ -7268,7 +7271,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                                                 if (!((Activity) mContext).isFinishing())
                                                                                     barProgressDialog.dismiss();
                                                                             }*/
-                                                                            GlobalClass.hideProgress(getActivity(), barProgressDialog);
+                                                                            GlobalClass.hideProgress(activity, barProgressDialog);
                                                                             kyc_format.setText(checkNumber);
                                                                         } else {
                                                                             /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
@@ -7278,9 +7281,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                                                 if (!((Activity) mContext).isFinishing())
                                                                                     barProgressDialog.dismiss();
                                                                             }*/
-                                                                            GlobalClass.hideProgress(getActivity(), barProgressDialog);
+                                                                            GlobalClass.hideProgress(activity, barProgressDialog);
                                                                             kyc_format.setText("");
-                                                                            TastyToast.makeText(getActivity(), getResponse, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                                                            TastyToast.makeText(activity, getResponse, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 
                                                                         }
                                                                     }
@@ -7467,13 +7470,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             } else if (pincode_pass.length() < 6) {
                                                 Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
                                             } else if (btechnameTopass.equalsIgnoreCase(ToastFile.slt_btech_name)) {
-                                                Toast.makeText(getActivity(), ToastFile.btech_name, Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(activity, ToastFile.btech_name, Toast.LENGTH_SHORT).show();
                                             } else if (referenceBy == null || referenceBy.equals("")) {
                                                 Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
                                             } else {
                                                /* if (Global.OTPVERIFIED) {
                                                     if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
-                                                        GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                        GlobalClass.showCustomToast(activity, MessageConstants.VALID_EMAIL, 1);
                                                         edt_email.requestFocus();
                                                     } else {
                                                         Outlab_others_DPS();
@@ -7481,7 +7484,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 } else {*/
                                                 if (!GlobalClass.isNull(edt_email.getText().toString())) {
                                                     if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
-                                                        GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                        GlobalClass.showCustomToast(activity, MessageConstants.VALID_EMAIL, 1);
                                                         edt_email.requestFocus();
                                                     } else {
                                                         Outlab_others_DPS();
@@ -7513,7 +7516,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         checkKYCIsChecked();
                                         radiogrp2.check(by_sendsms.getId());
                                     } else {
-                                        GlobalClass.redirectToLogin(getActivity());
+                                        GlobalClass.redirectToLogin(activity);
                                     }
 
                                     ll_email.setVisibility(View.VISIBLE);
@@ -7705,13 +7708,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             } else if (pincode_pass.length() < 6) {
                                                 Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
                                             } else if (btechnameTopass.equalsIgnoreCase(ToastFile.slt_btech_name)) {
-                                                Toast.makeText(getActivity(), ToastFile.btech_name, Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(activity, ToastFile.btech_name, Toast.LENGTH_SHORT).show();
                                             } else if (referenceBy == null || referenceBy.equals("")) {
                                                 Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
                                             } else {
                                               /*  if (Global.OTPVERIFIED) {
                                                     if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
-                                                        GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                        GlobalClass.showCustomToast(activity, MessageConstants.VALID_EMAIL, 1);
                                                         edt_email.requestFocus();
                                                     } else {
                                                         Outlab_others_Home();
@@ -7719,7 +7722,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 } else {*/
                                                 if (!GlobalClass.isNull(edt_email.getText().toString())) {
                                                     if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
-                                                        GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                        GlobalClass.showCustomToast(activity, MessageConstants.VALID_EMAIL, 1);
                                                         edt_email.requestFocus();
                                                     } else {
                                                         Outlab_others_Home();
@@ -7763,20 +7766,20 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     private boolean checkSelectMode() {
         if (cb_report.isChecked()) {
             if (!cb_sms.isChecked() && !cb_email.isChecked() && !cb_wa.isChecked()) {
-                Toast.makeText(getActivity(), "Kindly select any one communication mode for report", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "Kindly select any one communication mode for report", Toast.LENGTH_SHORT).show();
                 return false;
             }
         }
         if (cb_receipt.isChecked()) {
             if (!cb_sms.isChecked() && !cb_email.isChecked() && !cb_wa.isChecked()) {
-                Toast.makeText(getActivity(), "Kindly select any one mode for receipt", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "Kindly select any one mode for receipt", Toast.LENGTH_SHORT).show();
                 return false;
             }
         }
 
         if (cb_comm.isChecked()) {
             if (!cb_sms.isChecked() && !cb_email.isChecked() && !cb_wa.isChecked()) {
-                Toast.makeText(getActivity(), "Kindly select any one mode for communication", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "Kindly select any one mode for communication", Toast.LENGTH_SHORT).show();
                 return false;
             }
         }
@@ -7787,7 +7790,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 return false;
             } else if (!GlobalClass.isNull(edt_email.getText().toString().trim())) {
                 if (!GlobalClass.emailValidation(edt_email.getText().toString().trim())) {
-                    GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                    GlobalClass.showCustomToast(activity, MessageConstants.VALID_EMAIL, 1);
                     edt_email.requestFocus();
                     return false;
                 }
@@ -7822,9 +7825,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
     private void Outlab_others_Home() {
    /*     if (kycdata.length() == 0) {
-            Toast.makeText(getActivity(), ToastFile.crt_kyc_empty, Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, ToastFile.crt_kyc_empty, Toast.LENGTH_SHORT).show();
         } else if (kycdata.length() < 10) {
-            Toast.makeText(getActivity(), ToastFile.crt_MOB_num, Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, ToastFile.crt_MOB_num, Toast.LENGTH_SHORT).show();
         } else {*/
         final String getAgeType = spinyr.getSelectedItem().toString();
         String sctDate = dateShow.getText().toString();
@@ -7942,9 +7945,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         }
 
      /*   if (kycdata.length() == 0) {
-            Toast.makeText(getActivity(), ToastFile.crt_kyc_empty, Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, ToastFile.crt_kyc_empty, Toast.LENGTH_SHORT).show();
         } else if (kycdata.length() < 10) {
-            Toast.makeText(getActivity(), ToastFile.crt_MOB_num, Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, ToastFile.crt_MOB_num, Toast.LENGTH_SHORT).show();
         } else {*/
 
         final String getAgeType = spinyr.getSelectedItem().toString();
@@ -8191,9 +8194,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
     private void Outlab_EQNX_Home() {
     /*    if (kycdata.length() == 0) {
-            Toast.makeText(getActivity(), ToastFile.crt_kyc_empty, Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, ToastFile.crt_kyc_empty, Toast.LENGTH_SHORT).show();
         } else if (kycdata.length() < 10) {
-            Toast.makeText(getActivity(), ToastFile.crt_MOB_num, Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, ToastFile.crt_MOB_num, Toast.LENGTH_SHORT).show();
         } else {*/
         final String getAgeType = spinyr.getSelectedItem().toString();
         String sctDate = dateShow.getText().toString();
@@ -8309,9 +8312,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         }
 
      /*   if (kycdata.length() == 0) {
-            Toast.makeText(getActivity(), ToastFile.crt_kyc_empty, Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, ToastFile.crt_kyc_empty, Toast.LENGTH_SHORT).show();
         } else if (kycdata.length() < 10) {
-            Toast.makeText(getActivity(), ToastFile.crt_MOB_num, Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, ToastFile.crt_MOB_num, Toast.LENGTH_SHORT).show();
         } else {*/
 
         final String getAgeType = spinyr.getSelectedItem().toString();
@@ -8553,9 +8556,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
     private void TTL_HOME() {
     /*    if (kycdata.length() == 0) {
-            Toast.makeText(getActivity(), ToastFile.crt_kyc_empty, Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, ToastFile.crt_kyc_empty, Toast.LENGTH_SHORT).show();
         } else if (kycdata.length() < 10) {
-            Toast.makeText(getActivity(), ToastFile.crt_MOB_num, Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, ToastFile.crt_MOB_num, Toast.LENGTH_SHORT).show();
         } else {*/
 
         if (woereferedby != null) {
@@ -8692,9 +8695,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         }
 
      /*   if (kycdata.length() == 0) {
-            Toast.makeText(getActivity(), ToastFile.crt_kyc_empty, Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, ToastFile.crt_kyc_empty, Toast.LENGTH_SHORT).show();
         } else if (kycdata.length() < 10) {
-            Toast.makeText(getActivity(), ToastFile.crt_MOB_num, Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, ToastFile.crt_MOB_num, Toast.LENGTH_SHORT).show();
         } else {*/
 
         try {
@@ -8937,43 +8940,43 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         }
                     }).show();
         } else {*/
-            Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
-            i.putExtra("name", nameString);
-            i.putExtra("age", getFinalAge);
-            i.putExtra("gender", saveGenderId);
-            i.putExtra("sct", timetopass);
-            i.putExtra("date", getFinalDate);
-            GlobalClass.setReferenceBy_Name = referenceBy;
-            startActivity(i);
+        Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
+        i.putExtra("name", nameString);
+        i.putExtra("age", getFinalAge);
+        i.putExtra("gender", saveGenderId);
+        i.putExtra("sct", timetopass);
+        i.putExtra("date", getFinalDate);
+        GlobalClass.setReferenceBy_Name = referenceBy;
+        startActivity(i);
 
-            Global.CommModes = TextUtils.join(",", typeArray);
+        Global.CommModes = TextUtils.join(",", typeArray);
 //            GlobalClass.Req_Date_Req(getFinalTime, "hh:mm a", "HH:mm:ss");
-            Log.e(TAG, "onClick: lab add and lab id " + labAddressTopass + labIDTopass);
-            SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
-            saveDetails.putString("name", nameString);
-            saveDetails.putString("age", getFinalAge);
-            saveDetails.putString("gender", saveGenderId);
-            saveDetails.putString("sct", timetopass);
-            saveDetails.putString("date", getFinalDate);
-            saveDetails.putString("ageType", getAgeType);
-            saveDetails.putString("labname", labLabNAmeTopass);
-            saveDetails.putString("labAddress", labAddressTopass);
-            saveDetails.putString("patientAddress", labAddressTopass);
-            saveDetails.putString("refBy", referenceBy);
-            saveDetails.putString("refId", referredID);
-            saveDetails.putString("labIDaddress", labIDTopass);
-            saveDetails.putString("btechIDToPass", btechIDToPass);
-            saveDetails.putString("btechNameToPass", btechnameTopass);
-            saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
-            saveDetails.putString("kycinfo", kycdata);
-            saveDetails.putString("woetype", typename);
-            saveDetails.putString("WOEbrand", brandNames);
-            saveDetails.putString("SR_NO", getVial_numbver);
-            saveDetails.putString("pincode", "");
-            saveDetails.putString("Communication", Global.Communication);
-            saveDetails.putString("CommModes", Global.CommModes);
-            saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
-            saveDetails.commit();
+        Log.e(TAG, "onClick: lab add and lab id " + labAddressTopass + labIDTopass);
+        SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
+        saveDetails.putString("name", nameString);
+        saveDetails.putString("age", getFinalAge);
+        saveDetails.putString("gender", saveGenderId);
+        saveDetails.putString("sct", timetopass);
+        saveDetails.putString("date", getFinalDate);
+        saveDetails.putString("ageType", getAgeType);
+        saveDetails.putString("labname", labLabNAmeTopass);
+        saveDetails.putString("labAddress", labAddressTopass);
+        saveDetails.putString("patientAddress", labAddressTopass);
+        saveDetails.putString("refBy", referenceBy);
+        saveDetails.putString("refId", referredID);
+        saveDetails.putString("labIDaddress", labIDTopass);
+        saveDetails.putString("btechIDToPass", btechIDToPass);
+        saveDetails.putString("btechNameToPass", btechnameTopass);
+        saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
+        saveDetails.putString("kycinfo", kycdata);
+        saveDetails.putString("woetype", typename);
+        saveDetails.putString("WOEbrand", brandNames);
+        saveDetails.putString("SR_NO", getVial_numbver);
+        saveDetails.putString("pincode", "");
+        saveDetails.putString("Communication", Global.Communication);
+        saveDetails.putString("CommModes", Global.CommModes);
+        saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
+        saveDetails.commit();
 //        }
     }
 
@@ -9002,8 +9005,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             }
         }
         RecyclerView recyclerView = CustomLeaddialog.findViewById(R.id.recycler);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-        AdapterRe adapterRe = new AdapterRe((ManagingTabsActivity) getActivity(), leads, getVial_numbver, leadOrderIdMainModel, Start_New_Woe.this);
+        recyclerView.setLayoutManager(new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false));
+        AdapterRe adapterRe = new AdapterRe((ManagingTabsActivity) activity, leads, getVial_numbver, leadOrderIdMainModel, Start_New_Woe.this);
 
         adapterRe.leadclick(new AdapterRe.OnItemClickListener() {
             @Override
@@ -9024,8 +9027,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     }
 
     private void RecheckType(String passBarcode) {
-        requestQueueAddRecheck = GlobalClass.setVolleyReq(getActivity());
-        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(getActivity());
+        requestQueueAddRecheck = GlobalClass.setVolleyReq(activity);
+        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
         String url = Api.addTestsUsingBarcode + api_key + "/" + user + "/" + passBarcode + "/getbarcodedtl";
         Log.e(TAG, "RECHEKC API ====>" + url);
         JsonObjectRequest jsonObjectRequestProfile = new JsonObjectRequest(Request.Method.GET, url, new Response.Listener<JSONObject>() {
@@ -9033,7 +9036,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             public void onResponse(JSONObject response) {
                 Log.e(TAG, "onResponse: RESPONSE" + response);
                 try {
-                    GlobalClass.hideProgress(getActivity(), progressDialog);
+                    GlobalClass.hideProgress(activity, progressDialog);
                     if (response != null) {
                         Gson gson = new Gson();
                         GetBarcodeDetailsResponseModel responseModel = gson.fromJson(String.valueOf(response), GetBarcodeDetailsResponseModel.class);
@@ -9057,9 +9060,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                             if (RES_ID != null && RES_ID.equalsIgnoreCase(Constants.RES0000)) {
                                 if (STATUS.equalsIgnoreCase(caps_invalidApikey)) {
-                                    GlobalClass.redirectToLogin(getActivity());
+                                    GlobalClass.redirectToLogin(activity);
                                 } else if (GlobalClass.isNull(PATIENT)) {
-                                    TastyToast.makeText(getActivity(), responseModel.getSTATUS(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                    TastyToast.makeText(activity, responseModel.getSTATUS(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                                     barcode_woe.setText("");
                                     leadbarcodelayout.setVisibility(View.GONE);
                                     next_btn.setVisibility(View.GONE);
@@ -9072,16 +9075,16 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                     leadbarcodesct.setText("SCT: " + SDATE);
                                 }
                             } else if (STATUS != null && STATUS.equalsIgnoreCase(caps_invalidApikey)) {
-                                GlobalClass.redirectToLogin(getActivity());
+                                GlobalClass.redirectToLogin(activity);
                             } else {
                                 barcode_woe.setText("");
-                                TastyToast.makeText(getActivity(), responseModel.getSTATUS(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                TastyToast.makeText(activity, responseModel.getSTATUS(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                             }
                         } else {
-                            TastyToast.makeText(getActivity(), ToastFile.something_went_wrong, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                            TastyToast.makeText(activity, ToastFile.something_went_wrong, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                         }
                     } else {
-                        TastyToast.makeText(getActivity(), ToastFile.something_went_wrong, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        TastyToast.makeText(activity, ToastFile.something_went_wrong, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     }
                 } catch (Exception e) {
                     if (barProgressDialog != null && barProgressDialog.isShowing()) {
@@ -9095,7 +9098,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             public void onErrorResponse(VolleyError error) {
                 if (error.networkResponse == null) {
                     if (error.getClass().equals(TimeoutError.class)) {
-                        TastyToast.makeText(getActivity(), "Timeout Error", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        TastyToast.makeText(activity, "Timeout Error", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                         // Show timeout error message
                     }
 
@@ -9114,7 +9117,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
     private void getTspNumber() {
         try {
-            RequestQueue requestQueue = GlobalClass.setVolleyReq(getActivity());
+            RequestQueue requestQueue = GlobalClass.setVolleyReq(activity);
             JsonObjectRequest jsonObjectRequest2 = new JsonObjectRequest(Request.Method.GET, Api.Cloud_base + "" + api_key + "/" + "" + user +
                     "/B2BAPP/getwomaster", new Response.Listener<JSONObject>() {
                 @Override
@@ -9124,12 +9127,12 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         String getResponse = response.optString("RESPONSE", "");
 
                         if (getResponse.equalsIgnoreCase(caps_invalidApikey)) {
-                            GlobalClass.redirectToLogin(getActivity());
+                            GlobalClass.redirectToLogin(activity);
                         } else {
                             Gson gson = new Gson();
                             MyPojo myPojo = gson.fromJson(response.toString(), MyPojo.class);
 
-                            SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                            SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(activity);
                             SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
                             Gson gson22 = new Gson();
                             String json22 = gson22.toJson(myPojo);
@@ -9154,7 +9157,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                             if (getBtechList != null && getBtechList.size() != 0) {
                                 for (int i = 0; i < getBtechList.size(); i++) {
                                     btechSpinner.add(getBtechList.get(i).getNAME());
-                                    btechname.setAdapter(new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, btechSpinner));
+                                    btechname.setAdapter(new ArrayAdapter<String>(activity, R.layout.spinner_item, btechSpinner));
                                 }
                             } else {
                                 BCT_LIST bct_list = new BCT_LIST();
@@ -9191,8 +9194,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     }
 
     private void fetchData() {
-        RequestQueue requestQueue = GlobalClass.setVolleyReq(getActivity());
-        barProgressDialog = new ProgressDialog(getActivity());
+        RequestQueue requestQueue = GlobalClass.setVolleyReq(activity);
+        barProgressDialog = new ProgressDialog(activity);
         barProgressDialog.setTitle("Kindly wait ...");
         barProgressDialog.setMessage(ToastFile.processing_request);
         barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
@@ -9237,7 +9240,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             Gson gson = new Gson();
             if (response != null) {
                 sourceILSMainModel = gson.fromJson(response.toString(), SourceILSMainModel.class);
-                SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(activity);
                 SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
                 Gson gson22 = new Gson();
                 String json22 = gson22.toJson(sourceILSMainModel);
@@ -9246,7 +9249,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 if (sourceILSMainModel != null) {
                     callAdapter(sourceILSMainModel);
                 }
-                SharedPreferences appSharedPrefsdata = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                SharedPreferences appSharedPrefsdata = PreferenceManager.getDefaultSharedPreferences(activity);
                 Gson gsondata = new Gson();
                 String jsondata = appSharedPrefsdata.getString("savelabnames", "");
                 obj = gsondata.fromJson(jsondata, SourceILSMainModel.class);
@@ -9299,7 +9302,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 //                }
 //            });
             LinearLayoutManager linearLayoutManager = null;
-            linearLayoutManager = new LinearLayoutManager(this.getActivity());
+            linearLayoutManager = new LinearLayoutManager(this.activity);
             linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
             scp_name.setLayoutManager(linearLayoutManager);
 
@@ -9310,7 +9313,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 }
             }
 
-            final SampleCollectionAdapter sampleCollectionAdapter = new SampleCollectionAdapter(getActivity(), labDetailsArrayList);
+            final SampleCollectionAdapter sampleCollectionAdapter = new SampleCollectionAdapter(activity, labDetailsArrayList);
             sampleCollectionAdapter.setOnItemClickListener(new SampleCollectionAdapter.OnItemClickListener() {
                 @Override
                 public void onPassSgcID(LABS pos) {
@@ -9386,12 +9389,12 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             });*/
 
 
-//            spinnerDialog = new SpinnerDialog(getActivity(), getLabNmae, "Search SCP", "Close");// With No Animation
-//            spinnerDialog = new SpinnerDialog(getActivity(), getLabNmae, "Search SCP", R.style.DialogAnimations_SmileWindow, "Close");// With Animation
+//            spinnerDialog = new SpinnerDialog(activity, getLabNmae, "Search SCP", "Close");// With No Animation
+//            spinnerDialog = new SpinnerDialog(activity, getLabNmae, "Search SCP", R.style.DialogAnimations_SmileWindow, "Close");// With Animation
 
 
-            spinnerDialogRef = new SpinnerDialog(getActivity(), getReferenceNmae, "Search Ref by", "Close");// With No Animation
-            spinnerDialogRef = new SpinnerDialog(getActivity(), getReferenceNmae, "Search Ref by", R.style.DialogAnimations_SmileWindow, "Close");// WithAnimation
+            spinnerDialogRef = new SpinnerDialog(activity, getReferenceNmae, "Search Ref by", "Close");// With No Animation
+            spinnerDialogRef = new SpinnerDialog(activity, getReferenceNmae, "Search Ref by", R.style.DialogAnimations_SmileWindow, "Close");// WithAnimation
 
 //            spinnerDialog.bindOnSpinerListener(new OnSpinerItemClick() {
 //                @Override
@@ -9443,7 +9446,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                 alertDialog.show();
                 samplecollectionponit.setEnabled(false);
-//            TastyToast.makeText(getActivity(), ToastFile.no_data_fnd, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+//            TastyToast.makeText(activity, ToastFile.no_data_fnd, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
             }
         }
 
@@ -9459,7 +9462,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         } else {
             ref_check_linear.setVisibility(View.VISIBLE);
             refby_linear.setVisibility(View.GONE);
-//            TastyToast.makeText(getActivity(), ToastFile.no_data_fnd, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+//            TastyToast.makeText(activity, ToastFile.no_data_fnd, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
         }
 
 
@@ -9496,7 +9499,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 alertDialog.dismiss();
             }
         });
-        linearLayoutManager = new LinearLayoutManager(this.getActivity());
+        linearLayoutManager = new LinearLayoutManager(this.activity);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         scp_name.setLayoutManager(linearLayoutManager);
 
@@ -9510,7 +9513,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             }
         }
 
-        final SampleCollectionAdapter sampleCollectionAdapter = new SampleCollectionAdapter(getActivity(), labDetailsArrayList);
+        final SampleCollectionAdapter sampleCollectionAdapter = new SampleCollectionAdapter(activity, labDetailsArrayList);
         sampleCollectionAdapter.setOnItemClickListener(new SampleCollectionAdapter.OnItemClickListener() {
             @Override
             public void onPassSgcID(LABS pos) {
@@ -9585,7 +9588,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     @Override
     public void onResume() {
         super.onResume();
-        GlobalClass.isAutoTimeSelected(getActivity());
+        GlobalClass.isAutoTimeSelected(activity);
     }
 
 
@@ -9593,8 +9596,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (getView() != null) {
             isViewShown = true;
-            if (GlobalClass.isNetworkAvailable(getActivity())) {
-                ((ManagingTabsActivity) getActivity()).getProfileDetails(getActivity());
+            if (GlobalClass.isNetworkAvailable(activity)) {
+                ((ManagingTabsActivity) activity).getProfileDetails(activity);
             }
         } else {
             isViewShown = false;
@@ -9614,15 +9617,15 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_sendotp:
-                if (!GlobalClass.isNetworkAvailable(getActivity())) {
-                    TastyToast.makeText(getActivity(), ToastFile.intConnection, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                if (!GlobalClass.isNetworkAvailable(activity)) {
+                    TastyToast.makeText(activity, ToastFile.intConnection, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                 } else {
 
                     if (mobno_verify) {
 
                         if (btn_snd_otp.getText().equals("Reset")) {
 
-                            AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+                            AlertDialog.Builder alert = new AlertDialog.Builder(activity);
                             alert.setMessage("Are you sure you want to reset?");
                             alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                                 @Override
@@ -9668,14 +9671,14 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                             if (cd.isConnectingToInternet()) {
                                 generateToken();
                             } else {
-                                Global.showCustomToast(getActivity(), ToastFile.intConnection);
+                                Global.showCustomToast(activity, ToastFile.intConnection);
                             }
                         } else if (btn_snd_otp.getText().equals("Send OTP")) {
                             Log.e(TAG, "onClick: " + btn_snd_otp.getText().toString());
                             if (cd.isConnectingToInternet()) {
                                 generateToken();
                             } else {
-                                Global.showCustomToast(getActivity(), ToastFile.intConnection);
+                                Global.showCustomToast(activity, ToastFile.intConnection);
                             }
                         }
                     }
@@ -9686,10 +9689,10 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             case R.id.btn_verifyotp:
 
                 if (GlobalClass.isNull(et_otp.getText().toString())) {
-                    Toast.makeText(getActivity(), "Please enter OTP", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity, "Please enter OTP", Toast.LENGTH_SHORT).show();
                 } else {
-                    if (!GlobalClass.isNetworkAvailable(getActivity())) {
-                        TastyToast.makeText(getActivity(), ToastFile.intConnection, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    if (!GlobalClass.isNetworkAvailable(activity)) {
+                        TastyToast.makeText(activity, ToastFile.intConnection, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else {
                         if (ControllersGlobalInitialiser.verifyotpController != null) {
                             ControllersGlobalInitialiser.verifyotpController = null;
@@ -9714,7 +9717,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
         int versionCode = pInfo.versionCode;
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(getContext());
-        PostAPIInterface apiInterface = RetroFit_APIClient.getInstance().getClient(getActivity(), Api.THYROCARE).create(PostAPIInterface.class);
+        PostAPIInterface apiInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.THYROCARE).create(PostAPIInterface.class);
         OTPrequest otPrequest = new OTPrequest();
         otPrequest.setAppId(OTPAPPID);
         otPrequest.setPurpose("OTP");
@@ -9752,14 +9755,14 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     private void callsendOTP(String token, String requestId) {
 
         if (et_mobno.getText().toString().equals("")) {
-            Toast.makeText(getActivity(), "Please enter mobile number", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, "Please enter mobile number", Toast.LENGTH_SHORT).show();
         } else if (et_mobno.getText().toString().length() < 10) {
-            Toast.makeText(getActivity(), "Please enter valid mobile number", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, "Please enter valid mobile number", Toast.LENGTH_SHORT).show();
             lin_otp.setVisibility(View.GONE);
         } else {
 
-            if (!GlobalClass.isNetworkAvailable(getActivity())) {
-                GlobalClass.showAlertDialog(getActivity());
+            if (!GlobalClass.isNetworkAvailable(activity)) {
+                GlobalClass.showAlertDialog(activity);
             } else {
                 if (ControllersGlobalInitialiser.validateMob_controller != null) {
                     ControllersGlobalInitialiser.validateMob_controller = null;
@@ -9775,7 +9778,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     public void onvalidatemob(ValidateOTPmodel validateOTPmodel, ProgressDialog progressDialog) {
 
         if (validateOTPmodel.getResponseId().equals(Constants.RES0001)) {
-            GlobalClass.hideProgress(getActivity(), progressDialog);
+            GlobalClass.hideProgress(activity, progressDialog);
 
 
         /*    et_mobno.setEnabled(true);
@@ -9809,7 +9812,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         } else {
             et_mobno.setEnabled(true);
             et_mobno.setClickable(true);
-            GlobalClass.hideProgress(getActivity(), progressDialog);
+            GlobalClass.hideProgress(activity, progressDialog);
         }
     }
 
@@ -9818,7 +9821,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         if (validateOTPmodel.getResponse().equals("OTP Validated Successfully")) {
             timerflag = true;
             Global.OTPVERIFIED = true;
-            Toast.makeText(getActivity(),
+            Toast.makeText(activity,
                     validateOTPmodel.getResponse(),
                     Toast.LENGTH_SHORT).show();
 
@@ -10101,7 +10104,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             int yy = calendar.get(Calendar.YEAR);
             int mm = calendar.get(Calendar.MONTH);
             int dd = calendar.get(Calendar.DAY_OF_MONTH);
-            return new DatePickerDialog(getActivity(), this, yy, mm, dd);
+            return new DatePickerDialog(activity, this, yy, mm, dd);
         }
 
         public void onDateSet(DatePicker view, int yy, int mm, int dd) {
@@ -10160,7 +10163,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                 String enteredString = s.toString();
                 if (enteredString.startsWith(".") || enteredString.startsWith("0")) {
-                    Toast.makeText(getActivity(),
+                    Toast.makeText(activity,
                             ToastFile.ent_pin,
                             Toast.LENGTH_SHORT).show();
                     if (enteredString.length() > 0) {
@@ -10184,15 +10187,15 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                     leadlayout.setVisibility(View.GONE);
                 }
                 if (s.length() == 10) {
-                    if (!GlobalClass.isNetworkAvailable(getActivity())) {
-                        GlobalClass.showAlertDialog(getActivity());
+                    if (!GlobalClass.isNetworkAvailable(activity)) {
+                        GlobalClass.showAlertDialog(activity);
                     } else {
                         getVial_numbver = vial_number.getText().toString();
                         if (!GlobalClass.isNull(getVial_numbver)) {
-                            final ProgressDialog pd_dialog = GlobalClass.ShowprogressDialog(getActivity());
+                            final ProgressDialog pd_dialog = GlobalClass.ShowprogressDialog(activity);
                             String getId = s.toString();
                             String getLeadId = getId.toString();
-                            requestQueueNoticeBoard = GlobalClass.setVolleyReq(getActivity());
+                            requestQueueNoticeBoard = GlobalClass.setVolleyReq(activity);
                             JsonObjectRequest jsonObjectRequestProfile = new JsonObjectRequest(Request.Method.GET, Api.ValidateWorkOrderLeadId + api_key
                                     + "/" + user + "/" + getLeadId + "/" + brand_spinner.getSelectedItem().toString() + "/getorderdetails", new Response.Listener<JSONObject>() {
                                 @Override
@@ -10201,7 +10204,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                     String getResponse = response.optString("RESPONSE", "");
 
                                     if (!GlobalClass.isNull(getResponse) && getResponse.equalsIgnoreCase(caps_invalidApikey)) {
-                                        GlobalClass.redirectToLogin(getActivity());
+                                        GlobalClass.redirectToLogin(activity);
                                     } else {
                                         Gson gson = new Gson();
                                         Log.e(TAG, "onResponse: RESPONSE" + response);
@@ -10211,12 +10214,12 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
 
                                         if (!GlobalClass.isNull(leadOrderIdMainModel.getRESPONSE()) && leadOrderIdMainModel.getRESPONSE().equals("SUCCESS")) {
-                                            GlobalClass.hideProgress(getActivity(), pd_dialog);
+                                            GlobalClass.hideProgress(activity, pd_dialog);
 
                                             for (int i = 0; i < leadOrderIdMainModel.getLeads().length; i++) {
 
 
-                                                SharedPreferences.Editor editor = getActivity().getSharedPreferences("LeadOrderID", 0).edit();
+                                                SharedPreferences.Editor editor = activity.getSharedPreferences("LeadOrderID", 0).edit();
                                                 editor.putString("brandtype", brand_spinner.getSelectedItem().toString());
                                                 editor.putString("ADDRESS", leadOrderIdMainModel.getLeads()[i].getADDRESS());
                                                 editor.putString("AGE", leadOrderIdMainModel.getLeads()[i].getAGE());
@@ -10256,10 +10259,10 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             }
 
                                             if (leadOrderIdMainModel != null && leadOrderIdMainModel.getLeads() != null && leadOrderIdMainModel.getLeads().length >= 2) {
-                                                showDialog(getActivity(), leadOrderIdMainModel.getLeads());
+                                                showDialog(activity, leadOrderIdMainModel.getLeads());
                                             }
 
-                                            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("LeadOrderID", MODE_PRIVATE);
+                                            SharedPreferences sharedPreferences = activity.getSharedPreferences("LeadOrderID", MODE_PRIVATE);
                                             brandtype = sharedPreferences.getString("brandtype", null);
                                             leadAddress = sharedPreferences.getString("ADDRESS", null);
                                             leadAGE = sharedPreferences.getString("AGE", null);
@@ -10337,7 +10340,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                     public void onClick(View v) {
 
                                                         if (sizeflag) {
-                                                            Intent i = new Intent(getActivity(), MultipleLeadActivity.class);
+                                                            Intent i = new Intent(activity, MultipleLeadActivity.class);
                                                             i.putExtra("MyClass", leadOrderIdMainModel);
                                                             i.putExtra("fromcome", "woepage");
                                                             i.putExtra("TESTS", leadTESTS);
@@ -10345,13 +10348,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                             i.putExtra("LeadID", leadLEAD_ID);
                                                             i.putExtra("brandtype", brand_spinner.getSelectedItem().toString());
                                                             i.putExtra("SR_NO", getVial_numbver);
-                                                            SharedPreferences.Editor editor = getActivity().getSharedPreferences("getBrandTypeandName", MODE_PRIVATE).edit();
+                                                            SharedPreferences.Editor editor = activity.getSharedPreferences("getBrandTypeandName", MODE_PRIVATE).edit();
                                                             editor.putString("typeName", leadTYPE);
                                                             editor.putString("SR_NO", getVial_numbver);
                                                             // To retrieve object in second Activity
                                                             startActivity(i);
                                                         } else {
-                                                            Intent i = new Intent(getActivity(), ScanBarcodeLeadId.class);
+                                                            Intent i = new Intent(activity, ScanBarcodeLeadId.class);
                                                             i.putExtra("MyClass", leadOrderIdMainModel);
                                                             i.putExtra("fromcome", "woepage");
                                                             i.putExtra("TESTS", leadTESTS);
@@ -10359,7 +10362,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                             i.putExtra("LeadID", leadLEAD_ID);
                                                             i.putExtra("brandtype", brand_spinner.getSelectedItem().toString());
 
-                                                            SharedPreferences.Editor editor = getActivity().getSharedPreferences("getBrandTypeandName", MODE_PRIVATE).edit();
+                                                            SharedPreferences.Editor editor = activity.getSharedPreferences("getBrandTypeandName", MODE_PRIVATE).edit();
                                                             editor.putString("typeName", leadTYPE);
                                                             editor.putString("SR_NO", getVial_numbver);
                                                             // To retrieve object in second Activity
@@ -10371,11 +10374,11 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             }
 
                                         } else {
-                                            GlobalClass.hideProgress(getActivity(), pd_dialog);
+                                            GlobalClass.hideProgress(activity, pd_dialog);
 
                                             leadlayout.setVisibility(View.GONE);
                                             next_btn.setVisibility(View.GONE);
-                                            Toast.makeText(getActivity(), "No leads found", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(activity, "No leads found", Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                 }
@@ -10384,8 +10387,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                 public void onErrorResponse(VolleyError error) {
                                     if (error.networkResponse == null) {
                                         if (error.getClass().equals(TimeoutError.class)) {
-                                            GlobalClass.hideProgress(getActivity(), pd_dialog);
-                                            TastyToast.makeText(getActivity(), "Timeout Error", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                            GlobalClass.hideProgress(activity, pd_dialog);
+                                            TastyToast.makeText(activity, "Timeout Error", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                                             // Show timeout error message
                                         }
                                     }
@@ -10417,11 +10420,11 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                     vial_number.setError(ToastFile.vial_no);
                     Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
                 } else if (getLead.equals("")) {
-                    Toast.makeText(getActivity(), "Please enter lead", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity, "Please enter lead", Toast.LENGTH_SHORT).show();
                 } else if (getLead.length() < 10) {
-                    Toast.makeText(getActivity(), "Please enter correct lead", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity, "Please enter correct lead", Toast.LENGTH_SHORT).show();
                 } else if (leadNAME.equals(null)) {
-                    Toast.makeText(getActivity(), "Please wait for some time", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity, "Please wait for some time", Toast.LENGTH_SHORT).show();
                 } else {
                     for (int i = 0; i < leadOrderIdMainModel.getLeads()[0].getLeadData().length; i++) {
                         if (leadOrderIdMainModel.getLeads()[0].getLeadData()[i].getSample_type().length > 1) {
@@ -10431,7 +10434,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                     }
                     Intent i;
                     if (sizeflag) {
-                        i = new Intent(getActivity(), MultipleLeadActivity.class);
+                        i = new Intent(activity, MultipleLeadActivity.class);
                         i.putExtra("MyClass", leadOrderIdMainModel);
                         i.putExtra("LeadID", leadLEAD_ID);
                         i.putExtra("SAMPLE_TYPE", leadSAMPLE_TYPE);
@@ -10439,19 +10442,19 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         i.putExtra("TESTS", leadTESTS);
                         i.putExtra("SCT", leadSCT);
                         i.putExtra("SR_NO", getVial_numbver);
-                        SharedPreferences.Editor editor = getActivity().getSharedPreferences("getBrandTypeandName", MODE_PRIVATE).edit();
+                        SharedPreferences.Editor editor = activity.getSharedPreferences("getBrandTypeandName", MODE_PRIVATE).edit();
                         editor.putString("typeName", leadTYPE);
                         editor.putString("SR_NO", getVial_numbver);
                         // To retrieve object in second Activity
                     } else {
-                        i = new Intent(getActivity(), ScanBarcodeLeadId.class);
+                        i = new Intent(activity, ScanBarcodeLeadId.class);
                         i.putExtra("MyClass", leadOrderIdMainModel);
                         i.putExtra("LeadID", leadLEAD_ID);
                         i.putExtra("SAMPLE_TYPE", leadSAMPLE_TYPE);
                         i.putExtra("fromcome", "woepage");
                         i.putExtra("TESTS", leadTESTS);
                         i.putExtra("SCT", leadSCT);
-                        SharedPreferences.Editor editor = getActivity().getSharedPreferences("getBrandTypeandName", MODE_PRIVATE).edit();
+                        SharedPreferences.Editor editor = activity.getSharedPreferences("getBrandTypeandName", MODE_PRIVATE).edit();
                         editor.putString("typeName", leadTYPE);
                         editor.putString("SR_NO", getVial_numbver);
                         // To retrieve object in second Activity

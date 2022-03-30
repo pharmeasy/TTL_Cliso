@@ -307,7 +307,6 @@ public class Payment_Activity extends AppCompatActivity {
         }
     }
 
-
     private void proceedWithPayment() {
         amountTopass = edt_enter_amt.getText().toString();
         Log.e(TAG, "Entered Amount ----->" + amountTopass);
@@ -488,7 +487,6 @@ public class Payment_Activity extends AppCompatActivity {
 //         String salt = "V76vIBJq";
 //          generateHashFromSDK(mPaymentParams, salt);
     }
-
 
     private String convertInputStreamToString(InputStream inputStream) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
@@ -964,7 +962,6 @@ public class Payment_Activity extends AppCompatActivity {
 
 
     }
-
 
     class AsyncTaskVerifypayUmoneyTransaction extends AsyncTask<Void, Void, JSONObject> {
 

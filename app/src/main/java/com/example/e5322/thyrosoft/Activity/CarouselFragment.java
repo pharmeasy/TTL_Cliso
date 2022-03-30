@@ -15,6 +15,9 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.e5322.thyrosoft.API.Constants;
+import com.example.e5322.thyrosoft.API.Global;
+import com.example.e5322.thyrosoft.Adapter.PECovidAdapter;
+import com.example.e5322.thyrosoft.Adapter.PEStaffAdapter;
 import com.example.e5322.thyrosoft.AdminCovidAdapter;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.AppPreferenceManager;
@@ -125,6 +128,12 @@ public class CarouselFragment extends Fragment {
             pager.setAdapter(nhf_pageradapter);*/
             adminCovidAdapter = new AdminCovidAdapter(getResources(), getChildFragmentManager());
             pager.setAdapter(adminCovidAdapter);
+        } else if (Global.getLoginType(mContext) == Constants.PEflag) {
+            if (covidacc) {
+                pager.setAdapter(new PECovidAdapter(getResources(), getChildFragmentManager()));
+            } else {
+                pager.setAdapter(new PEStaffAdapter(getResources(), getChildFragmentManager()));
+            }
         } else {
             if (access.equalsIgnoreCase(Constants.STAFF)) {
                 if (covidacc) {
@@ -144,6 +153,7 @@ public class CarouselFragment extends Fragment {
                 }
             }
         }
+
 
         tabLayout.setupWithViewPager(pager);
         tabLayout.setTabTextColors(Color.parseColor("#ffffff"), mContext.getResources().getColor(R.color.tabindicatorColor));
