@@ -70,6 +70,7 @@ import com.example.e5322.thyrosoft.Adapter.SCollectionPAdapter;
 import com.example.e5322.thyrosoft.Adapter.ViewPagerAdapter;
 import com.example.e5322.thyrosoft.BuildConfig;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
+import com.example.e5322.thyrosoft.Controller.CovidRatesController;
 import com.example.e5322.thyrosoft.Controller.Covidmultipart_controller;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Controller.LogUserActivityTagging;
@@ -78,10 +79,12 @@ import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.COVIDgetotp_req;
 import com.example.e5322.thyrosoft.Models.COVerifyMobileResponse;
 import com.example.e5322.thyrosoft.Models.CoVerifyMobReq;
+import com.example.e5322.thyrosoft.Models.CovidRateReqModel;
 import com.example.e5322.thyrosoft.Models.Covid_validateotp_req;
 import com.example.e5322.thyrosoft.Models.Covid_validateotp_res;
 import com.example.e5322.thyrosoft.Models.Covidotpresponse;
 import com.example.e5322.thyrosoft.Models.Covidpostdata;
+import com.example.e5322.thyrosoft.Models.Covidratemodel;
 import com.example.e5322.thyrosoft.Models.FileUtil;
 import com.example.e5322.thyrosoft.Models.Hospital_model;
 import com.example.e5322.thyrosoft.Models.Hospital_req;
@@ -147,7 +150,7 @@ public class RATEnterFrag extends Fragment {
     private boolean timerflag = false;
     RelativeLayout rel_mobno;
     LinearLayout lin_generate_verify, lin_by_missed, ll_enterView;
-    RadioButton by_missed, by_generate,by_sendsms;
+    RadioButton by_missed, by_generate, by_sendsms;
     ImageView img_scanbarcode;
     RequestQueue requestQueue;
     private Camera camera;
@@ -188,6 +191,7 @@ public class RATEnterFrag extends Fragment {
     private getSCPTechnicianModel.getTechnicianlist selectedSCT;
     private ArrayList<getSCPTechnicianModel.getTechnicianlist> filterPatientsArrayList;
     private boolean isgetDOB = false;
+    String b2b = "0", b2c = "0";
 
     public RATEnterFrag() {
         // Required empty public constructor
@@ -220,66 +224,140 @@ public class RATEnterFrag extends Fragment {
         }
         initui(root);
         initlistner();
-
-
+        callRatesApi();
         if (cd.isConnectingToInternet()) {
             GetHospitalList();
         }
-
         return root;
     }
 
-    private void GetHospitalList() {
-        Hospital_req hospital_req = new Hospital_req();
-        hospital_req.setApiKey(apikey);
-        hospital_req.setUserCode(usercode);
+    private void initui(View root) {
+        preferences = activity.getSharedPreferences("Userdetails", Context.MODE_PRIVATE);
+        usercode = preferences.getString("USER_CODE", "");
+        apikey = preferences.getString("API_KEY", "");
 
-        PostAPIInterface postAPIInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInterface.class);
-        Call<Hospital_model> covidratemodelCall = postAPIInterface.GetWOEHospital(hospital_req);
+        btn_generate = root.findViewById(R.id.btn_generate);
+        btn_generate.setText(getResources().getString(R.string.enterccc));
+        edt_missed_mobile = root.findViewById(R.id.edt_missed_mobile);
+        btn_resend = root.findViewById(R.id.btn_resend);
+        tv_timer = root.findViewById(R.id.tv_timer);
+        edt_verifycc = root.findViewById(R.id.edt_verifycc);
+        tv_resetno = root.findViewById(R.id.tv_resetno);
+        rel_mobno = root.findViewById(R.id.rel_mobno);
+        lin_other_images = root.findViewById(R.id.lin_other_images);
+        lin_generate_verify = root.findViewById(R.id.lin_generate_verify);
+        tv_mobileno = root.findViewById(R.id.tv_mobileno);
+        lin_by_missed = root.findViewById(R.id.lin_missed_verify);
+        by_missed = root.findViewById(R.id.by_missed);
+        by_generate = root.findViewById(R.id.by_generate);
+        by_sendsms = root.findViewById(R.id.by_sendsms);
+        btn_verify = root.findViewById(R.id.btn_verify);
+        edt_email = root.findViewById(R.id.edt_email);
+        tv_help = root.findViewById(R.id.tv_help);
+        tv_help.setText(Html.fromHtml("<u> Help</u>"));
+        spr_gender = root.findViewById(R.id.spr_gender);
+        btn_choosefile_other = root.findViewById(R.id.btn_choosefile_other);
+        spr_hospital = root.findViewById(R.id.spr_hospital);
+        spr_hospital.setTitle("");
+        txt_otherfileupload = root.findViewById(R.id.txt_otherfileupload);
+        txt_nofileadhar = root.findViewById(R.id.txt_nofileadhar);
+        txt_adharfileupload = root.findViewById(R.id.txt_adharfileupload);
+        lin_adhar_images = root.findViewById(R.id.lin_adhar_images);
+        btn_choosefile_trf = root.findViewById(R.id.btn_choosefile_trf);
+        txt_trffileupload = root.findViewById(R.id.txt_trffileupload);
+        txt_nofiletrf = root.findViewById(R.id.txt_nofiletrf);
+        txt_nofileother = root.findViewById(R.id.txt_nofileother);
+        lin_trf_images = root.findViewById(R.id.lin_trf_images);
+        btn_choosefile_adhar = root.findViewById(R.id.btn_choosefile_adhar);
+        if (patientsagespinner != null) {
+            ArrayAdapter<String> adap = new ArrayAdapter<String>(
+                    getContext(), R.layout.name_age_spinner, patientsagespinner);
+            adap.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spr_gender.setAdapter(adap);
+            spr_gender.setSelection(0);
+        }
+        ll_enterView = root.findViewById(R.id.ll_enterView);
+        img_scanbarcode = root.findViewById(R.id.img_scanbarcode);
+        rel_verify_mobile = root.findViewById(R.id.rel_verify_mobile);
+        tv_verifiedmob = root.findViewById(R.id.tv_verifiedmob);
+        btn_submit = root.findViewById(R.id.btn_submit);
+        btn_reset = root.findViewById(R.id.btn_reset);
+        edt_firstname = root.findViewById(R.id.edt_firstname);
+        edt_lastname = root.findViewById(R.id.edt_lastname);
+        edt_age = root.findViewById(R.id.edt_age);
+        edt_amtcollected = root.findViewById(R.id.edt_amtcollected);
+        txt_barcode = root.findViewById(R.id.txt_barcode);
+        rd_home = root.findViewById(R.id.rd_home);
+        rd_dps = root.findViewById(R.id.rd_dps);
+        radiogrp2 = root.findViewById(R.id.radiogrp2);
 
-        covidratemodelCall.enqueue(new Callback<Hospital_model>() {
+        if (appPreferenceManager.getCovidAccessResponseModel().isDRC()) {
+            edt_email.setHint("EMAIL ID*");
+        } else {
+            edt_email.setHint("EMAIL ID");
+        }
+
+        samplecollectionponit = root.findViewById(R.id.samplecollectionponit);
+        samplecollectionponit.setText(Constants.setSCPmsg);
+
+        if (Global.isKYC) {
+            by_sendsms.setVisibility(View.VISIBLE);
+            by_generate.setVisibility(View.GONE);
+            by_missed.setVisibility(View.GONE);
+        } else {
+            by_missed.setVisibility(View.VISIBLE);
+            by_generate.setVisibility(View.VISIBLE);
+            by_sendsms.setVisibility(View.VISIBLE);
+        }
+
+        if (!OTPAccess) {
+            radiogrp2.setVisibility(View.VISIBLE);
+            tv_help.setVisibility(View.VISIBLE);
+            btn_generate.setVisibility(View.VISIBLE);
+        } else {
+            radiogrp2.setVisibility(View.GONE);
+            tv_help.setVisibility(View.GONE);
+            btn_generate.setVisibility(View.GONE);
+            ll_enterView.setVisibility(View.VISIBLE);
+        }
+
+
+        edt_age.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onResponse(Call<Hospital_model> call, Response<Hospital_model> response) {
-                try {
-                    if (response.body().getResID().equalsIgnoreCase(Constants.RES0000)) {
-                        if (response.body().getHospitalDETAILS() != null && response.body().getHospitalDETAILS().size() > 0) {
-                            hospitalname.add("Select Hospital Name");
-                            hospitalDETAILSBeanList.addAll(response.body().getHospitalDETAILS());
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+            }
 
-                            for (int i = 0; i < hospitalDETAILSBeanList.size(); i++) {
-                                if (!GlobalClass.isNull(hospitalDETAILSBeanList.get(i).getName())) {
-                                    hospitalname.add(hospitalDETAILSBeanList.get(i).getName());
-                                }
-                            }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+            }
 
-                            ArrayAdapter<String> adap = new ArrayAdapter<String>(
-                                    activity, R.layout.name_age_spinner, hospitalname);
-                            adap.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            spr_hospital.setAdapter(adap);
-                            spr_hospital.setSelection(0);
-
-                        } else {
-                            Toast.makeText(activity, MessageConstants.NODATA, Toast.LENGTH_SHORT).show();
-                        }
-
-                    } else {
-                        Toast.makeText(activity, MessageConstants.CHECK_INTERNET_CONN, Toast.LENGTH_SHORT).show();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0) {
+                    agesinteger = Integer.parseInt(s.toString());
                 }
+
+                String enteredString = s.toString();
+
+                if (enteredString.startsWith(".") || enteredString.startsWith("0")) {
+                    Toast.makeText(activity,
+                            ToastFile.crt_age,
+                            Toast.LENGTH_SHORT).show();
+                    if (enteredString.length() > 0) {
+                        edt_age.setText(enteredString.substring(1));
+                    } else {
+                        edt_age.setText("");
+                    }
+                }
+
             }
 
-            @Override
-            public void onFailure(Call<Hospital_model> call, Throwable t) {
-            }
         });
-
     }
 
     private void initlistner() {
-
-
         tv_help.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -509,7 +587,7 @@ public class RATEnterFrag extends Fragment {
             public void onClick(View v) {
                 if (BuildConfig.DEBUG) {
                     txt_barcode.setText("" + Global.randomBarcodeString(8));
-                }else {
+                } else {
                     IntentIntegrator.forSupportFragment(RATEnterFrag.this).initiateScan();
                 }
             }
@@ -597,6 +675,71 @@ public class RATEnterFrag extends Fragment {
         });
     }
 
+    private void callRatesApi() {
+        if (cd.isConnectingToInternet()) {
+            CovidRateReqModel covidRateReqModel = new CovidRateReqModel();
+            covidRateReqModel.setUsercode("" + usercode);
+            covidRateReqModel.setAPIKEY("" + apikey);
+            covidRateReqModel.setTestcode("CRAT");
+
+            CovidRatesController covidRatesController = new CovidRatesController(RATEnterFrag.this, activity);
+            covidRatesController.fetchRates(covidRateReqModel);
+        }
+    }
+
+    public void getRatesResponse(Covidratemodel covidratemodel) {
+        b2b = !GlobalClass.isNull(covidratemodel.getB2B()) ? covidratemodel.getB2B() : "0";
+        b2c = !GlobalClass.isNull(covidratemodel.getB2C()) ? covidratemodel.getB2C() : "0";
+    }
+
+    private void GetHospitalList() {
+        Hospital_req hospital_req = new Hospital_req();
+        hospital_req.setApiKey(apikey);
+        hospital_req.setUserCode(usercode);
+
+        PostAPIInterface postAPIInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInterface.class);
+        Call<Hospital_model> covidratemodelCall = postAPIInterface.GetWOEHospital(hospital_req);
+
+        covidratemodelCall.enqueue(new Callback<Hospital_model>() {
+            @Override
+            public void onResponse(Call<Hospital_model> call, Response<Hospital_model> response) {
+                try {
+                    if (response.body().getResID().equalsIgnoreCase(Constants.RES0000)) {
+                        if (response.body().getHospitalDETAILS() != null && response.body().getHospitalDETAILS().size() > 0) {
+                            hospitalname.add("Select Hospital Name");
+                            hospitalDETAILSBeanList.addAll(response.body().getHospitalDETAILS());
+
+                            for (int i = 0; i < hospitalDETAILSBeanList.size(); i++) {
+                                if (!GlobalClass.isNull(hospitalDETAILSBeanList.get(i).getName())) {
+                                    hospitalname.add(hospitalDETAILSBeanList.get(i).getName());
+                                }
+                            }
+
+                            ArrayAdapter<String> adap = new ArrayAdapter<String>(
+                                    activity, R.layout.name_age_spinner, hospitalname);
+                            adap.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            spr_hospital.setAdapter(adap);
+                            spr_hospital.setSelection(0);
+
+                        } else {
+                            Toast.makeText(activity, MessageConstants.NODATA, Toast.LENGTH_SHORT).show();
+                        }
+
+                    } else {
+                        Toast.makeText(activity, MessageConstants.CHECK_INTERNET_CONN, Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Hospital_model> call, Throwable t) {
+            }
+        });
+
+    }
+
     private void ClearFields() {
         edt_firstname.setText("");
         edt_lastname.setText("");
@@ -657,7 +800,6 @@ public class RATEnterFrag extends Fragment {
     }
 
     private boolean Validate() {
-
         if (edt_missed_mobile.getText().toString().length() == 0) {
             Global.showCustomToast(getActivity(), ToastFile.ENTER_MOBILE);
             edt_missed_mobile.requestFocus();
@@ -701,12 +843,12 @@ public class RATEnterFrag extends Fragment {
 
         if (GlobalClass.isNull(edt_age.getText().toString())) {
             Global.showCustomToast(getActivity(), ToastFile.ENTER_AGE);
-            edt_lastname.requestFocus();
+            edt_age.requestFocus();
             return false;
         }
         if (Integer.parseInt(edt_age.getText().toString()) > 120) {
             Global.showCustomToast(getActivity(), ToastFile.AGE_SHOULD_BE_BETWEEN_1_TO_120);
-            edt_lastname.requestFocus();
+            edt_age.requestFocus();
             return false;
         }
         if (spr_gender.getSelectedItem().toString().equalsIgnoreCase("Gender")) {
@@ -721,7 +863,7 @@ public class RATEnterFrag extends Fragment {
 
         if (GlobalClass.isNull(edt_amtcollected.getText().toString())) {
             Global.showCustomToast(getActivity(), ToastFile.AMTCOLL);
-            edt_lastname.requestFocus();
+            edt_amtcollected.requestFocus();
             return false;
         }
 
@@ -749,15 +891,15 @@ public class RATEnterFrag extends Fragment {
 
         try {
             int amt = Integer.parseInt(edt_amtcollected.getText().toString());
-            if (!GlobalClass.isNull(Global.B2C)) {
-                if (amt > Integer.parseInt(Global.B2C)) {
-                    TastyToast.makeText(getActivity(), "You cannot enter amount collected more than " + Global.B2C, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    return false;
-                } else if (amt < Integer.parseInt(Global.B2B)) {
-                    TastyToast.makeText(getActivity(), "You cannot enter amount collected less than " + Global.B2B, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    return false;
-                }
-
+            if (amt == 0) {
+                Global.showCustomToast(getActivity(), "Please enter proper collected amount");
+                return false;
+            } else if (amt > Integer.parseInt(b2c)) {
+                Global.showCustomToast(getActivity(), "You cannot enter amount collected more than " + b2c);
+                return false;
+            } else if (amt < Integer.parseInt(b2b)) {
+                Global.showCustomToast(getActivity(), "You cannot enter amount collected less than " + b2b);
+                return false;
             }
         } catch (NumberFormatException e) {
             e.printStackTrace();
@@ -778,8 +920,6 @@ public class RATEnterFrag extends Fragment {
             Toast.makeText(activity, ToastFile.slt_technicain, Toast.LENGTH_SHORT).show();
             return false;
         }
-
-
         return true;
     }
 
@@ -853,140 +993,6 @@ public class RATEnterFrag extends Fragment {
         intent.setType("image/*");
         startActivityForResult(intent, PICK_PHOTO_FROM_GALLERY);
     }
-
-
-    private void initui(View root) {
-
-
-        preferences = activity.getSharedPreferences("Userdetails", Context.MODE_PRIVATE);
-        usercode = preferences.getString("USER_CODE", "");
-        apikey = preferences.getString("API_KEY", "");
-
-        btn_generate = root.findViewById(R.id.btn_generate);
-        btn_generate.setText(getResources().getString(R.string.enterccc));
-        edt_missed_mobile = root.findViewById(R.id.edt_missed_mobile);
-        btn_resend = root.findViewById(R.id.btn_resend);
-        tv_timer = root.findViewById(R.id.tv_timer);
-        edt_verifycc = root.findViewById(R.id.edt_verifycc);
-        tv_resetno = root.findViewById(R.id.tv_resetno);
-        rel_mobno = root.findViewById(R.id.rel_mobno);
-        lin_other_images = root.findViewById(R.id.lin_other_images);
-        lin_generate_verify = root.findViewById(R.id.lin_generate_verify);
-        tv_mobileno = root.findViewById(R.id.tv_mobileno);
-        lin_by_missed = root.findViewById(R.id.lin_missed_verify);
-        by_missed = root.findViewById(R.id.by_missed);
-        by_generate = root.findViewById(R.id.by_generate);
-        by_sendsms = root.findViewById(R.id.by_sendsms);
-        btn_verify = root.findViewById(R.id.btn_verify);
-        edt_email = root.findViewById(R.id.edt_email);
-
-        tv_help = root.findViewById(R.id.tv_help);
-        tv_help.setText(Html.fromHtml("<u> Help</u>"));
-
-        spr_gender = root.findViewById(R.id.spr_gender);
-
-        btn_choosefile_other = root.findViewById(R.id.btn_choosefile_other);
-        spr_hospital = root.findViewById(R.id.spr_hospital);
-        spr_hospital.setTitle("");
-        txt_otherfileupload = root.findViewById(R.id.txt_otherfileupload);
-        txt_nofileadhar = root.findViewById(R.id.txt_nofileadhar);
-        txt_adharfileupload = root.findViewById(R.id.txt_adharfileupload);
-        lin_adhar_images = root.findViewById(R.id.lin_adhar_images);
-        btn_choosefile_trf = root.findViewById(R.id.btn_choosefile_trf);
-        txt_trffileupload = root.findViewById(R.id.txt_trffileupload);
-        txt_nofiletrf = root.findViewById(R.id.txt_nofiletrf);
-        txt_nofileother = root.findViewById(R.id.txt_nofileother);
-        lin_trf_images = root.findViewById(R.id.lin_trf_images);
-        btn_choosefile_adhar = root.findViewById(R.id.btn_choosefile_adhar);
-        if (patientsagespinner != null) {
-            ArrayAdapter<String> adap = new ArrayAdapter<String>(
-                    getContext(), R.layout.name_age_spinner, patientsagespinner);
-            adap.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spr_gender.setAdapter(adap);
-            spr_gender.setSelection(0);
-        }
-        ll_enterView = root.findViewById(R.id.ll_enterView);
-        img_scanbarcode = root.findViewById(R.id.img_scanbarcode);
-        rel_verify_mobile = root.findViewById(R.id.rel_verify_mobile);
-        tv_verifiedmob = root.findViewById(R.id.tv_verifiedmob);
-        btn_submit = root.findViewById(R.id.btn_submit);
-        btn_reset = root.findViewById(R.id.btn_reset);
-        edt_firstname = root.findViewById(R.id.edt_firstname);
-        edt_lastname = root.findViewById(R.id.edt_lastname);
-        edt_age = root.findViewById(R.id.edt_age);
-        edt_amtcollected = root.findViewById(R.id.edt_amtcollected);
-        txt_barcode = root.findViewById(R.id.txt_barcode);
-        rd_home = root.findViewById(R.id.rd_home);
-        rd_dps = root.findViewById(R.id.rd_dps);
-        radiogrp2 = root.findViewById(R.id.radiogrp2);
-
-        if (appPreferenceManager.getCovidAccessResponseModel().isDRC()) {
-            edt_email.setHint("EMAIL ID*");
-        } else {
-            edt_email.setHint("EMAIL ID");
-        }
-
-        samplecollectionponit = root.findViewById(R.id.samplecollectionponit);
-        samplecollectionponit.setText(Constants.setSCPmsg);
-
-
-        if (Global.isKYC) {
-            by_sendsms.setVisibility(View.VISIBLE);
-            by_generate.setVisibility(View.GONE);
-            by_missed.setVisibility(View.GONE);
-        } else {
-            by_missed.setVisibility(View.VISIBLE);
-            by_generate.setVisibility(View.VISIBLE);
-            by_sendsms.setVisibility(View.VISIBLE);
-        }
-
-        if (!OTPAccess) {
-            radiogrp2.setVisibility(View.VISIBLE);
-            tv_help.setVisibility(View.VISIBLE);
-            btn_generate.setVisibility(View.VISIBLE);
-        } else {
-            radiogrp2.setVisibility(View.GONE);
-            tv_help.setVisibility(View.GONE);
-            btn_generate.setVisibility(View.GONE);
-            ll_enterView.setVisibility(View.VISIBLE);
-        }
-
-
-        edt_age.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() > 0) {
-                    agesinteger = Integer.parseInt(s.toString());
-                }
-
-                String enteredString = s.toString();
-
-                if (enteredString.startsWith(".") || enteredString.startsWith("0")) {
-                    Toast.makeText(activity,
-                            ToastFile.crt_age,
-                            Toast.LENGTH_SHORT).show();
-                    if (enteredString.length() > 0) {
-                        edt_age.setText(enteredString.substring(1));
-                    } else {
-                        edt_age.setText("");
-                    }
-                }
-
-            }
-
-        });
-    }
-
 
     private void genrateflow() {
         if (mobilenovalidation()) {
@@ -1330,7 +1336,6 @@ public class RATEnterFrag extends Fragment {
         }
 
     }
-
 
     private void passBarcodeData(final String getBarcodeDetails) {
         requestQueue = GlobalClass.setVolleyReq(getContext());
@@ -1712,7 +1717,6 @@ public class RATEnterFrag extends Fragment {
         }
     }
 
-
     private void showDialogue(final ArrayList<getSCPTechnicianModel.getTechnicianlist> obj) {
 
         LayoutInflater li = LayoutInflater.from(activity);
@@ -2063,7 +2067,6 @@ public class RATEnterFrag extends Fragment {
             e.printStackTrace();
         }
     }
-
 
     private void setDOB(String lineText) {
         if (lineText.contains("DOB") || lineText.contains("D0B")) {

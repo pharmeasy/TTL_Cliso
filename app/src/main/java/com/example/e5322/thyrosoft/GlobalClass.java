@@ -1347,7 +1347,9 @@ public class GlobalClass {
     public static void StoresyncProduct(Activity activity) {
         try {
             AppPreferenceManager appPreferenceManager = new AppPreferenceManager(activity);
-            appPreferenceManager.setSynProductCount(appPreferenceManager.getVersionResponseModel().getSyncproduct());
+            if (appPreferenceManager != null && appPreferenceManager.getVersionResponseModel() != null) {
+                appPreferenceManager.setSynProductCount(appPreferenceManager.getVersionResponseModel().getSyncproduct());
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

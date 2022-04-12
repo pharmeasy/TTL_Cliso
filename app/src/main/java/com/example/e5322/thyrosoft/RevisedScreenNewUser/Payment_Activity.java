@@ -1244,6 +1244,7 @@ public class Payment_Activity extends AppCompatActivity {
             }
         } else {
             GlobalClass.printLog(Constants.ERROR, TAG, "PayTm Checksum token", responseModel.getRESPONSE());
+            GlobalClass.showCustomToast(Payment_Activity.this, GlobalClass.checkAndGetStringValue(responseModel.getRESPONSE(), MessageConstants.RETRY), 0);
         }
     }
 

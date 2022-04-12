@@ -126,21 +126,17 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
     private static String stringofconvertedTime;
     private static String cutString;
     Button outlab_barcode;
-    SharedPreferences prefs;
     RequestQueue barcodeDetailsdata, POstQue;
     String outTestToSend, testsData;
     EditText enterAmt, enter_barcode, reenter;
     String TAG = Scan_Barcode_Outlabs.class.getSimpleName();
     Button next;
     Camera camera;
-    int b2b_rate = 0;
-    ScannedBarcodeDetails scannedBarcodeDetails;
+    int b2b_rate = 0, b2c_rate = 0;
     ArrayList<Outlabdetails_OutLab> Globaly_Outlab_details = new ArrayList<>();
     LinearLayout sample_type_linear;
-    ArrayList<String> getUniquespecimenttype;
     ArrayList<ScannedBarcodeDetails> finalspecimenttypewiselist;
     TextView show_selected_tests_data, setAmt, title;
-    LinearLayoutManager linearLayoutManager;
     IntentIntegrator scanIntegrator;
     LinearLayout barcodescanninglist;
     BaseModel.Barcodes[] barcodes;
@@ -560,7 +556,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         scanIntegrator = new IntentIntegrator(Scan_Barcode_Outlabs.this);
         // linearLayoutManager = new LinearLayoutManager(Scan_Barcode_Outlabs.this);
         //  recycler_barcode.setLayoutManager(linearLayoutManager);
-        int totalcount = 0;
+
 
         temparraylist = new ArrayList<>();
         temparraylist.add("Select sample type");
@@ -591,32 +587,27 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
 
             if (!saveLocation.isEmpty()) {
                 if (saveLocation.contains("CPL")) {
-                    totalcount = totalcount + Integer.parseInt(Globaly_Outlab_details.get(i).getRate().getB2c());
+                    b2c_rate = b2c_rate + Integer.parseInt(Globaly_Outlab_details.get(i).getRate().getB2c());
                     if (!GlobalClass.isNull(Globaly_Outlab_details.get(i).getRate().getCplr())) {
                         b2b_rate = b2b_rate + Integer.parseInt(Globaly_Outlab_details.get(i).getRate().getCplr());
                     } else {
                         b2b_rate = b2b_rate + Integer.parseInt(Globaly_Outlab_details.get(i).getRate().getB2b());
                     }
-
                 } else {
-                    totalcount = totalcount + Integer.parseInt(Globaly_Outlab_details.get(i).getRate().getB2c());
-
+                    b2c_rate = b2c_rate + Integer.parseInt(Globaly_Outlab_details.get(i).getRate().getB2c());
                     if (!GlobalClass.isNull(Globaly_Outlab_details.get(i).getRate().getRplr())) {
                         b2b_rate = b2b_rate + Integer.parseInt(Globaly_Outlab_details.get(i).getRate().getRplr());
                     } else {
                         b2b_rate = b2b_rate + Integer.parseInt(Globaly_Outlab_details.get(i).getRate().getB2b());
                     }
-
                 }
             }
-
-
             Log.e(TAG, "b2b_rate:  " + b2b_rate);
-            Log.e(TAG, "oAmount to display" + totalcount);
+            Log.e(TAG, "oAmount to display" + b2c_rate);
         }
 
 
-        setAmt.setText(String.valueOf(totalcount));
+        setAmt.setText(String.valueOf(b2c_rate));
 
         Set<String> hs = new HashSet<>();
         hs.addAll(temparraylist);
@@ -700,13 +691,15 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                                 Toast.makeText(Scan_Barcode_Outlabs.this, ToastFile.colAmt, Toast.LENGTH_SHORT).show();
                             } else if (Integer.parseInt(getWrittenAmt) < b2b_rate) {
                                 Toast.makeText(Scan_Barcode_Outlabs.this, getResources().getString(R.string.amtcollval) + " " + b2b_rate, Toast.LENGTH_SHORT).show();
+                            } else if (Integer.parseInt(getWrittenAmt) > b2c_rate) {
+                                Toast.makeText(Scan_Barcode_Outlabs.this, getResources().getString(R.string.lessamtcollval) + " " + b2c_rate, Toast.LENGTH_SHORT).show();
                             } else if (GlobalClass.isNull(edt_confirm_amt.getText().toString())) {
                                 Toast.makeText(Scan_Barcode_Outlabs.this, "Confirm Amount Collected", Toast.LENGTH_SHORT).show();
                             } else if (!edt_confirm_amt.getText().toString().equalsIgnoreCase(getWrittenAmt)) {
                                 Toast.makeText(Scan_Barcode_Outlabs.this, "Amount Mismatched", Toast.LENGTH_SHORT).show();
                             }/* else if (vialimg_file == null || !vialimg_file.exists()) {
                                 Toast.makeText(Scan_Barcode_Outlabs.this, ToastFile.vialimage, Toast.LENGTH_SHORT).show();
-                            } */else if (ll_letterhead.getVisibility() == View.VISIBLE) {
+                            } */ else if (ll_letterhead.getVisibility() == View.VISIBLE) {
                                 if (GlobalClass.isNull(getBrand_name)) {
                                     Toast.makeText(mActivity, "Select Brand", Toast.LENGTH_SHORT).show();
                                 }/* else if (vialimg_file == null) {

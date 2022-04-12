@@ -58,7 +58,6 @@ public class Covidentered_frag extends Fragment {
     private String myFormat = "dd-MM-yyyy";
     private SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
     Activity activity;
-    String TAG = getClass().getSimpleName();
     ConnectionDetector cd;
     CovidMISAdapter covidMISAdapter;
     LinearLayout mainlinear;
@@ -108,14 +107,14 @@ public class Covidentered_frag extends Fragment {
         tv_fromDate.setText(putDate);
         from_formateDate = GlobalClass.formatDate(Constants.DATEFORMATE, Constants.YEARFORMATE, putDate);
         mode_filter.setSelection(0);
-        if (GlobalClass.isNetworkAvailable((Activity) getContext())) {
+        if (GlobalClass.isNetworkAvailable(activity)) {
             if (cd.isConnectingToInternet()) {
                 getMIS(from_formateDate);
             } else {
-                GlobalClass.toastyError(getContext(), MessageConstants.CHECK_INTERNET_CONN, false);
+                GlobalClass.toastyError(activity, MessageConstants.CHECK_INTERNET_CONN, false);
             }
         } else {
-            GlobalClass.toastySuccess(getContext(), ToastFile.intConnection, false);
+            GlobalClass.toastySuccess(activity, ToastFile.intConnection, false);
         }
 
     }
@@ -173,7 +172,7 @@ public class Covidentered_frag extends Fragment {
         if (cd.isConnectingToInternet()) {
             getfilterapilist();
         } else {
-            GlobalClass.toastyError(getContext(), MessageConstants.CHECK_INTERNET_CONN, false);
+            GlobalClass.toastyError(activity, MessageConstants.CHECK_INTERNET_CONN, false);
         }
 
 
@@ -183,7 +182,7 @@ public class Covidentered_frag extends Fragment {
             @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
             @Override
             public void onClick(View v) {
-                DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), R.style.DialogTheme, date, myCalendar
+                DatePickerDialog datePickerDialog = new DatePickerDialog(activity, R.style.DialogTheme, date, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH));
                 datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
@@ -211,7 +210,7 @@ public class Covidentered_frag extends Fragment {
                             filterlist.add(response.body().getStatus().get(i).getStatus());
                         }
                         if (filterlist != null) {
-                            ArrayAdapter<String> filteradapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, filterlist);
+                            ArrayAdapter<String> filteradapter = new ArrayAdapter<>(activity, android.R.layout.simple_spinner_item, filterlist);
                             filteradapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                             mode_filter.setAdapter(filteradapter);
                         }
@@ -221,14 +220,14 @@ public class Covidentered_frag extends Fragment {
                             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                                 String type = mode_filter.getSelectedItem().toString();
                                 if (type.equalsIgnoreCase("All")) {
-                                    if (GlobalClass.isNetworkAvailable((Activity) getContext())) {
+                                    if (GlobalClass.isNetworkAvailable(activity)) {
                                         if (cd.isConnectingToInternet()) {
                                             getMIS(from_formateDate);
                                         } else {
-                                            GlobalClass.toastyError(getContext(), MessageConstants.CHECK_INTERNET_CONN, false);
+                                            GlobalClass.toastyError(activity, MessageConstants.CHECK_INTERNET_CONN, false);
                                         }
                                     } else {
-                                        GlobalClass.toastySuccess(getContext(), ToastFile.intConnection, false);
+                                        GlobalClass.toastySuccess(activity, ToastFile.intConnection, false);
                                     }
                                 } else {
                                     filterbytype(type);
@@ -273,7 +272,7 @@ public class Covidentered_frag extends Fragment {
                         txt_nodata.setVisibility(View.GONE);
                         covidMISmodelList = new ArrayList<>();
                         covidMISmodelList.addAll(response.body().getOutput());
-                        recy_mis.setLayoutManager(new LinearLayoutManager(getContext()));
+                        recy_mis.setLayoutManager(new LinearLayoutManager(activity));
                         covidMISAdapter = new CovidMISAdapter(getContext(), covidMISmodelList, activity);
                         recy_mis.setAdapter(covidMISAdapter);
                     } else {

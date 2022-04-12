@@ -8,7 +8,6 @@
         <item name="colorAccent">@color/maroon</item>
         <item name="drawerArrowStyle">@style/DrawerHamburgerStyle</item>
         <!--   your app branding color for the app bar -->
-
     </style>
 
     <style name="TextLabel" parent="TextAppearance.Design.Hint">

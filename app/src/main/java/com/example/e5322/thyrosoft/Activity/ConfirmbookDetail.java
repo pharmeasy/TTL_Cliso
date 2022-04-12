@@ -1,5 +1,7 @@
 package com.example.e5322.thyrosoft.Activity;
 
+import static com.example.e5322.thyrosoft.API.Constants.tab_flag;
+
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -39,8 +41,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import static com.example.e5322.thyrosoft.API.Constants.tab_flag;
-
 public class ConfirmbookDetail extends AppCompatActivity implements View.OnClickListener {
     public TextView tv_toolname, tv_pname, tv_gender, tv_diabetics, tv_dob, tv_mobileno, tv_email, tv_city, tv_remarks, tv_servicetype, tv_avaibal, txt_inclusionmnt, tv_paidamt, txt_finalpaidamt, txt_appoint_dt, txt_age;
     public String pname, gender, diabetics, dob, mobileno, emailId, city, remarks, sercicetype, availbal, scanAmount, finalTotalAmount, amt_coll, header, appoint_dt;
@@ -75,7 +75,7 @@ public class ConfirmbookDetail extends AppCompatActivity implements View.OnClick
     private void GetLeadgerbal() {
 
         GetLeadgerDetailsController getLeadgerDetailsController = new GetLeadgerDetailsController(this, ConfirmbookDetail.this);
-        getLeadgerDetailsController.getLeadgerBal();
+        getLeadgerDetailsController.getLedgerBal();
 
     }
 

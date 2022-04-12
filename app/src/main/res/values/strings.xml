@@ -51,6 +51,7 @@
     <string name="ifsc">IFSC Code for NEFT/RTGS : UTIB0000641</string>
     <string name="mk_payment">To make payment, you may transfer via NEFT, RTGS and Bank Transfer to</string>
     <string name="amtcollval">Entered amount collected should be greater than or equal to</string>
+    <string name="lessamtcollval">Entered amount collected should be less than or equal to</string>
     <string name="more">More...</string>
     <string name="less">Less...</string>
     <string name="browser">Download via link</string>
@@ -304,5 +305,7 @@
     <string name="offline_woe">OFFLINE WOE</string>
     <string name="str_whatsapp_support">(24X7 Whatsapp Support)</string>
     <string name="str_covid_result_guidelines">NOTE: COVID POSITIVE REPORTS WILL BE SHARED AS PER THE LOCAL MUNICIPAL CORPORATION GUIDELINES.</string>
+    <string name="unbilled_woe_materials">UNBILLED (WOE + MATERIALS) : ₹</string>
+    <string name="available_balance_with_cl">Available balance (with cl) : ₹</string>
 
 </resources>

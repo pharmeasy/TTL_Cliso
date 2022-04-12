@@ -82,6 +82,7 @@ import com.example.e5322.thyrosoft.Adapter.AdapterRe;
 import com.example.e5322.thyrosoft.Adapter.CustomListAdapter;
 import com.example.e5322.thyrosoft.Adapter.PatientDtailsWoe;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
+import com.example.e5322.thyrosoft.Controller.GetLeadgerDetailsController;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Controller.ValidateMob_Controller;
 import com.example.e5322.thyrosoft.Controller.VerifyotpController;
@@ -99,6 +100,7 @@ import com.example.e5322.thyrosoft.Models.CoVerifyMobReq;
 import com.example.e5322.thyrosoft.Models.Covid_validateotp_req;
 import com.example.e5322.thyrosoft.Models.Covid_validateotp_res;
 import com.example.e5322.thyrosoft.Models.Covidotpresponse;
+import com.example.e5322.thyrosoft.Models.GetLeadgerBalnce;
 import com.example.e5322.thyrosoft.Models.MyPojo;
 import com.example.e5322.thyrosoft.Models.OTPrequest;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.AppPreferenceManager;
@@ -226,7 +228,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     Spinner selectTypeSpinner, brand_spinner;
     ArrayList<String> getCampNames;
     Button next_btn_stage2;
-    TextView woedatestage, patientnamestage, subsourcestage, address, sctdata, testsubsource, amtcollected, scp_default;
+    TextView tv_unbilled, tv_avl_bal;
     EditText pincode, patientAddress, reenterkycinfo, kycinfo, vial_number, et_otp;
     Spinner btechname, deliveymode, camp_spinner_olc;
     ArrayList<BarcodelistModel> barcodelists;
@@ -407,6 +409,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         init();
         SetCurrenttime();
         listner();
+        callLedgerDetailsAPI();
         showBaselineDetails();
         if (Global.getLoginType(activity) != Constants.PEflag) {
             showRewardsDialog();
@@ -1273,6 +1276,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
         et_mobno = viewMain.findViewById(R.id.et_mobno);
         et_otp = viewMain.findViewById(R.id.et_otp);
+
+        tv_unbilled = viewMain.findViewById(R.id.tv_unbilled);
+        tv_avl_bal = viewMain.findViewById(R.id.tv_avl_bal);
 
 
         chk_otp = viewMain.findViewById(R.id.chk_otp);
@@ -10073,10 +10079,25 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
         btechname.setEnabled(true);
         btechname.setEnabled(true);
-
-
     }
 
+    private void callLedgerDetailsAPI() {
+        try {
+            GetLeadgerDetailsController getLeadgerDetailsController = new GetLeadgerDetailsController(activity, Start_New_Woe.this);
+            getLeadgerDetailsController.getLedgerBal();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getLeaderDetails(GetLeadgerBalnce responseModel) {
+        try {
+            Global.setTextview(tv_unbilled, activity.getString(R.string.unbilled_woe_materials) + " " + GlobalClass.currencyFormat(String.valueOf(responseModel.getTodayBill())));
+            Global.setTextview(tv_avl_bal, activity.getString(R.string.available_balance_with_cl) + " " + GlobalClass.currencyFormat(String.valueOf(responseModel.getBalance())));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * This interface must be implemented by activities that contain this
