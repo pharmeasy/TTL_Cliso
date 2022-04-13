@@ -114,7 +114,7 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
     public String specimenttype1;
     public int position1 = 0;
     SharedPreferences prefs;
-    RequestQueue barcodeDetailsdata, POstQue;
+    RequestQueue POstQue;
     String outTestToSend, testsData;
     EditText enterAmt;
     String TAG = Scan_Barcode_Outlabs_Activity.class.getSimpleName();
@@ -130,7 +130,6 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
     TextView lab_alert_spin;
     String barcodes1;
     SharedPreferences preferences;
-    ProgressDialog progressDialog;
     String getAmount;
     String getCollectedAmt;
     LinearLayout amt_collected_and_total_amt_ll;
@@ -189,7 +188,7 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
     private DatabaseHelper myDb;
     private String getRemark;
     private boolean barcodeExistsFlag = false;
-    int b2b_rate = 0;
+    int b2b_rate = 0, b2c_rate = 0;
     private File vialimg_file;
     Button btn_choosefile;
     LinearLayout lin_preview;
@@ -397,13 +396,12 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
         linearLayoutManager = new LinearLayoutManager(Scan_Barcode_Outlabs_Activity.this);
         recycler_barcode.setLayoutManager(linearLayoutManager);
         ArrayList<String> saveLocation = new ArrayList<>();
-        int totalcount = 0;
         for (int i = 0; i < selectedOutlabTests.size(); i++) {
 
 //            if (selectedOutlabTests.get(i).getRate().getB2c().equals("")) {
-//                totalcount = 0;
+//                b2c_rate = 0;
 //            } else {
-//                totalcount = totalcount + Integer.parseInt(selectedOutlabTests.get(i).getRate().getB2c());
+//                b2c_rate = b2c_rate + Integer.parseInt(selectedOutlabTests.get(i).getRate().getB2c());
 //            }
 //
 //            if (selectedOutlabTests.get(i).getRate().getB2c().equals("")) {
@@ -422,8 +420,7 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
 
             if (!saveLocation.isEmpty()) {
                 if (saveLocation.contains("CPL")) {
-                    totalcount = totalcount + Integer.parseInt(selectedOutlabTests.get(i).getRate().getB2c());
-
+                    b2c_rate = b2c_rate + Integer.parseInt(selectedOutlabTests.get(i).getRate().getB2c());
                     if (!GlobalClass.isNull(selectedOutlabTests.get(i).getRate().getCplr())) {
                         b2b_rate = b2b_rate + Integer.parseInt(selectedOutlabTests.get(i).getRate().getCplr());
                     } else {
@@ -431,21 +428,19 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                     }
 
                 } else {
-                    totalcount = totalcount + Integer.parseInt(selectedOutlabTests.get(i).getRate().getB2c());
+                    b2c_rate = b2c_rate + Integer.parseInt(selectedOutlabTests.get(i).getRate().getB2c());
                     if (!GlobalClass.isNull(selectedOutlabTests.get(i).getRate().getRplr())) {
                         b2b_rate = b2b_rate + Integer.parseInt(selectedOutlabTests.get(i).getRate().getRplr());
                     } else {
                         b2b_rate = b2b_rate + Integer.parseInt(selectedOutlabTests.get(i).getRate().getB2b());
                     }
-
                 }
             }
-
             Log.e(TAG, "b2b_rate: " + b2b_rate);
-            Log.e(TAG, "onCreate: 11 " + totalcount);
+            Log.e(TAG, "onCreate: 11 " + b2c_rate);
         }
 
-        setAmt.setText(String.valueOf(totalcount));
+        setAmt.setText(String.valueOf(b2c_rate));
 
         CLISO_ScanBarcodeAdapter bmc_scanBarcodeAdapter = new CLISO_ScanBarcodeAdapter(Scan_Barcode_Outlabs_Activity.this, selectedOutlabTests, FinalBarcodeDetailsList, this);
         bmc_scanBarcodeAdapter.setOnItemClickListener(new CLISO_ScanBarcodeAdapter.OnItemClickListener() {
@@ -583,6 +578,8 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                         GlobalClass.showShortToast(mActivity, "Please enter the amount");
                     } else if (Integer.parseInt(getCollectedAmt) < b2b_rate) {
                         Toast.makeText(Scan_Barcode_Outlabs_Activity.this, getResources().getString(R.string.amtcollval) + " " + b2b_rate, Toast.LENGTH_SHORT).show();
+                    } else if (Integer.parseInt(getCollectedAmt) > b2c_rate) {
+                        Toast.makeText(Scan_Barcode_Outlabs_Activity.this, getResources().getString(R.string.lessamtcollval) + " " + b2c_rate, Toast.LENGTH_SHORT).show();
                     } else if (GlobalClass.isNull(edt_confirm_amt.getText().toString())) {
                         Toast.makeText(Scan_Barcode_Outlabs_Activity.this, "Confirm Amount Collected", Toast.LENGTH_SHORT).show();
                     } else if (!edt_confirm_amt.getText().toString().equalsIgnoreCase(getCollectedAmt)) {
@@ -598,7 +595,6 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                     } else {
                         checklistData();
                     }
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
