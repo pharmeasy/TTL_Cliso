@@ -21,6 +21,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
+import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Activity.SampleTypeColor;
 import com.example.e5322.thyrosoft.Controller.Log;
@@ -36,10 +37,8 @@ import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 
 public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHolder> {
@@ -49,13 +48,10 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
     ManagingTabsActivity mContext;
     ArrayList<Base_Model_Rate_Calculator> mgetSingleList;
     ArrayList<Base_Model_Rate_Calculator> filteredList;
-    Base_Model_Rate_Calculator getSelected_test;
-    Base_Model_Rate_Calculator.Childs selectedchildlist[];
     ShowChildTestNamesAdapter showChildTestNamesAdapter;
     RecyclerView testdetails;
     ArrayList<String> storetestlist;
-    AlertDialog alertDialog, alert;
-    ImageView imageView = null;
+    AlertDialog alertDialog;
     private ArrayList<Base_Model_Rate_Calculator> tempselectedTests;
     private List<String> tempselectedTests1;
     private ArrayList<Base_Model_Rate_Calculator> selectedTests = new ArrayList<>();
@@ -98,26 +94,28 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull final RateCAlAdapter.ViewHolder viewHolder, final int position) {
-
         viewHolder.lin_color.removeAllViews();
-
         viewHolder.test_name_rate_txt.setText(mgetSingleList.get(position).getName());
-        NumberFormat numberFormat = NumberFormat.getNumberInstance(new Locale("en", "in"));
-        int passThvalue = Integer.parseInt(mgetSingleList.get(position).getRate().getB2c());
-        String setRtaesToTests = numberFormat.format(passThvalue);
-        viewHolder.test_rate_cal_txt.setText("₹ " + setRtaesToTests + "/-");
+        viewHolder.test_rate_cal_txt.setText("₹ " + GlobalClass.applyNumberFormat(mgetSingleList.get(position).getRate().getB2c()) + "/-");
+
+        if (GlobalClass.checkEqualIgnoreCase(Global.getAccessType(mContext), "ADMIN")) {
+            viewHolder.ll_your_rate.setVisibility(View.VISIBLE);
+            viewHolder.tv_your_rate.setText("₹ " + GlobalClass.applyNumberFormat(mgetSingleList.get(position).getRate().getB2b()) + "/-");
+        } else {
+            viewHolder.ll_your_rate.setVisibility(View.GONE);
+        }
+
         final boolean isSelectedDueToParent = viewHolder.isSelectedDueToParent;
         final String parentTestCode = viewHolder.parentTestCode;
         final Base_Model_Rate_Calculator getSelected_test = filteredList.get(position);
 
         /*TODO Below logic for TTL Sample type color code*/
-        if (mgetSingleList != null || mgetSingleList.size() != 0) {
+        if (mgetSingleList != null && mgetSingleList.size() > 0) {
             SampleTypeColor sampleTypeColor = new SampleTypeColor(mContext, mgetSingleList, position);
             sampleTypeColor.ttlcolor(viewHolder.lin_color);
         }
 
         if (getSelected_test.getChilds().length != 0) {
-
             viewHolder.parent_ll.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -425,9 +423,9 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder {
         public boolean isSelectedDueToParent;
         public String parentTestCode, parentTestname;
-        TextView test_name_rate_txt, test_rate_cal_txt;
+        TextView test_name_rate_txt, test_rate_cal_txt, tv_your_rate;
         ImageView iv_checked, iv_unchecked, iv_locked;
-        LinearLayout parent_ll, lin_color;
+        LinearLayout parent_ll, lin_color, ll_your_rate;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -439,6 +437,8 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
             iv_locked = (ImageView) itemView.findViewById(R.id.iv_locked);
             parent_ll = (LinearLayout) itemView.findViewById(R.id.parent_ll);
             lin_color = itemView.findViewById(R.id.lin_color);
+            tv_your_rate = itemView.findViewById(R.id.tv_your_rate);
+            ll_your_rate = itemView.findViewById(R.id.ll_your_rate);
         }
     }
 

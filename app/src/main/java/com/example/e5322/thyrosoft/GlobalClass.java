@@ -1880,4 +1880,10 @@ public class GlobalClass {
         return largestSequence;
 
     }
+
+    public static String applyNumberFormat(String value) {
+        NumberFormat numberFormat = NumberFormat.getNumberInstance(new Locale("en", "in"));
+        int intvalue = Integer.parseInt(value);
+        return numberFormat.format(intvalue);
+    }
 }

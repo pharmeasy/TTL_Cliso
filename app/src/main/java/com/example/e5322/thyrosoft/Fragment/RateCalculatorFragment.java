@@ -52,6 +52,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
+import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Activity.SampleTypeColor;
 import com.example.e5322.thyrosoft.Adapter.RateCAlAdapter;
@@ -1302,11 +1303,11 @@ public class RateCalculatorFragment extends Fragment {
     }
 
     private class OutLabAdapter extends RecyclerView.Adapter<OutLabAdapter.ViewHolder> {
-        Context context;
+        Activity activity;
         ArrayList<Outlabdetails_OutLab> outlabdetails_outLabs;
 
-        public OutLabAdapter(Activity context, ArrayList<Outlabdetails_OutLab> outlabdetails_outLabs) {
-            this.context = context;
+        public OutLabAdapter(Activity activity, ArrayList<Outlabdetails_OutLab> outlabdetails_outLabs) {
+            this.activity = activity;
             this.outlabdetails_outLabs = outlabdetails_outLabs;
         }
 
@@ -1323,9 +1324,16 @@ public class RateCalculatorFragment extends Fragment {
         public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
             holder.lin_color.removeAllViews();
             holder.outlab_test.setText(outlabdetails_outLabs.get(position).getName());
-            holder.outlab_test_rates.setText("₹ " + outlabdetails_outLabs.get(position).getRate().getB2c() + "/-");
+            holder.outlab_test_rates.setText("₹ " + GlobalClass.applyNumberFormat(outlabdetails_outLabs.get(position).getRate().getB2c()) + "/-");
             holder.checked.setVisibility(View.GONE);
             holder.check.setVisibility(View.VISIBLE);
+
+            if (GlobalClass.checkEqualIgnoreCase(Global.getAccessType(activity), "ADMIN")) {
+                holder.ll_outlab_test_rate.setVisibility(View.VISIBLE);
+                holder.tv_outlab_your_rate.setText("₹ " + GlobalClass.applyNumberFormat(outlabdetails_outLabs.get(position).getRate().getB2b()) + "/-");
+            } else {
+                holder.ll_outlab_test_rate.setVisibility(View.GONE);
+            }
 
             /*TODO Below logic for Outlab Sample type color code*/
             if (outlabdetails_outLabs != null || outlabdetails_outLabs.size() != 0) {
@@ -1437,9 +1445,9 @@ public class RateCalculatorFragment extends Fragment {
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
-            TextView outlab_test, outlab_test_rates;
+            TextView outlab_test, outlab_test_rates, tv_outlab_your_rate;
             ImageView check, checked;
-            LinearLayout lin_color;
+            LinearLayout lin_color, ll_outlab_test_rate;
 
             public ViewHolder(View itemView) {
                 super(itemView);
@@ -1448,6 +1456,8 @@ public class RateCalculatorFragment extends Fragment {
                 check = (ImageView) itemView.findViewById(R.id.check);
                 checked = (ImageView) itemView.findViewById(R.id.checked);
                 lin_color = itemView.findViewById(R.id.lin_color);
+                tv_outlab_your_rate = itemView.findViewById(R.id.tv_outlab_your_rate);
+                ll_outlab_test_rate = itemView.findViewById(R.id.ll_outlab_test_rate);
             }
         }
     }

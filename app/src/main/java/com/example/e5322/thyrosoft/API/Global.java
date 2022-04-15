@@ -410,4 +410,9 @@ public class Global {
         SharedPreferences preferences = activity.getSharedPreferences("Userdetails", Context.MODE_PRIVATE);
         return GlobalClass.checkEqualIgnoreCase(preferences.getString("SOURCE_TYPE", ""), "PE DAC") ? Constants.PEflag : Constants.TCflag;
     }
+
+    public static String getAccessType(Activity activity) {
+        SharedPreferences preferences = activity.getSharedPreferences("Userdetails", Context.MODE_PRIVATE);
+        return preferences.getString("ACCESS_TYPE", "");
+    }
 }

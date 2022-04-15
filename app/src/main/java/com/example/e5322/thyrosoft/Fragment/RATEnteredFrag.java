@@ -158,8 +158,6 @@ public class RATEnteredFrag extends Fragment {
         rg_radio.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-
-
                 if (rd_pending.isChecked() || rd_pending.isSelected()) {
                     CallAPI("1");
                     ll_date.setVisibility(View.GONE);
@@ -183,7 +181,6 @@ public class RATEnteredFrag extends Fragment {
                 datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
                 datePickerDialog.show();
             }
-
         });
     }
 

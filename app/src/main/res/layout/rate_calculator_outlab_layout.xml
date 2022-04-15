@@ -1,37 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/underline_grey"
     android:orientation="horizontal"
+    android:paddingLeft="10dp"
+    android:paddingTop="10dp"
+    android:paddingRight="25dp"
+    android:paddingBottom="10dp"
     android:weightSum="5">
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="4"
+        android:layout_marginRight="10dp"
+        android:layout_weight="4.9"
         android:orientation="vertical"
-        android:padding="5dp">
+        android:paddingLeft="5dp">
 
         <TextView
             android:id="@+id/outlab_test"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:gravity="left"
-            android:text="test"
+            android:layout_marginBottom="5dp"
+            android:gravity="left|center"
+            android:paddingTop="2dp"
+            android:textAlignment="viewStart"
             android:textAllCaps="true"
-            android:textColor="@color/black"
-            android:textSize="@dimen/value" />
-        <TextView
-            android:id="@+id/outlab_test_rates"
-            android:layout_width="wrap_content"
+            android:textColor="@color/grey"
+            android:textSize="@dimen/value"
+            tools:ignore="RtlCompat"
+            tools:text="DGL01" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:gravity="left"
-            android:text="test"
-            android:textAllCaps="true"
-            android:textColor="@color/black"
-            android:textSize="@dimen/value" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MRP : "
+                android:textColor="@color/grey"
+                android:textSize="@dimen/note1" />
+
+            <TextView
+                android:id="@+id/outlab_test_rates"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:gravity="left"
+                android:textAllCaps="true"
+                android:textColor="@color/grey"
+                android:textSize="@dimen/note1"
+                tools:text="₹ 1005/-" />
+
+            <LinearLayout
+                android:id="@+id/ll_outlab_test_rate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Your Rate : "
+                    android:textColor="@color/grey"
+                    android:textSize="@dimen/note1" />
+
+                <TextView
+                    android:id="@+id/tv_outlab_your_rate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/grey"
+                    android:textSize="@dimen/note1"
+                    tools:text="₹ 1100/-" />
+
+            </LinearLayout>
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/lin_color"
@@ -39,27 +87,26 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_5"
             android:gravity="center"
-            android:visibility="visible"
-            android:orientation="horizontal" />
+            android:orientation="horizontal"
+            android:visibility="visible" />
 
     </LinearLayout>
 
     <ImageView
         android:id="@+id/check"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_weight="1"
-        android:src="@drawable/checkbox" />
+        android:layout_width="13dp"
+        android:layout_height="20dp"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:layout_weight="0.1"
+        android:src="@drawable/check_ref" />
 
     <ImageView
         android:id="@+id/checked"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_weight="1"
+        android:layout_width="13dp"
+        android:layout_height="20dp"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:layout_weight="0.1"
         android:src="@drawable/outlab_checkbox"
         android:visibility="gone" />
-
 
 </LinearLayout>

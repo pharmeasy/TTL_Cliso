@@ -11,6 +11,7 @@
         <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/activity_lead_generation.xml" value="0.3541666666666667" />
         <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/activity_login.xml" value="0.35052083333333334" />
         <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/activity_payment_.xml" value="0.33425925925925926" />
+        <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/activity_rat_edit.xml" value="0.3541666666666667" />
         <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/activity_scan__barcode__ils.xml" value="0.2943722943722944" />
         <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/activity_scan_barcode_lead_id.xml" value="0.2982456140350877" />
         <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/activity_sgc__pgc__entry_.xml" value="0.3487179487179487" />
@@ -24,6 +25,7 @@
         <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/fragment_next__consignment__entry.xml" value="0.19166666666666668" />
         <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/fragment_offline_workorder.xml" value="0.3487179487179487" />
         <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/fragment_r_a_t_enter.xml" value="0.18802083333333333" />
+        <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/fragment_r_a_t_entered.xml" value="0.3541666666666667" />
         <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/fragment_rate_calculator.xml" value="0.3541666666666667" />
         <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/fragment_start__new__woe.xml" value="0.33" />
         <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/fragment_track.xml" value="0.35052083333333334" />
@@ -33,7 +35,8 @@
         <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/lay_covidedit.xml" value="0.2611111111111111" />
         <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/lay_covidreg.xml" value="0.3541666666666667" />
         <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/matrix_recycle.xml" value="0.25" />
-        <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/rate_calculator_outlab_layout.xml" value="0.3541666666666667" />
+        <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/rate_cal_test_single.xml" value="0.2943722943722944" />
+        <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/rate_calculator_outlab_layout.xml" value="0.2943722943722944" />
         <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/summary_activity_new.xml" value="0.3541666666666667" />
         <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/tm.xml" value="0.19166666666666668" />
         <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/menu/activity_main_drawer.xml" value="0.22" />
