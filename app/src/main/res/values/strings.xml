@@ -302,6 +302,7 @@
     <string name="feedback_note"><font color="#941010"><b>Note: </b></font>Please rate parameter where 1 star is lowest and 5 start is highest.
     </string>
     <string name="str_escalation_matrix">ESCALATION MATRIX</string>
+    <string name="str_privacy_policy">PRIVACY POLICY</string>
     <string name="offline_woe">OFFLINE WOE</string>
     <string name="str_whatsapp_support">(24X7 Whatsapp Support)</string>
     <string name="str_covid_result_guidelines">NOTE: COVID POSITIVE REPORTS WILL BE SHARED AS PER THE LOCAL MUNICIPAL CORPORATION GUIDELINES.</string>

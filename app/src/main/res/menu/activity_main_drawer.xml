@@ -462,6 +462,16 @@
     </group>
 
     <group
+        android:id="@+id/grp_privacy_policy"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/privacy_poilicy"
+            android:icon="@drawable/ic_menu_privacy_policy"
+            android:visible="true"
+            android:title="@string/str_privacy_policy"/>
+    </group>
+
+    <group
         android:id="@+id/group27"
         android:checkableBehavior="single">
         <item

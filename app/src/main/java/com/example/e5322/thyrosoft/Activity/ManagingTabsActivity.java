@@ -1317,6 +1317,13 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 }
             }
 
+        } else if (id == R.id.privacy_poilicy) {
+            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+            } else {
+                Intent i = new Intent(ManagingTabsActivity.this, PrivacyPolicyActivity.class);
+                startActivity(i);
+            }
         } else if (id == R.id.logout) {
             new AlertDialog.Builder(this)
                     .setMessage(ToastFile.surelogout)
