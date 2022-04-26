@@ -41,12 +41,23 @@
         <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/tm.xml" value="0.19166666666666668" />
         <entry key="..\:/AndroidStudioProjects/ClisoApp/app/src/main/res/menu/activity_main_drawer.xml" value="0.22" />
         <entry key="..\:/AndroidStudioProjects/ClisoApp/sdkui/src/main/res/layout/activity_payu_base.xml" value="0.3541666666666667" />
+        <entry key="..\:/Users/3397E/AndroidStudioProjects/ClisoApp/app/src/main/res/drawable/corner_curve_maroon.xml" value="0.114" />
         <entry key="..\:/Users/3397E/AndroidStudioProjects/ClisoApp/app/src/main/res/drawable/ic_menu_rewards.xml" value="0.114" />
+        <entry key="..\:/Users/3397E/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/activity_faq_.xml" value="0.15974025974025974" />
         <entry key="..\:/Users/3397E/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/activity_privacy_policy.xml" value="0.1618421052631579" />
-        <entry key="..\:/Users/3397E/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/activity_sgc__pgc__entry_.xml" value="0.1" />
+        <entry key="..\:/Users/3397E/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/activity_select_tests.xml" value="0.1618421052631579" />
+        <entry key="..\:/Users/3397E/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/activity_sgc__pgc__entry_.xml" value="0.22" />
+        <entry key="..\:/Users/3397E/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/covid_enter.xml" value="0.25" />
+        <entry key="..\:/Users/3397E/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/custom_alert_scp.xml" value="0.1618421052631579" />
+        <entry key="..\:/Users/3397E/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/fragment_r_a_t_enter.xml" value="0.18" />
         <entry key="..\:/Users/3397E/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/fragment_rate_calculator.xml" value="0.33" />
         <entry key="..\:/Users/3397E/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/fragment_start__new__woe.xml" value="0.1618421052631579" />
-        <entry key="..\:/Users/3397E/AndroidStudioProjects/ClisoApp/app/src/main/res/menu/activity_main_drawer.xml" value="0.1618421052631579" />
+        <entry key="..\:/Users/3397E/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/lay_covidreg.xml" value="0.1618421052631579" />
+        <entry key="..\:/Users/3397E/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/name_age_spinner.xml" value="0.15974025974025974" />
+        <entry key="..\:/Users/3397E/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/pop_up_spin_sgc.xml" value="0.1618421052631579" />
+        <entry key="..\:/Users/3397E/AndroidStudioProjects/ClisoApp/app/src/main/res/layout/whitetext_spin.xml" value="0.16140350877192983" />
+        <entry key="..\:/Users/3397E/AndroidStudioProjects/ClisoApp/app/src/main/res/menu/activity_main_drawer.xml" value="0.33" />
+        <entry key="..\:/Users/3397E/AppData/Local/Android/Sdk/platforms/android-29/data/res/layout/simple_spinner_dropdown_item.xml" value="0.15974025974025974" />
         <entry key="app/src/main/res/drawable-xhdpi/bottom_sheet_design.xml" value="0.17962962962962964" />
         <entry key="app/src/main/res/drawable/bg_feeback_count.xml" value="0.28114035087719297" />
         <entry key="app/src/main/res/drawable/bg_feedback_main.xml" value="0.28114035087719297" />

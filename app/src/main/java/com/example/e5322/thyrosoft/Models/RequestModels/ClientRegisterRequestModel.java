@@ -1,7 +1,38 @@
 package com.example.e5322.thyrosoft.Models.RequestModels;
 
 public class ClientRegisterRequestModel {
-    private String Address, Brand, Channel, Country, Email, InchargeName, Name, TspOLc, VerificationSource, Qualification, Speciality, apikey, mobile, phone_no, EntryType, pincode, website, APP, File, Latitute, Longitude, opType, Visiting_Card;
+    private String Address;
+    private String Brand;
+    private String Channel;
+    private String Country;
+    private String Email;
+    private String InchargeName;
+    private String Name;
+    private String TspOLc;
+    private String VerificationSource;
+    private String Qualification;
+    private String Speciality;
+    private String apikey;
+    private String mobile;
+    private String phone_no;
+    private String EntryType;
+    private String pincode;
+    private String website;
+    private String APP;
+    private String File;
+    private String Latitute;
+    private String Longitude;
+    private String opType;
+    private String Visiting_Card;
+    private String category;
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
     public String getAddress() {
         return Address;

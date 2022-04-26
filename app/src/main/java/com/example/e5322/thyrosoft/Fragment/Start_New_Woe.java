@@ -410,10 +410,11 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         SetCurrenttime();
         listner();
         callLedgerDetailsAPI();
-        showBaselineDetails();
+        //TODO hide baseline as per input 25/04/2022
+       /* showBaselineDetails();
         if (Global.getLoginType(activity) != Constants.PEflag) {
             showRewardsDialog();
-        }
+        }*/
 
         return viewMain;
     }

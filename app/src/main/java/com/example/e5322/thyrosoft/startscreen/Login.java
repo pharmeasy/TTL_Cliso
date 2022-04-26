@@ -868,15 +868,16 @@ public class Login extends Activity implements View.OnClickListener {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                GetBaselineDetails();
-
+//                GetBaselineDetails();
+                gotoHome();
             }
 
             @Override
             public void onFailure(Call<CovidAccessResponseModel> call, Throwable t) {
                 globalClass.dismissProgressDialog();
 
-                GetBaselineDetails();
+//                GetBaselineDetails();
+                gotoHome();
             }
         });
     }

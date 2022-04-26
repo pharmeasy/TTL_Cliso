@@ -23,7 +23,8 @@
             android:singleLine="true"
             android:textColor="@color/black"
             android:textSize="@dimen/label"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:visibility="gone" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"

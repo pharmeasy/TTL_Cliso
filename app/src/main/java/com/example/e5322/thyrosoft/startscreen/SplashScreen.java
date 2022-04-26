@@ -382,7 +382,7 @@ public class SplashScreen extends AppCompatActivity {
 
             if (days >= 1) {
                 if (GlobalClass.isNetworkAvailable(activity)) {
-                    GetBaselineDetails();
+//                    GetBaselineDetails();
                     checkcovidaccess();
                 } /*else
                     GlobalClass.showCustomToast(SplashScreen.this, MessageConstants.CHECK_INTERNET_CONN, 0);*/

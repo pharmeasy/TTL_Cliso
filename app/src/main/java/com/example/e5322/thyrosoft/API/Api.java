@@ -21,7 +21,7 @@ public class Api {
     public static String Cloud_base_v2 = "http://clisoapi.thyrocare.com/v2/";
 
     //TODO staging
-    /*public static String LIVEAPI = "https://b2capi.thyrocare.com/API_BETA/B2B/";
+   /* public static String LIVEAPI = "https://b2capi.thyrocare.com/API_BETA/B2B/";
     public static String URL_with_http = "https://b2capi.thyrocare.com/API_BETA/B2B/";
     public static String Cloud_base = "http://stagingclisoapi.thyrocare.com/v1/";
     public static String SGC = "https://b2capi.thyrocare.com/API_BETA/BDN/api/";

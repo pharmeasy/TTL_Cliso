@@ -378,6 +378,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 //            navigationView.getMenu().findItem(R.id.thyroshop).setVisible(true);
             navigationView.getMenu().findItem(R.id.bs_entry).setVisible(false);
             navigationView.getMenu().findItem(R.id.rbarcode).setVisible(false);
+            navigationView.getMenu().findItem(R.id.item_rewards).setVisible(false);
         } else if (Global.getLoginType(activity) == Constants.PEflag) {
             navigationView.getMenu().findItem(R.id.payment).setVisible(false);
             navigationView.getMenu().findItem(R.id.upload_document_navigation).setVisible(true);
@@ -415,6 +416,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 navigationView.getMenu().findItem(R.id.whatsapp).setVisible(true);
 //                navigationView.getMenu().findItem(R.id.profile).setVisible(true);
                 navigationView.getMenu().findItem(R.id.synchronization).setVisible(true);
+                navigationView.getMenu().findItem(R.id.item_rewards).setVisible(false);
             } else if (access.equals("ADMIN")) {
                 navigationView.getMenu().findItem(R.id.srf_covid).setVisible(appPreferenceManager.getCovidAccessResponseModel().isSrf());
                 navigationView.getMenu().findItem(R.id.covid_reg).setVisible(appPreferenceManager.getCovidAccessResponseModel().isCovidRegistration());
@@ -430,6 +432,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 navigationView.getMenu().findItem(R.id.item_certificate).setVisible(true);
 //                navigationView.getMenu().findItem(R.id.profile).setVisible(true);
                 navigationView.getMenu().findItem(R.id.synchronization).setVisible(true);
+                navigationView.getMenu().findItem(R.id.item_rewards).setVisible(false);
             }
         }
 

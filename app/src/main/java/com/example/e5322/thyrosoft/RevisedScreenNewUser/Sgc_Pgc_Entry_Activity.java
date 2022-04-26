@@ -46,12 +46,16 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.API.ConnectionDetector;
+import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.MessageConstants;
+import com.example.e5322.thyrosoft.Controller.CategoryListController;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
 import com.example.e5322.thyrosoft.Controller.EmailValidationController;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Controller.LogUserActivityTagging;
 import com.example.e5322.thyrosoft.GlobalClass;
+import com.example.e5322.thyrosoft.Models.CategoryResModel;
 import com.example.e5322.thyrosoft.Models.RequestModels.ClientRegisterRequestModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.ClientRegisterResponseModel;
 import com.example.e5322.thyrosoft.R;
@@ -74,6 +78,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -99,7 +104,7 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
         }
     };
     ImageView correct_img, cross_img;
-    Spinner sgc_pgc_spinner, brand_spinner, qualification_spinner;
+    Spinner sgc_pgc_spinner, brand_spinner, qualification_spinner, spn_sgc_category;
     LinearLayout dr_name_layout, brand_name, visiting_card_layout;
     EditText pincode_edt, mobile_edt, email_edt, client_name_edt, dr_name, incharge_name, phone_number, website_edt, dr_name_edt, addressEdt;
     Button next_btn_sgc_pgc, visiting_card_btn;
@@ -109,6 +114,7 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
     ImageView latlong;
     ProgressDialog barProgressDialog;
     CharSequence address;
+
     private InputFilter filter1 = new InputFilter() {
 
         @Override
@@ -121,7 +127,7 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
     };
 
     private String get_Registration_type;
-    private String getpincode, getmobile_number, email_address, getclient_name, get_brand_name, get_incharge_name, get_Address, get_phone_number, get_website, get_visiting_card, get_dr_name, get_qualification;
+    private String getpincode, getmobile_number, email_address, getclient_name, get_brand_name, get_incharge_name, get_Address, get_phone_number, get_website, get_visiting_card, get_dr_name, get_qualification, selSGCCategory = "";
     private String imageName;
     private String image;
     private RequestQueue PostQuePGC;
@@ -135,6 +141,8 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
     private String getLatitude;
     private String getLongitude;
     private double lat, log;
+    ArrayList<String> SGCCategoryList;
+    ConnectionDetector cd;
 
     public static String ConvertBitmapToString(Bitmap bitmap) {
         String encodedImage = "";
@@ -157,7 +165,25 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
 
         init();
         initlistner();
+        initSpinners();
         GlobalClass.setStatusBarcolor(activity);
+        callSGCCategoryAPI();
+
+    }
+
+    private void initSpinners() {
+        SGCCategoryList = new ArrayList<>();
+        SGCCategoryList.add("SELECT CATEGORY*");
+        setSGCCategoryListAdapter(SGCCategoryList);
+    }
+
+    private void callSGCCategoryAPI() {
+        if (cd.isConnectingToInternet()) {
+            CategoryListController categoryListController = new CategoryListController(Sgc_Pgc_Entry_Activity.this, activity);
+            categoryListController.fetchSGCcategoryList();
+        } else {
+            Toast.makeText(this, MessageConstants.CHECK_INTERNET_CONN, Toast.LENGTH_SHORT).show();
+        }
 
     }
 
@@ -191,15 +217,13 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
 
                     if (!GlobalClass.isNull(get_website) && !GlobalClass.isValidURL(get_website)) {
                         TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, "URL is invalid!", Toast.LENGTH_SHORT, TastyToast.ERROR);
-                    }
-                    /*else if (getLatitude.equalsIgnoreCase("")) {
+                    }/*else if (getLatitude.equalsIgnoreCase("")) {
                         lattitude_txt.requestFocus();
                         TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, "Enter latitude", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (getLongitude.equalsIgnoreCase("")) {
                         longitude_txt.requestFocus();
                         TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, "Enter correct longitude", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    }*/
-                    else if (getclient_name.equals("")) {
+                    }*/ else if (getclient_name.equals("")) {
                         client_name_edt.requestFocus();
                         TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, "Please enter correct client name", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (getclient_name.length() < 2) {
@@ -232,6 +256,8 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                     } else if (get_incharge_name.length() < 2) {
                         incharge_name.requestFocus();
                         TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, "Please enter correct incharge name", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    } else if (spn_sgc_category.getSelectedItemPosition() == 0) {
+                        TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, "Kindly select category", Toast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (!GlobalClass.isNull(get_phone_number) && GlobalClass.LongestStringSequence(get_phone_number) > 8) {
                         phone_number.requestFocus();
                         TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, MessageConstants.VALID_LANDLINE_NUMBER, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
@@ -355,7 +381,6 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                 }
             }
         });
-
 
         latlong.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -491,6 +516,22 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
             }
         });
 
+        spn_sgc_category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+                if (position != 0) {
+                    selSGCCategory = spn_sgc_category.getSelectedItem().toString();
+                } else {
+                    selSGCCategory = "";
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
 
         sgc_pgc_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -508,6 +549,7 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                     website_edt.setVisibility(View.VISIBLE);
                     visiting_card_layout.setVisibility(View.VISIBLE);
                     dr_name_layout.setVisibility(View.GONE);
+                    spn_sgc_category.setVisibility(View.VISIBLE);
                     pincode_edt.setText("");
                     mobile_edt.setText("");
                     email_edt.setText("");
@@ -533,6 +575,7 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                     visiting_card_layout.setVisibility(View.VISIBLE);
                     client_name_edt.setVisibility(View.GONE);
                     incharge_name.setVisibility(View.GONE);
+                    spn_sgc_category.setVisibility(View.GONE);
                     pincode_edt.setText("");
                     mobile_edt.setText("");
                     email_edt.setText("");
@@ -769,6 +812,7 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
 
     private void init() {
         activity = Sgc_Pgc_Entry_Activity.this;
+        cd = new ConnectionDetector(activity);
         correct_img = (ImageView) findViewById(R.id.correct_img);
         cross_img = (ImageView) findViewById(R.id.cross_img);
         next_btn_sgc_pgc = (Button) findViewById(R.id.next_btn_sgc_pgc);
@@ -793,6 +837,7 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
         back = (ImageView) findViewById(R.id.back);
         home = (ImageView) findViewById(R.id.home);
         latlong = findViewById(R.id.latlong);
+        spn_sgc_category = findViewById(R.id.spn_sgc_category);
 
         correct_img.setVisibility(View.GONE);
         cross_img.setVisibility(View.GONE);
@@ -816,7 +861,7 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
         int maxLength = 30;
         InputFilter[] FilterArray = new InputFilter[3];
         FilterArray[0] = new InputFilter.LengthFilter(maxLength);
-        FilterArray[1] =filter1;
+        FilterArray[1] = filter1;
         FilterArray[2] = EMOJI_FILTER;
         client_name_edt.setFilters(FilterArray);
 
@@ -833,7 +878,7 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
         website_edt.setFilters(new InputFilter[]{EMOJI_FILTER});
     }
 
-    private void uploadClientEntry(final String type, String brandName, String name, String qualification, String inchargeName) {
+    private void uploadClientEntry(final String type, String brandName, String name, String qualification, String inchargeName, String SGCCategory) {
         barProgressDialog.show();
 
         PostQuePGC = GlobalClass.setVolleyReq(Sgc_Pgc_Entry_Activity.this);
@@ -862,7 +907,9 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
             requestModel.setLatitute(String.valueOf(lat));
             requestModel.setLongitude(String.valueOf(log));
             requestModel.setOpType("entry");
+            requestModel.setCategory(SGCCategory);
             requestModel.setVisiting_Card(image);
+
 
             String json = new Gson().toJson(requestModel);
             jsonObject = new JSONObject(json);
@@ -1043,9 +1090,9 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
 
     public void getemailresponse(String type) {
         if (type.equalsIgnoreCase("SGC")) {
-            uploadClientEntry("SGCEntry", get_brand_name, getclient_name, "", get_incharge_name);
+            uploadClientEntry("SGCEntry", get_brand_name, getclient_name, "", get_incharge_name, selSGCCategory);
         } else {
-            uploadClientEntry("PGCEntry", "", "DR " + get_dr_name, get_qualification, "");
+            uploadClientEntry("PGCEntry", "", "DR " + get_dr_name, get_qualification, "", "");
         }
     }
 
@@ -1081,4 +1128,22 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
     }
 
 
+    public void getSGCCategoryListResponse(CategoryResModel categoryResModel) {
+        if (GlobalClass.checkEqualIgnoreCase(categoryResModel.getRespID(), Constants.RES0000)) {
+            if (GlobalClass.isArraylistNotNull(categoryResModel.getCategoryList())) {
+                for (int i = 0; i < categoryResModel.getCategoryList().size(); i++) {
+                    SGCCategoryList.add((categoryResModel.getCategoryList().get(i).getCategory()));
+                }
+                setSGCCategoryListAdapter(SGCCategoryList);
+            }
+        } else {
+            TastyToast.makeText(activity, categoryResModel.getResp(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+        }
+    }
+
+    private void setSGCCategoryListAdapter(ArrayList<String> categoryList) {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.whitetext_spin, categoryList);
+        adapter.setDropDownViewResource(R.layout.pop_up_spin_sgc);
+        spn_sgc_category.setAdapter(adapter);
+    }
 }

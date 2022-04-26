@@ -7,6 +7,7 @@ import com.example.e5322.thyrosoft.HHHtest.Model.PatientResponseModel;
 import com.example.e5322.thyrosoft.Models.BarcodeResponseModel;
 import com.example.e5322.thyrosoft.Models.CampIdRequestModel;
 import com.example.e5322.thyrosoft.Models.CampIdResponseModel;
+import com.example.e5322.thyrosoft.Models.CategoryResModel;
 import com.example.e5322.thyrosoft.Models.CenterList_Model;
 import com.example.e5322.thyrosoft.Models.Cmpdt_Model;
 import com.example.e5322.thyrosoft.Models.ConatctsResponseModel;
@@ -242,5 +243,8 @@ public interface APIInteface {
 
     @POST("PostTermsDeatils")
     Call<GetTermsResponseModel> PostTermsDetails(@Body PostTermsRequestModel requestModel);
+
+    @GET("ClientEntry/GetCategoryList")
+    Call<CategoryResModel> getCategoryList();
 
 }
