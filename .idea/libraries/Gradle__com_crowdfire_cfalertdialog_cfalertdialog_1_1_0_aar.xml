@@ -1,12 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.crowdfire.cfalertdialog:cfalertdialog:1.1.0@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/864f87e61737da165c6210257a24ed2c/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/864f87e61737da165c6210257a24ed2c/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/864f87e61737da165c6210257a24ed2c/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/510c67ddef822dbdab3abd4f73f773ec/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/510c67ddef822dbdab3abd4f73f773ec/res" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/510c67ddef822dbdab3abd4f73f773ec/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/510c67ddef822dbdab3abd4f73f773ec/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/510c67ddef822dbdab3abd4f73f773ec/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

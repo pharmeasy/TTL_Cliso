@@ -1,15 +1,11 @@
 <component name="libraryTable">
   <library name="Gradle: com.rengwuxian.materialedittext:library:2.1.4@aar">
     <ANNOTATIONS>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0bf08bbc67b2d0cfe90e2fd930cdbf7e/annotations.zip!/" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ab0a38232a66022ad68074912909d163/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0bf08bbc67b2d0cfe90e2fd930cdbf7e/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0bf08bbc67b2d0cfe90e2fd930cdbf7e/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0bf08bbc67b2d0cfe90e2fd930cdbf7e/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ab0a38232a66022ad68074912909d163/res" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ab0a38232a66022ad68074912909d163/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ab0a38232a66022ad68074912909d163/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ab0a38232a66022ad68074912909d163/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />

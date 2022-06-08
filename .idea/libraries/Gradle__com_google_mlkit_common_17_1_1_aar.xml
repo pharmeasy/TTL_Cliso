@@ -1,12 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.google.mlkit:common:17.1.1@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ed292ae68a79a6978bfe2a9bb787ff43/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ed292ae68a79a6978bfe2a9bb787ff43/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ed292ae68a79a6978bfe2a9bb787ff43/AndroidManifest.xml" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ac519e51e83e1b0c9d4b787764fb28f9/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ac519e51e83e1b0c9d4b787764fb28f9/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ac519e51e83e1b0c9d4b787764fb28f9/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ac519e51e83e1b0c9d4b787764fb28f9/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

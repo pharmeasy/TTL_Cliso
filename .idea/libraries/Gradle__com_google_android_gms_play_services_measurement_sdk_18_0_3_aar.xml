@@ -1,12 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.google.android.gms:play-services-measurement-sdk:18.0.3@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6f5264419f72532821167300edacb894/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6f5264419f72532821167300edacb894/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6f5264419f72532821167300edacb894/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/672e3ef7bdd8889c60bd11d611dce854/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/672e3ef7bdd8889c60bd11d611dce854/res" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/672e3ef7bdd8889c60bd11d611dce854/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/672e3ef7bdd8889c60bd11d611dce854/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/672e3ef7bdd8889c60bd11d611dce854/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

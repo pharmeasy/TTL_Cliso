@@ -1,12 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.payu.magicretry:magicretry:1.0.6@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a34b5ec19991ecf125132dbdcc22d0ec/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a34b5ec19991ecf125132dbdcc22d0ec/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a34b5ec19991ecf125132dbdcc22d0ec/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0176c8c3524612079811e6c2b43b2807/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0176c8c3524612079811e6c2b43b2807/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0176c8c3524612079811e6c2b43b2807/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0176c8c3524612079811e6c2b43b2807/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
