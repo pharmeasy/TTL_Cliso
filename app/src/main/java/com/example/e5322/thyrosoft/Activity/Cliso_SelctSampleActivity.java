@@ -169,6 +169,7 @@ public class Cliso_SelctSampleActivity extends AppCompatActivity {
                         for (int j = 0; j < BMC_FinalBarcodeDetailsList.size(); j++) {
                             if (BMC_TTLOthersBarcodeDetailsList.get(i).getSpecimen_type().equalsIgnoreCase(BMC_FinalBarcodeDetailsList.get(j).getSpecimen_type())) {
                                 BMC_FinalBarcodeDetailsList.get(j).setProducts(BMC_FinalBarcodeDetailsList.get(j).getProducts() + "," + BMC_TTLOthersBarcodeDetailsList.get(i).getProducts());
+                                BMC_FinalBarcodeDetailsList.get(j).setBarcode("");
                                 isSameSampleType = true;
                                 break;
                             }
@@ -178,7 +179,6 @@ public class Cliso_SelctSampleActivity extends AppCompatActivity {
                             scannedBarcodeDetails.setLocation(BMC_TTLOthersBarcodeDetailsList.get(i).getLocation());
                             scannedBarcodeDetails.setProducts(BMC_TTLOthersBarcodeDetailsList.get(i).getProducts());
                             scannedBarcodeDetails.setSpecimen_type(BMC_TTLOthersBarcodeDetailsList.get(i).getSpecimen_type());
-                            scannedBarcodeDetails.setProducts(BMC_TTLOthersBarcodeDetailsList.get(i).getProducts());
                             BMC_FinalBarcodeDetailsList.add(scannedBarcodeDetails);
                         }
                     }

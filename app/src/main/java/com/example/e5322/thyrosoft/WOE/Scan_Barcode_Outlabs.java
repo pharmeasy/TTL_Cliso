@@ -29,6 +29,7 @@ import android.text.Html;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -64,6 +65,7 @@ import com.example.e5322.thyrosoft.Activity.WOEPaymentActivity;
 import com.example.e5322.thyrosoft.Adapter.AdapterBarcodeOutlabs;
 import com.example.e5322.thyrosoft.Adapter.AsteriskPasswordTransformationMethod;
 import com.example.e5322.thyrosoft.Adapter.BrandAdapter;
+import com.example.e5322.thyrosoft.Adapter.SampleTypeBarcodeAdapter;
 import com.example.e5322.thyrosoft.Adapter.TRFDisplayAdapter;
 import com.example.e5322.thyrosoft.Adapter.ViewPagerAdapter;
 import com.example.e5322.thyrosoft.AsyncTaskPost_uploadfile;
@@ -92,6 +94,7 @@ import com.example.e5322.thyrosoft.SqliteDb.DatabaseHelper;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.example.e5322.thyrosoft.Utility;
 import com.github.dhaval2404.imagepicker.ImagePicker;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
@@ -166,6 +169,22 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
     Uri imageUri;
     String userChoosenTask;
     File trf_img = null;
+    MainModel mainModel;
+    File vialimg_file;
+    Button btn_choosefile;
+    LinearLayout lin_preview;
+    TextView txt_fileupload;
+    Bitmap vialbitmap;
+    List<String> imagelist = new ArrayList<>();
+    LinearLayout ll_letterhead, ll_location_note;
+    ConnectionDetector cd;
+    RecyclerView recy_brand;
+    EditText edt_confirm_amt;
+    LinearLayout ll_prescription, lin_preview_pres;
+    Button btn_choosefile_presc;
+    TextView txt_fileupload_pres;
+    List<String> imagelist_per = new ArrayList<>();
+    TextView tv_location, tv_lab;
     private int PERMISSION_REQUEST_CODE = 200;
     private int PICK_PHOTO_FROM_CAMERA = 201;
     private int PICK_PHOTO_FROM_GALLERY = 202;
@@ -187,7 +206,6 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
     private String setbarcode;
     private int collectedAmt;
     private int totalAmount;
-    MainModel mainModel;
     private String patientName, patientYearType, status;
     private String patientYear, patientGender;
     private String sampleCollectionDate, sampleCollectionTime;
@@ -218,32 +236,17 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
     private DatabaseHelper myDb;
     private String barcode_id;
     private Global globalClass;
-    File vialimg_file;
-    Button btn_choosefile;
-    LinearLayout lin_preview;
     private boolean isvial = false;
-    TextView txt_fileupload;
-    Bitmap vialbitmap;
-    List<String> imagelist = new ArrayList<>();
-
-    LinearLayout ll_letterhead, ll_location_note;
-    ConnectionDetector cd;
-    RecyclerView recy_brand;
     private String getBrand_name;
     private String EMAIL_ID;
-    EditText edt_confirm_amt;
     private int PaymentType;
-
-    LinearLayout ll_prescription, lin_preview_pres;
-    Button btn_choosefile_presc;
-    TextView txt_fileupload_pres;
     private boolean isprescition = false, ispresc = false;
-    List<String> imagelist_per = new ArrayList<>();
     private File presc_file;
-
     private String ADDITIONAL1 = "";
-    TextView tv_location, tv_lab;
-
+    private boolean barcodeExistFlag = false;
+    private boolean checkBarcodeFlag = false;
+    private BottomSheetDialog bottomSheetDialog;
+    private SampleTypeBarcodeAdapter sampleTypeBarcodeAdapter;
 
     public static String Req_Date_Req(String time, String inputPattern, String outputPattern) {
         SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
@@ -1049,6 +1052,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
             Log.e(TAG, "onActivityResult: " + result);
             if (result.getContents() != null) {
                 String getBarcodeDetails = result.getContents();
+
                 if (getBarcodeDetails.length() == 8) {
                     passBarcodeData(getBarcodeDetails);
                 } else {
@@ -1542,12 +1546,59 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         } else {
             WOE();
         }
+    }
 
+    private void openDialogBox() {
+
+        bottomSheetDialog = new BottomSheetDialog(this, R.style.BottomSheetTheme);
+        View bottomSheet = LayoutInflater.from(this).inflate(R.layout.lay_sample_dialog, this.findViewById(R.id.ll_bottom_sheet));
+        bottomSheetDialog.setContentView(bottomSheet);
+        bottomSheetDialog.getWindow().setLayout(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        bottomSheetDialog.setCancelable(false);
+
+        Button btn_ok = bottomSheet.findViewById(R.id.btn_ok);
+        RecyclerView recy_sample_type = bottomSheet.findViewById(R.id.recy_sample_type);
+        ImageView imgClose = bottomSheet.findViewById(R.id.imgClose);
+
+        sampleTypeBarcodeAdapter = new SampleTypeBarcodeAdapter(Scan_Barcode_Outlabs.this, GlobalClass.finalspecimenttypewiselist);
+        recy_sample_type.setAdapter(sampleTypeBarcodeAdapter);
+        imgClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetDialog.dismiss();
+            }
+        });
+        btn_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetDialog.dismiss();
+                callWOEAPI();
+            }
+        });
+        bottomSheetDialog.show();
     }
 
     private void WOE() {
+        if (checkBarcode()) {
+            callWOEAPI();
+        } else {
+            openDialogBox();
+        }
 
+    }
 
+    private boolean checkBarcode() {
+        for (int i = 0; i < GlobalClass.finalspecimenttypewiselist.size(); i++) {
+            if (!GlobalClass.isNumeric(GlobalClass.finalspecimenttypewiselist.get(i).getBarcode())) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    private void callWOEAPI() {
         patientName = preferences.getString("name", "");
         patientYear = preferences.getString("age", "");
         patientYearType = preferences.getString("ageType", "");
@@ -1906,5 +1957,16 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         }
 
 
+    }
+
+    public void imgActionClicked(int position) {
+        if (bottomSheetDialog != null && bottomSheetDialog.isShowing()) {
+            GlobalClass.finalspecimenttypewiselist.get(position).setBarcode(null);
+            reenter.setText("");
+            enter_barcode.setText("");
+            outlab_barcode.setText("BARCODE");
+            bottomSheetDialog.dismiss();
+
+        }
     }
 }

@@ -1886,4 +1886,7 @@ public class GlobalClass {
         int intvalue = Integer.parseInt(value);
         return numberFormat.format(intvalue);
     }
+    public static boolean isNumeric(String s) {
+        return s != null && s.matches("^[0-9]*$");
+    }
 }

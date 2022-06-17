@@ -25,6 +25,7 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.text.Html;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -53,6 +54,7 @@ import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Adapter.BrandAdapter;
 import com.example.e5322.thyrosoft.Adapter.CLISO_ScanBarcodeAdapter;
+import com.example.e5322.thyrosoft.Adapter.SampleTypeBarcodeAdapter;
 import com.example.e5322.thyrosoft.Adapter.TRFDisplayAdapter;
 import com.example.e5322.thyrosoft.Adapter.ViewPagerAdapter;
 import com.example.e5322.thyrosoft.AsyncTaskPost_uploadfile;
@@ -82,6 +84,7 @@ import com.example.e5322.thyrosoft.ToastFile;
 import com.example.e5322.thyrosoft.Utility;
 import com.example.e5322.thyrosoft.WOE.SummaryActivity;
 import com.github.dhaval2404.imagepicker.ImagePicker;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -149,6 +152,22 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
     Uri imageUri;
     String userChoosenTask;
     File trf_img = null;
+    int b2b_rate = 0, b2c_rate = 0;
+    Button btn_choosefile;
+    LinearLayout lin_preview;
+    TextView txt_fileupload;
+    Bitmap vialbitmap;
+    List<String> imagelist = new ArrayList<>();
+    ConnectionDetector cd;
+    LinearLayout ll_letterhead, ll_location_note;
+    EditText edt_confirm_amt;
+    MainModel mainModel;
+    LinearLayout ll_prescription, lin_preview_pres;
+    Button btn_choosefile_presc;
+    TextView txt_fileupload_pres;
+    List<String> imagelist_per = new ArrayList<>();
+    TextView tv_location, tv_lab;
+    RecyclerView recy_brand;
     private int PICK_PHOTO_FROM_GALLERY = 202;
     private boolean trfCheckFlag = false;
     private MyPojo myPojo;
@@ -188,33 +207,17 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
     private DatabaseHelper myDb;
     private String getRemark;
     private boolean barcodeExistsFlag = false;
-    int b2b_rate = 0, b2c_rate = 0;
     private File vialimg_file;
-    Button btn_choosefile;
-    LinearLayout lin_preview;
     private boolean isvial = false;
-    TextView txt_fileupload;
-    Bitmap vialbitmap;
-    List<String> imagelist = new ArrayList<>();
-    ConnectionDetector cd;
-
-    LinearLayout ll_letterhead, ll_location_note;
-    EditText edt_confirm_amt;
-    MainModel mainModel;
     private String EMAIL_ID;
     private int PaymentType;
-
-    LinearLayout ll_prescription, lin_preview_pres;
-    Button btn_choosefile_presc;
-    TextView txt_fileupload_pres;
     private boolean isprescition = false, ispresc = false;
-    List<String> imagelist_per = new ArrayList<>();
     private File presc_file;
-
     private String ADDITIONAL1 = "";
-    TextView tv_location, tv_lab;
-    RecyclerView recy_brand;
     private String getBrand_name = "";
+    private boolean isBarcodeNumeric = false;
+    private BottomSheetDialog bottomSheetDialog;
+    private SampleTypeBarcodeAdapter sampleTypeBarcodeAdapter;
 
 
     @SuppressLint("NewApi")
@@ -1053,8 +1056,10 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
     private void doFinalWoe() {
         if (FinalBarcodeDetailsList != null) {
             for (int i = 0; i < FinalBarcodeDetailsList.size(); i++) {
-                if (FinalBarcodeDetailsList.get(i).getBarcode() == null) {
+                if (GlobalClass.isNull(FinalBarcodeDetailsList.get(i).getBarcode())) {
                     barcodeExistsFlag = true;
+                } else if (GlobalClass.isNumeric(FinalBarcodeDetailsList.get(i).getBarcode())) {
+                    isBarcodeNumeric = true;
                 }
             }
 
@@ -1062,68 +1067,106 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                 barcodeExistsFlag = false;
                 GlobalClass.showShortToast(mActivity, ToastFile.scan_barcode_all);
             } else {
-                if (typeName.equalsIgnoreCase("DPS") || typeName.equalsIgnoreCase("HOME")) {
-                    if (PaymentType == 1) {
-                        Intent intent = new Intent(Scan_Barcode_Outlabs_Activity.this, WOEPaymentActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.putExtra("name", preferences.getString("name", ""));
-                        intent.putExtra("mobile", preferences.getString("kycinfo", ""));
-                        intent.putExtra("amount", b2b_rate);
-                        intent.putExtra("email", EMAIL_ID);
-                        startActivity(intent);
-                    } else if (PaymentType == 2) {
-                        final String[] paymentItems = new String[]{"Cash", "Digital"};
-                        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(mActivity);
-                        builder.setTitle("Choose payment mode")
-                                .setItems(paymentItems, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        if (paymentItems[which].equals("Cash")) {
-
-                                            androidx.appcompat.app.AlertDialog.Builder builder1 = new androidx.appcompat.app.AlertDialog.Builder(mActivity);
-                                            builder1.setMessage("Confirm amount received ₹ " + b2b_rate + "")
-                                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                                        @Override
-                                                        public void onClick(DialogInterface dialog, int which) {
-                                                            WOE();
-                                                        }
-                                                    })
-                                                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                                        @Override
-                                                        public void onClick(DialogInterface dialog, int which) {
-                                                            dialog.dismiss();
-                                                        }
-                                                    })
-                                                    .show();
-                                        } else {
-                                            Intent intent = new Intent(Scan_Barcode_Outlabs_Activity.this, WOEPaymentActivity.class);
-                                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                            intent.putExtra("name", preferences.getString("name", ""));
-                                            intent.putExtra("mobile", preferences.getString("kycinfo", ""));
-                                            intent.putExtra("amount", b2b_rate);
-                                            intent.putExtra("email", EMAIL_ID);
-                                            startActivity(intent);
-
-                                        }
-                                        dialog.dismiss();
-                                    }
-                                })
-                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                    }
-                                }).show();
-                    } else {
-                        WOE();
-                    }
+                if (isBarcodeNumeric) {
+                    isBarcodeNumeric = false;
+                    openDialogBox();
                 } else {
-                    WOE();
+                    callWOEAPI();
                 }
             }
         } else {
             GlobalClass.showShortToast(mActivity, ToastFile.scan_barcode_all);
         }
+    }
+
+    private void callWOEAPI() {
+        if (typeName.equalsIgnoreCase("DPS") || typeName.equalsIgnoreCase("HOME")) {
+            if (PaymentType == 1) {
+                Intent intent = new Intent(Scan_Barcode_Outlabs_Activity.this, WOEPaymentActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra("name", preferences.getString("name", ""));
+                intent.putExtra("mobile", preferences.getString("kycinfo", ""));
+                intent.putExtra("amount", b2b_rate);
+                intent.putExtra("email", EMAIL_ID);
+                startActivity(intent);
+            } else if (PaymentType == 2) {
+                final String[] paymentItems = new String[]{"Cash", "Digital"};
+                androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(mActivity);
+                builder.setTitle("Choose payment mode")
+                        .setItems(paymentItems, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (paymentItems[which].equals("Cash")) {
+
+                                    androidx.appcompat.app.AlertDialog.Builder builder1 = new androidx.appcompat.app.AlertDialog.Builder(mActivity);
+                                    builder1.setMessage("Confirm amount received ₹ " + b2b_rate + "")
+                                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    WOE();
+                                                }
+                                            })
+                                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                }
+                                            })
+                                            .show();
+                                } else {
+                                    Intent intent = new Intent(Scan_Barcode_Outlabs_Activity.this, WOEPaymentActivity.class);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    intent.putExtra("name", preferences.getString("name", ""));
+                                    intent.putExtra("mobile", preferences.getString("kycinfo", ""));
+                                    intent.putExtra("amount", b2b_rate);
+                                    intent.putExtra("email", EMAIL_ID);
+                                    startActivity(intent);
+
+                                }
+                                dialog.dismiss();
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }).show();
+            } else {
+                WOE();
+            }
+        } else {
+            WOE();
+        }
+    }
+
+    private void openDialogBox() {
+        bottomSheetDialog = new BottomSheetDialog(this, R.style.BottomSheetTheme);
+        View bottomSheet = LayoutInflater.from(this).inflate(R.layout.lay_sample_dialog, this.findViewById(R.id.ll_bottom_sheet));
+        bottomSheetDialog.setContentView(bottomSheet);
+        bottomSheetDialog.getWindow().setLayout(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        bottomSheetDialog.setCancelable(false);
+
+        Button btn_ok = bottomSheet.findViewById(R.id.btn_ok);
+        RecyclerView recy_sample_type = bottomSheet.findViewById(R.id.recy_sample_type);
+        ImageView imgClose = bottomSheet.findViewById(R.id.imgClose);
+
+        sampleTypeBarcodeAdapter = new SampleTypeBarcodeAdapter(Scan_Barcode_Outlabs_Activity.this, FinalBarcodeDetailsList);
+        recy_sample_type.setAdapter(sampleTypeBarcodeAdapter);
+        imgClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetDialog.dismiss();
+            }
+        });
+        btn_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetDialog.dismiss();
+                callWOEAPI();
+            }
+        });
+        bottomSheetDialog.show();
     }
 
     private void WOE() {
@@ -1473,5 +1516,25 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
         }
 
 
+    }
+
+    public void imgActionClicked(int position) {
+        if (bottomSheetDialog != null && bottomSheetDialog.isShowing()) {
+            bottomSheetDialog.dismiss();
+            FinalBarcodeDetailsList.get(position).setBarcode(null);
+            CLISO_ScanBarcodeAdapter bmc_scanBarcodeAdapter = new CLISO_ScanBarcodeAdapter(Scan_Barcode_Outlabs_Activity.this, selectedOutlabTests, FinalBarcodeDetailsList, this);
+            bmc_scanBarcodeAdapter.setOnItemClickListener(new CLISO_ScanBarcodeAdapter.OnItemClickListener() {
+                @Override
+                public void onScanbarcodeClickListener(String Specimenttype, Activity activity) {
+                    scanIntegrator = new IntentIntegrator(activity);
+                    if (GlobalClass.specimenttype != null) {
+                        GlobalClass.specimenttype = "";
+                    }
+                    GlobalClass.specimenttype = Specimenttype;
+                    scanIntegrator.initiateScan();
+                }
+            });
+            recycler_barcode.setAdapter(bmc_scanBarcodeAdapter);
+        }
     }
 }
