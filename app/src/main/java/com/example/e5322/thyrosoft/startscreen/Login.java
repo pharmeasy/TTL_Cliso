@@ -29,6 +29,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.clevertap.android.sdk.CleverTapAPI;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
@@ -62,6 +63,7 @@ import com.sdsmdg.tastytoast.TastyToast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.Random;
 
 import retrofit2.Call;
@@ -759,6 +761,9 @@ public class Login extends Activity implements View.OnClickListener {
                             LoginResponseModel loginResponseModel = gson.fromJson(String.valueOf(response), LoginResponseModel.class);
 
                             if (loginResponseModel != null) {
+
+                                setCleverTapLoginDetails(loginResponseModel);
+
                                 if (!GlobalClass.isNull(loginResponseModel.getRES_ID()) && loginResponseModel.getRES_ID().equalsIgnoreCase(Constants.RES0000)) {
                                     editor = getSharedPreferences("Userdetails", 0).edit();
                                     editor.putString("Username", User);
@@ -830,6 +835,21 @@ public class Login extends Activity implements View.OnClickListener {
             if (barProgressDialog != null && barProgressDialog.isShowing()) {
                 barProgressDialog.dismiss();
             }
+        }
+    }
+//cleverTap Changes
+    private void setCleverTapLoginDetails(LoginResponseModel loginResponseModel) {
+        Constants.clevertapDefaultInstance = CleverTapAPI.getDefaultInstance(getApplicationContext());
+        HashMap<String, Object> profileUpdate = new HashMap<String, Object>();
+        profileUpdate.put("Name", loginResponseModel.getNAME());    // String
+        profileUpdate.put("Identity", loginResponseModel.getMOBILE());      // String or number
+        profileUpdate.put("Email",  loginResponseModel.getEMAIL()); // Email address of the user
+        profileUpdate.put("MSG-email", false);        // Disable email notifications
+        profileUpdate.put("MSG-push", true);          // Enable push notifications
+        profileUpdate.put("MSG-sms", false);          // Disable SMS notifications
+        profileUpdate.put("MSG-whatsapp", true);      // Enable WhatsApp notifications
+        if (Constants.clevertapDefaultInstance != null) {
+            Constants.clevertapDefaultInstance.onUserLogin(profileUpdate);
         }
     }
 

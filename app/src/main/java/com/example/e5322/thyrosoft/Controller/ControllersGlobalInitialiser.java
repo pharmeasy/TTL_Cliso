@@ -2,6 +2,7 @@ package com.example.e5322.thyrosoft.Controller;
 
 import androidx.multidex.MultiDexApplication;
 
+import com.clevertap.android.sdk.ActivityLifecycleCallback;
 import com.example.e5322.thyrosoft.Cliso_BMC.GetAvailableStockController;
 import com.example.e5322.thyrosoft.Cliso_BMC.UpdateStockController;
 
@@ -30,4 +31,11 @@ public class ControllersGlobalInitialiser extends MultiDexApplication {
     public static GetBroadcastsListController getBroadcastsListController;
     public static AckBroadcastMsgController ackBroadcastMsgController;
 
+
+    @Override
+    public void onCreate() {
+
+        ActivityLifecycleCallback.register(this);
+        super.onCreate();
+    }
 }

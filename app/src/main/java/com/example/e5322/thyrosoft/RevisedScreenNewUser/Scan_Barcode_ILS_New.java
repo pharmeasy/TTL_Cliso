@@ -1532,7 +1532,8 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
+       /* CleverTapHelper cleverTapHelper = new CleverTapHelper(this);
+        cleverTapHelper.woeSubmitEvent(user, typeName, testsCodesPassingToProduct, GlobalClass.cutString);*/
         if (Global.isoffline) {
             StoreOfflineWOE(json);
         } else {

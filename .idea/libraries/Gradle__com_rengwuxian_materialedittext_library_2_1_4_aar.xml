@@ -2,15 +2,11 @@
   <library name="Gradle: com.rengwuxian.materialedittext:library:2.1.4@aar">
     <ANNOTATIONS>
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ab0a38232a66022ad68074912909d163/annotations.zip!/" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/31c0b984da182a07442aa8d7e2e657f7/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ab0a38232a66022ad68074912909d163/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ab0a38232a66022ad68074912909d163/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ab0a38232a66022ad68074912909d163/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/31c0b984da182a07442aa8d7e2e657f7/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/31c0b984da182a07442aa8d7e2e657f7/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/31c0b984da182a07442aa8d7e2e657f7/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

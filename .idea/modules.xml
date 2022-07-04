@@ -4,17 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Cliso_Git.iml" filepath="$PROJECT_DIR$/.idea/modules/Cliso_Git.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Cliso_Git.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Cliso_Git.app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Cliso_Git.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Cliso_Git.app.androidTest.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Cliso_Git.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Cliso_Git.app.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Cliso_Git.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Cliso_Git.app.unitTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/libraryViewPagerIndicator/Cliso_Git.libraryViewPagerIndicator.iml" filepath="$PROJECT_DIR$/.idea/modules/libraryViewPagerIndicator/Cliso_Git.libraryViewPagerIndicator.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/libraryViewPagerIndicator/Cliso_Git.libraryViewPagerIndicator.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/libraryViewPagerIndicator/Cliso_Git.libraryViewPagerIndicator.androidTest.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/libraryViewPagerIndicator/Cliso_Git.libraryViewPagerIndicator.main.iml" filepath="$PROJECT_DIR$/.idea/modules/libraryViewPagerIndicator/Cliso_Git.libraryViewPagerIndicator.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/libraryViewPagerIndicator/Cliso_Git.libraryViewPagerIndicator.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/libraryViewPagerIndicator/Cliso_Git.libraryViewPagerIndicator.unitTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/sdkui/Cliso_Git.sdkui.iml" filepath="$PROJECT_DIR$/.idea/modules/sdkui/Cliso_Git.sdkui.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sdkui/Cliso_Git.sdkui.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/sdkui/Cliso_Git.sdkui.androidTest.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sdkui/Cliso_Git.sdkui.main.iml" filepath="$PROJECT_DIR$/.idea/modules/sdkui/Cliso_Git.sdkui.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sdkui/Cliso_Git.sdkui.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/sdkui/Cliso_Git.sdkui.unitTest.iml" />
     </modules>
   </component>
 </project>

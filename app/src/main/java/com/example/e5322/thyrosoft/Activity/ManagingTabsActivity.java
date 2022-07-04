@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -49,6 +50,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.clevertap.android.sdk.CleverTapAPI;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
@@ -237,6 +239,17 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
         );
         setContentView(R.layout.activity_main_ll);
+
+
+        Constants.clevertapDefaultInstance = CleverTapAPI.getDefaultInstance(getApplicationContext());
+        CleverTapAPI.createNotificationChannelGroup(getApplicationContext(),"ClisoNotification","Notifications");
+        CleverTapAPI.createNotificationChannel(getApplicationContext(),"Cliso","Cliso","YourChannelDescription", NotificationManager.IMPORTANCE_MAX,"ClisoNotification",true);
+      //CleverTapAPI.createNotificationChannel(getApplicationContext(),"ClisoAlert","ClisoAlert","YourChannelDescription",NotificationManager.IMPORTANCE_MAX,"ClisoNotification",true);
+        if (BuildConfig.DEBUG){
+            CleverTapAPI.setDebugLevel(CleverTapAPI.LogLevel.VERBOSE);
+        }else {
+            CleverTapAPI.setDebugLevel(CleverTapAPI.LogLevel.OFF);
+        }
         activity = this;
         appPreferenceManager = new AppPreferenceManager(activity);
         cd = new ConnectionDetector(activity);

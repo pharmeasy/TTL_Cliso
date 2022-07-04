@@ -3,10 +3,14 @@ package com.example.e5322.thyrosoft;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.clevertap.android.sdk.CleverTapAPI;
+import com.clevertap.android.sdk.pushnotification.CTPushNotificationListener;
+import com.clevertap.android.sdk.pushnotification.NotificationInfo;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.AppPreferenceManager;
@@ -16,16 +20,21 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Map;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = MyFirebaseMessagingService.class.getSimpleName();
     private NotificationUtils notificationUtils;
     private int Screen_category = 0;
+    CleverTapAPI cleverTapAPI;
 
     @Override
     public void onNewToken(String refreshedToken) {
         super.onNewToken(refreshedToken);
+
+        cleverTapAPI = CleverTapAPI.getDefaultInstance(getApplicationContext());
+        cleverTapAPI.pushFcmRegistrationId(refreshedToken,true);
         Log.e(TAG, "Token  0----->" + refreshedToken);
         Constants.PUSHNOT_FLAG=true;
 
@@ -63,13 +72,30 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             GlobalClass.printLog("Error", TAG, "Data Payload: ", remoteMessage.getData().toString());
-            try {
-                HashMap<String, String> notificationData = new HashMap<>();
-                notificationData.putAll(remoteMessage.getData());
-                handleDataMessage(notificationData);
-            } catch (Exception e) {
-                GlobalClass.printLog("Error", TAG, "Exception: ", e.getMessage());
+            Bundle extras = new Bundle();
+            for (Map.Entry entry : remoteMessage.getData().entrySet()) {
+                extras.putString(entry.getKey().toString(), entry.getValue().toString());
             }
+            NotificationInfo notificationInfo = CleverTapAPI.getNotificationInfo(extras);
+            if (notificationInfo.fromCleverTap) {
+                CleverTapAPI.createNotification(getApplicationContext(), extras);
+                CleverTapAPI cleverTapAPI = CleverTapAPI.getDefaultInstance(getApplicationContext());
+                cleverTapAPI.setCTPushNotificationListener(new CTPushNotificationListener() {
+                    @Override
+                    public void onNotificationClickedPayloadReceived(HashMap<String, Object> payload) {
+                        Constants.isFromCleverTap = true;
+                    }
+                });
+            }else {
+                try {
+                    HashMap<String, String> notificationData = new HashMap<>();
+                    notificationData.putAll(remoteMessage.getData());
+                    handleDataMessage(notificationData);
+                } catch (Exception e) {
+                    GlobalClass.printLog("Error", TAG, "Exception: ", e.getMessage());
+                }
+            }
+
         }
     }
 

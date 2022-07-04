@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.clevertap.android.sdk.CleverTapAPI;
 import com.example.e5322.thyrosoft.Models.ResponseModels.PatientDetailsAPiResponseModel;
 
 /**
@@ -30,6 +31,10 @@ public class Constants {
     public static int covid_redirection = 0;
     public static String videoName;
     public static PatientDetailsAPiResponseModel.PatientInfoBean selectedPatientData = null;
+
+    //clever Tap changes
+    public static CleverTapAPI clevertapDefaultInstance;
+    public static String CLISO_ANDROID_APP = "Cliso Android App";
 
     //shared preference Name
 
@@ -664,6 +669,7 @@ public class Constants {
     public static String BP_MSG = "BP_MSG";
     public static int PEflag = 1;
     public static int TCflag = 0;
+    public static boolean isFromCleverTap = false;
 
     public static String returnToken(Activity mContext) {
         String str = "";
