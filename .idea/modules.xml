@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Cliso_Git.iml" filepath="$PROJECT_DIR$/.idea/modules/Cliso_Git.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Cliso_Git.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Cliso_Git.app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/libraryViewPagerIndicator/Cliso_Git.libraryViewPagerIndicator.iml" filepath="$PROJECT_DIR$/.idea/modules/libraryViewPagerIndicator/Cliso_Git.libraryViewPagerIndicator.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sdkui/Cliso_Git.sdkui.iml" filepath="$PROJECT_DIR$/.idea/modules/sdkui/Cliso_Git.sdkui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ClisoGit.iml" filepath="$PROJECT_DIR$/.idea/modules/ClisoGit.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/ClisoGit.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/ClisoGit.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/libraryViewPagerIndicator/ClisoGit.libraryViewPagerIndicator.iml" filepath="$PROJECT_DIR$/.idea/modules/libraryViewPagerIndicator/ClisoGit.libraryViewPagerIndicator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sdkui/ClisoGit.sdkui.iml" filepath="$PROJECT_DIR$/.idea/modules/sdkui/ClisoGit.sdkui.iml" />
     </modules>
   </component>
 </project>

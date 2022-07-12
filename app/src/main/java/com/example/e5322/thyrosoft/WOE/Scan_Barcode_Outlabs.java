@@ -304,6 +304,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
 
         SharedPreferences prefs = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
         brandName = prefs.getString("WOEbrand", "");
+        getBrand_name = prefs.getString("WOEbrand", "");
         typeName = prefs.getString("woetype", "");
 
         recycler_barcode = (RecyclerView) findViewById(R.id.recycler_barcode);
@@ -989,7 +990,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
             brandAdapter.setOnItemClickListener(new BrandAdapter.OnClickListener() {
                 @Override
                 public void onchecked(String brand, String rate) {
-                    getBrand_name = brand;
+                   // getBrand_name = brand; TODO AS Per the verbal communication with Mari sir to remove letter head brand name for outlab 07/07/2022
                 }
             });
             recy_brand.setAdapter(brandAdapter);
