@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.GpsTracker;
 import com.example.e5322.thyrosoft.MainModelForAllTests.Outlabdetails_OutLab;
+import com.example.e5322.thyrosoft.Models.MenusModel;
 import com.example.e5322.thyrosoft.Models.RequestModels.LatLongDataModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ScannedBarcodeDetails;
@@ -415,4 +416,146 @@ public class Global {
         SharedPreferences preferences = activity.getSharedPreferences("Userdetails", Context.MODE_PRIVATE);
         return preferences.getString("ACCESS_TYPE", "");
     }
+
+    public static boolean isStaff(Activity activity) {
+        return GlobalClass.checkEqualIgnoreCase(getAccessType(activity), "STAFF");
+    }
+
+    public static ArrayList<MenusModel> getMenusList() {
+        ArrayList<MenusModel> arrayList = new ArrayList<>();
+
+        MenusModel model;
+        model = new MenusModel();
+        model.setMenuName("LEDGER");
+        model.setMenuIcon(R.drawable.ledger_d);
+        model.setMenuPosition(Constants.LEDGER_MENU_POS);//7
+        arrayList.add(model);
+
+        model = new MenusModel();
+        model.setMenuName("WIND UP");
+        model.setMenuIcon(R.drawable.wind_up_data);
+        model.setMenuPosition(Constants.WINDUP_MENU_POS);//8
+        arrayList.add(model);
+
+        model = new MenusModel();
+        model.setMenuName("RESULT");
+        model.setMenuIcon(R.drawable.result);
+        model.setMenuPosition(Constants.RESULT_MENU_POS);//5
+        arrayList.add(model);
+
+        model = new MenusModel();
+        model.setMenuName("RATE CALC");
+        model.setMenuIcon(R.drawable.calculator_d);
+        model.setMenuPosition(Constants.RATE_CAL_MENU_POS);//3
+        arrayList.add(model);
+
+        model = new MenusModel();
+        model.setMenuName("RECEIPT");
+        model.setMenuIcon(R.drawable.ic_rupees);
+        model.setMenuPosition(Constants.RECEIPT_MENU_POS);//4
+        arrayList.add(model);
+
+        model = new MenusModel();
+        model.setMenuName("NOVID WOE");
+        model.setMenuIcon(R.drawable.woe_d);
+        model.setMenuPosition(Constants.NOVID_WOE_MENU_POS);//2
+        arrayList.add(model);
+
+        model = new MenusModel();
+        model.setMenuName("COVID WOE");
+        model.setMenuIcon(R.drawable.woe_d);
+        model.setMenuPosition(Constants.COVID_WOE_MENU_POS);//0
+        arrayList.add(model);
+
+        model = new MenusModel();
+        model.setMenuName("RECHARGE");
+        model.setMenuIcon(R.drawable.ic_rupees);
+        model.setMenuPosition(Constants.RECHARGE_MENU_POS);//101
+        arrayList.add(model);
+
+
+        model = new MenusModel();
+        model.setMenuName("VIEW ALL");
+        model.setMenuIcon(R.drawable.ic_viewall);
+        model.setMenuPosition(Constants.NOVID_WOE_MENU_POS);//2
+        arrayList.add(model);
+
+        return arrayList;
+    }
+
+    public static String bannersToDisplay(Activity activity) {
+        String loginType = String.valueOf(getLoginType(activity));
+        String bannerHtml = "<!DOCTYPE html>\n" +
+                "<html lang=\"en\">\n" +
+                "<head>\n" +
+                "    <meta charset=\"utf-8\">\n" +
+                "    <title>Cliso App</title>\n" +
+                "    <style>\n" +
+                "    </style>\n" +
+                "</head>\n" +
+                "<body style=\"margin:0;\" >\n" +
+                "    <div style=\"width: 100%;\">\n" +
+                "    <iframe frameBorder = \"0\"\n" +
+                "      id=\"bannerIFrame\" \n" +
+                "      class=\"bannerIframeClass\"\n" +
+                "      scrolling=\"no\"\n" +
+                "      style=\"display: none; width: 100%;\" \n" +
+                "      src=\"https://newcliso.thyrocare.com/banner\"\n" +
+                "      allowfullscreen\n" +
+                "      >\n" +
+                "    </iframe>\n" +
+                "    </div>\n" +
+                "    <script>\n" +
+                "      // addEventListener with support for IE8\n" +
+                "      function bindEvent(element, eventName, eventHandler) {\n" +
+                "          if (element.addEventListener){\n" +
+                "              element.addEventListener(eventName, eventHandler, false);\n" +
+                "          } else if (element.attachEvent) {\n" +
+                "              element.attachEvent('on' + eventName, eventHandler);\n" +
+                "          }\n" +
+                "        }\n" +
+                "      \n" +
+                "      // Selecting the iframe element\n" +
+                "      var iframeEl = document.getElementById(\"bannerIFrame\");\n" +
+                "      window.onload = function () {\n" +
+                "        iframeEl.contentWindow.postMessage({type: 'bannerConditions', payload: {\n" +
+                "        \"tenant_id\": \""+loginType+"\",\n" +
+                "        \"citi_name\": \"Bengaluru\",\n" +
+                "        \"category\": \"GQC\",\n" +
+                "        \"banner_location_id\": \"CLISOAPP\",\n" +
+                "        \"device\": \"MOBILE\"\n" +
+                "    }, ruleName: \"dx_franchise_cliso_banners\"},\"*\");\n" +
+                "      }\n" +
+                "      \n" +
+                "      bindEvent(window, 'message', function (e) {\n" +
+                "        console.log(e);\n" +
+                "            if('type' in e?.data){\n" +
+                "              switch(e.data.type) {\n" +
+                "                case 'no_banners_found':\n" +
+                "                  console.log('removing iframe');\n" +
+                "                  iframeEl.parentNode.removeChild(iframeEl);\n" +
+                "                  break;\n" +
+                "                case 'banners_loaded':\n" +
+                "                  console.log('banners loaded', e.data);\n" +
+                "                  iframeEl.scrollWidth = 0;\n" +
+                "                  iframeEl.style.scrollWidth = 0;\n" +
+                "                  setTimeout(()=> {\n" +
+                "                    let width = iframeEl.clientWidth;\n" +
+                "                     iframeEl.style.height = `${(width * parseInt(e.data.aspect_ratio))/100 }px`;},\n" +
+                "                    // harcoded for now, correction needed in db\n" +
+                "                   // iframeEl.style.height = `${(width * 43.21)/100 }px`;}, \n" +
+                "                  100);\n" +
+                "                  iframeEl.style.display = 'block';\n" +
+                "                default:\n" +
+                "                  break;\n" +
+                "              }\n" +
+                "            }\n" +
+                "        });\n" +
+                "      </script>\n" +
+                "  </body>\n" +
+                "  </html>";
+        return bannerHtml;
+    }
+
+
 }

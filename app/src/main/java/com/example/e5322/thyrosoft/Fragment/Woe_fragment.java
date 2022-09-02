@@ -1,5 +1,7 @@
 package com.example.e5322.thyrosoft.Fragment;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
@@ -33,6 +35,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.Activity.HomeMenuActivity;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Activity.frags.RootFragment;
 import com.example.e5322.thyrosoft.Adapter.PatientDtailsWoe;
@@ -55,8 +58,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import static android.content.Context.MODE_PRIVATE;
-
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -70,7 +71,7 @@ public class Woe_fragment extends RootFragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private static ManagingTabsActivity mContext;
+    private static HomeMenuActivity mContext;
     ImageView add;
     View viewfab;
     View viewMain;
@@ -105,7 +106,7 @@ public class Woe_fragment extends RootFragment {
     public static com.android.volley.RequestQueue PostQueOtp;
     String putDate, getFormatDate, convertedDate;
     SharedPreferences prefs;
-FrameLayout fragment_mainLayout;
+    FrameLayout fragment_mainLayout;
     TextView enetered, enter;
     String user, passwrd, access, api_key;
     String blockCharacterSet = "~#^|$%&*!+:`";
@@ -178,7 +179,7 @@ FrameLayout fragment_mainLayout;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mContext = (ManagingTabsActivity) getActivity();
+        mContext = (HomeMenuActivity) getActivity();
 
         viewMain = (View) inflater.inflate(R.layout.woe_list_ll, container, false);
 

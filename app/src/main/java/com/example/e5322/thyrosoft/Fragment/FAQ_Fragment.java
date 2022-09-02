@@ -1,12 +1,12 @@
 package com.example.e5322.thyrosoft.Fragment;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import androidx.fragment.app.Fragment;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +16,8 @@ import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
+import androidx.fragment.app.Fragment;
+
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -24,8 +26,10 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.Activity.HomeMenuActivity;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Adapter.ExpandableListAdapter_FAQ;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.FAQ_Main_Model.FAQ_Model;
 import com.example.e5322.thyrosoft.FAQ_Main_Model.FAQandANSArray;
 import com.example.e5322.thyrosoft.GlobalClass;
@@ -41,8 +45,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.content.Context.MODE_PRIVATE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -61,7 +63,7 @@ public class FAQ_Fragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private static ManagingTabsActivity mContext;
+    private static HomeMenuActivity mContext;
     ImageView add;
     View viewfab;
     FAQ_Model faq_model;
@@ -113,7 +115,7 @@ public class FAQ_Fragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        mContext = (ManagingTabsActivity) getActivity();
+        mContext = (HomeMenuActivity) getActivity();
 
         viewfab = (View) inflater.inflate(R.layout.app_bar_main_data, container, false);
 
@@ -240,7 +242,7 @@ public class FAQ_Fragment extends Fragment {
         String getSpinner_value = category_spinner.getSelectedItem().toString();
         requestQueue_FAQ = GlobalClass.setVolleyReq(mContext);
 
-        Log.e(TAG,"FAQ API--->"+Api.static_pages_link + client_type + "/" + getSpinner_value + "/GetAllFAQ");
+        Log.e(TAG, "FAQ API--->" + Api.static_pages_link + client_type + "/" + getSpinner_value + "/GetAllFAQ");
         JsonObjectRequest jsonObjectRequestFAQ = new JsonObjectRequest(Request.Method.GET, Api.static_pages_link + client_type + "/" + getSpinner_value + "/GetAllFAQ", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

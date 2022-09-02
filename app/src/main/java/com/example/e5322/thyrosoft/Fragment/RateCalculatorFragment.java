@@ -53,7 +53,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
-import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import com.example.e5322.thyrosoft.Activity.HomeMenuActivity;
 import com.example.e5322.thyrosoft.Activity.SampleTypeColor;
 import com.example.e5322.thyrosoft.Adapter.RateCAlAdapter;
 import com.example.e5322.thyrosoft.Controller.Log;
@@ -95,7 +95,7 @@ public class RateCalculatorFragment extends Fragment {
             return null;
         }
     };
-    private static ManagingTabsActivity mContext;
+    private static HomeMenuActivity mContext;
     String displayslectedtestRateCal;
     ArrayList<Base_Model_Rate_Calculator> getAllTests;
     String testToPassToAPI;
@@ -182,7 +182,7 @@ public class RateCalculatorFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mActivity = getActivity();
-        mContext = (ManagingTabsActivity) getActivity();
+        mContext = (HomeMenuActivity) getActivity();
         viewrate_calfrag = inflater.inflate(R.layout.fragment_rate_calculator, container, false);
         getvalue = new ArrayList<>();
         selectedTestsListRateCal = new ArrayList<>();
@@ -1049,7 +1049,7 @@ public class RateCalculatorFragment extends Fragment {
         }
     }
 
-    private void getRatesofB2bandB2C(String getSpinnerSelectedItem, ManagingTabsActivity mContext) {
+    private void getRatesofB2bandB2C(String getSpinnerSelectedItem, HomeMenuActivity mContext) {
         if (!brand_name_rt_cal.getSelectedItem().toString().equalsIgnoreCase("TTL")) {
             if (selectedTestsListRateCal != null) {
                 selectedTestsListRateCal.clear();

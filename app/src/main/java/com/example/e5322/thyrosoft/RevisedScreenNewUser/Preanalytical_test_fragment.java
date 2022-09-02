@@ -4,15 +4,16 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.RequiresApi;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import androidx.annotation.RequiresApi;
+import androidx.fragment.app.Fragment;
+
+import com.example.e5322.thyrosoft.Activity.HomeMenuActivity;
 import com.example.e5322.thyrosoft.Fragment.Start_New_Woe;
 import com.example.e5322.thyrosoft.Fragment.Woe_fragment;
 import com.example.e5322.thyrosoft.GlobalClass;
@@ -31,7 +32,7 @@ public class Preanalytical_test_fragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private static ManagingTabsActivity mContext;
+    private static HomeMenuActivity mContext;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -77,7 +78,7 @@ public class Preanalytical_test_fragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mContext = (ManagingTabsActivity) getActivity();
+        mContext = (HomeMenuActivity) getActivity();
 
         viewMain = (View) inflater.inflate(R.layout.fragment_preanalytical_test_fragment, container, false);
 

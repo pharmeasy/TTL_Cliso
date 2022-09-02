@@ -6,6 +6,7 @@
     android:orientation="vertical"
     tools:context=".RevisedScreenNewUser.Payment_Activity">
 
+
     <LinearLayout
         android:id="@+id/linear_layout"
         style="@style/heading_text"
@@ -53,6 +54,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="5dp"
+        android:id="@+id/ll_activity_payment"
         android:orientation="vertical">
 
         <LinearLayout
@@ -310,6 +312,25 @@
                 android:visibility="gone" />
 
         </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_noauth"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/notauth"
+            android:textColor="@color/maroon"
+            android:textSize="@dimen/_14sdp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 

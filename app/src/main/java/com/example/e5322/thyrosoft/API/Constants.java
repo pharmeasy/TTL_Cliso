@@ -671,6 +671,20 @@ public class Constants {
     public static int TCflag = 0;
     public static boolean isFromCleverTap = false;
 
+    //Home Menu Positions
+    public static int LEDGER_MENU_POS = 7; //ledger module
+    public static int WINDUP_MENU_POS = 8; //wind up module
+    public static int RESULT_MENU_POS = 5; //Result module
+    public static int RATE_CAL_MENU_POS = 3; //rate cal module
+    public static int RECEIPT_MENU_POS = 4; //Receipt module
+    public static int NOVID_WOE_MENU_POS = 2; //novid woe module
+    public static int COVID_WOE_MENU_POS = 0; //covid woe module
+    public static int RECHARGE_MENU_POS = 101; //payment module
+    public static int CHN_MENU_POS = 9; //CHN module
+    public static int RAT_MENU_POS = 1; //RAT module
+    public static int SCAN_MENU_POS = 6; //SCAN module
+    public static int BILLING_MENU_POS = 10; //BILLING module
+
     public static String returnToken(Activity mContext) {
         String str = "";
         SharedPreferences sharedPref = mContext.getPreferences(Context.MODE_PRIVATE);

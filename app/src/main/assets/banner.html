@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Cliso App</title>
+    <style>
+    </style>
+</head>
+<body>
+<br/>
+<!-- <div id="iframeParent" style="position: relative; width: 100%; padding-top: 33.33%;"> -->
+<div style="width :500px;">
+    <iframe
+            id="bannerIFrame"
+            class="bannerIframeClass"
+            style="width: 100%; border:2px solid black; height: 70vw;"
+            src="https://newcliso.thyrocare.com/banner"
+            allowfullscreen
+    ></iframe>
+</div>
+<!-- </div>   -->
+<!-- position: absolute; width: 100%; border:2px solid black; height: 100%; top: 0; left: 0; //css for aspect ratio using parent div-->
+<script>
+      // addEventListener with support for IE8
+      function bindEvent(element, eventName, eventHandler) {
+          if (element.addEventListener){
+              element.addEventListener(eventName, eventHandler, false);
+          } else if (element.attachEvent) {
+              element.attachEvent('on' + eventName, eventHandler);
+          }
+        }
+      
+      // Selecting the iframe element
+      var iframeEl = document.getElementById("bannerIFrame");
+      // var noBannerButton = document.getElementById('no_banner_button')
+      // var changeBannersButton = document.getElementById('change_banners_button');
+      window.onload = function () {
+        iframeEl.contentWindow.postMessage({type: 'bannerConditions', payload: { tenant_id: "1",citi_name: "Bengaluru",banner_location_id:"CLISOAPP",device:"MOBILE",category:"GQC"}, ruleName: "dx_franchise_cliso_banners"},"*");
+      }
+
+    // bindEvent(noBannerButton, 'click', function (e) {
+    //     var ifrm = document.getElementById("bannerIFrame");
+    //     if(ifrm != null){ifrm.contentWindow.postMessage({type: 'bannerConditions', payload: { tenant_id: "3"}},"*");}
+    //   });
+    //   bindEvent(changeBannersButton, 'click', function (e) {
+    //     var ifrm = document.getElementById("bannerIFrame");
+    //     if(ifrm != null){ifrm.contentWindow.postMessage({type: 'bannerConditions', payload: { tenant_id: "0"}},"*");}
+    //   });
+      bindEvent(window, 'message', function (e) {
+        console.log(e);
+            if(e?.origin == 'https://newcliso.thyrocare.com' && 'type' in e?.data){
+              switch(e.data.type) {
+                case 'no_banners_found':
+                  console.log('removing iframe');
+                  iframeEl.parentNode.removeChild(iframeEl);
+                  break;
+                case 'banners_loaded':
+                  console.log('banners loaded', e.data);
+                  iframeEl.scrollWidth = 0;
+                  iframeEl.style.scrollWidth = 0;
+                  iframeEl.style.height = `${e.data.aspect_ratio}vw`;
+                  iframeEl.style.display = 'block';
+                default:
+                  break;
+              }
+            }
+        });
+
+</script>
+</body>
+</html>

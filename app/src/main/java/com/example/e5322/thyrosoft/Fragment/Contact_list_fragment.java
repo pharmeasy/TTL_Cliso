@@ -2,10 +2,6 @@ package com.example.e5322.thyrosoft.Fragment;
 
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +11,10 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -22,10 +22,11 @@ import com.android.volley.Response;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.Activity.HomeMenuActivity;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Adapter.Company_Adapter;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.Company_Contact_Model;
 import com.example.e5322.thyrosoft.R;
@@ -59,7 +60,7 @@ public class Contact_list_fragment extends RootFragment {
     LinearLayoutManager linearLayoutManager;
     Company_Adapter company_adapter;
     private OnFragmentInteractionListener mListener;
-    private static ManagingTabsActivity mContext;
+    private static HomeMenuActivity mContext;
     ImageView add;
     View viewfab;
     View viewMain;
@@ -101,7 +102,7 @@ public class Contact_list_fragment extends RootFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mContext = (ManagingTabsActivity) getActivity();
+        mContext = (HomeMenuActivity) getActivity();
         viewfab = (View) inflater.inflate(R.layout.app_bar_main_data, container, false);
         viewMain = (View) inflater.inflate(R.layout.fragment_contact_list_fragment, container, false);
         contact_list=(RecyclerView)viewMain.findViewById(R.id.contact_list);

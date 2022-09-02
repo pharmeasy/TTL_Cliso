@@ -22,7 +22,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
-import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import com.example.e5322.thyrosoft.Activity.HomeMenuActivity;
 import com.example.e5322.thyrosoft.Activity.SampleTypeColor;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Fragment.RateCalculatorFragment;
@@ -45,7 +45,7 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
     public static com.android.volley.RequestQueue POstQueSendEstimation;
     public String TAG = RateCalculatorFragment.class.getSimpleName().toString();
     View view;
-    ManagingTabsActivity mContext;
+    HomeMenuActivity mContext;
     ArrayList<Base_Model_Rate_Calculator> mgetSingleList;
     ArrayList<Base_Model_Rate_Calculator> filteredList;
     ShowChildTestNamesAdapter showChildTestNamesAdapter;
@@ -61,7 +61,7 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
     private InterfaceRateCAlculator mcallback;
     private LinearLayoutManager linearLayoutManager;
 
-    public RateCAlAdapter(ManagingTabsActivity mContext, ArrayList<Base_Model_Rate_Calculator> finalgetAllTests, ArrayList<Base_Model_Rate_Calculator> getTotalArray, ArrayList<Base_Model_Rate_Calculator> selectedTests, InterfaceRateCAlculator mcallback) {
+    public RateCAlAdapter(HomeMenuActivity mContext, ArrayList<Base_Model_Rate_Calculator> finalgetAllTests, ArrayList<Base_Model_Rate_Calculator> getTotalArray, ArrayList<Base_Model_Rate_Calculator> selectedTests, InterfaceRateCAlculator mcallback) {
         this.mContext = mContext;
         this.mgetSingleList = finalgetAllTests;
         this.AllProductArrayList = getTotalArray;

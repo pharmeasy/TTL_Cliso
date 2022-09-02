@@ -1,5 +1,8 @@
 package com.example.e5322.thyrosoft.Fragment;
 
+import static android.content.Context.MODE_PRIVATE;
+import static com.example.e5322.thyrosoft.API.Constants.small_invalidApikey;
+
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -26,6 +29,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -40,6 +44,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Global;
+import com.example.e5322.thyrosoft.Activity.HomeMenuActivity;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Activity.MessageConstants;
 import com.example.e5322.thyrosoft.Adapter.AsteriskPasswordTransformationMethod;
@@ -70,16 +75,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import static android.content.Context.MODE_PRIVATE;
-import static com.example.e5322.thyrosoft.API.Constants.small_invalidApikey;
-
 
 public class Next_Consignment_Entry extends RootFragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private static ManagingTabsActivity mContext;
+    private static HomeMenuActivity mContext;
     String user, passwrd, access, api_key;
     View viewMain;
     TextView rpl_edt_txt_nxt, total_consignment_edt_txt_nxt, cpl_edt_txt_nxt;
@@ -153,7 +155,7 @@ public class Next_Consignment_Entry extends RootFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mContext = (ManagingTabsActivity) getActivity();
+        mContext = (HomeMenuActivity) getActivity();
         viewMain = (View) inflater.inflate(R.layout.fragment_next__consignment__entry, container, false);
         prefs = mContext.getSharedPreferences("Userdetails", MODE_PRIVATE);
         user = prefs.getString("Username", "");
@@ -218,6 +220,16 @@ public class Next_Consignment_Entry extends RootFragment {
             ll_pouch.setVisibility(View.VISIBLE);
         }
 
+        OnBackPressedCallback onBackPressedCallback =  new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                Consignment_fragment a2Fragment = new Consignment_fragment();
+                FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                transaction.addToBackStack(null);
+                transaction.replace(R.id.fragment_mainLayout, a2Fragment).commit();
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getActivity(),onBackPressedCallback);
 
         setSpinnerTRansitTime_nxt = new ArrayList<>();
         setSpinnerTRansitTime_nxt.add("Select expected transit time");

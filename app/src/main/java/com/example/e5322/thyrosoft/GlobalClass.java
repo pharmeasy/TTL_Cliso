@@ -83,6 +83,7 @@ import com.crowdfire.cfalertdialog.BuildConfig;
 import com.crowdfire.cfalertdialog.CFAlertDialog;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
+import com.example.e5322.thyrosoft.Activity.HomeMenuActivity;
 import com.example.e5322.thyrosoft.Activity.Installation;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Activity.MessageConstants;
@@ -1888,5 +1889,12 @@ public class GlobalClass {
     }
     public static boolean isNumeric(String s) {
         return s != null && s.matches("^[0-9]*$");
+    }
+
+    public static void redirectToPreviousPosition(Context context , int position) {
+        Intent intent = new Intent(context, HomeMenuActivity.class);
+        intent.putExtra("position",position);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        context.startActivity(intent);
     }
 }

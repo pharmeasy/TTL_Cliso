@@ -1,5 +1,7 @@
 package com.example.e5322.thyrosoft.Adapter;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -28,7 +30,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
-import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
@@ -46,8 +47,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import static android.content.Context.MODE_PRIVATE;
 
 public class PatientDtailsWoe extends RecyclerView.Adapter<PatientDtailsWoe.ViewHolder> {
     private ArrayList<Patients> patients;
@@ -315,9 +314,12 @@ public class PatientDtailsWoe extends RecyclerView.Adapter<PatientDtailsWoe.View
                     if (resID.equals("RES0000")) {
                         Constants.covidwoe_flag = "1";
                         TastyToast.makeText(context1, ToastFile.woe_dlt, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-                        Intent intent = new Intent(context1, ManagingTabsActivity.class);
+                        //Intent intent = new Intent(context1, HomeMenuActivity.class);
                         GlobalClass.setFlagBackToWoe = true;
-                        context1.startActivity(intent);
+                      //  context1.startActivity(intent);
+                        GlobalClass.redirectToPreviousPosition(context1,Constants.NOVID_WOE_MENU_POS);
+
+
                     } else {
                         if (barProgressDialog != null && barProgressDialog.isShowing()) {
                             barProgressDialog.dismiss();
@@ -456,5 +458,12 @@ public class PatientDtailsWoe extends RecyclerView.Adapter<PatientDtailsWoe.View
                 barcodeName = (TextView) itemView.findViewById(R.id.barcodeName);
             }
         }
+
+
     }
+   /* public void redirectToActivity(int position) {
+        Intent intent = new Intent(context1,HomeMenuActivity.class);
+        intent.putExtra("position",position);
+        context1.startActivity(intent);
+    }*/
 }

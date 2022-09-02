@@ -186,7 +186,7 @@
             android:visible="true" />
     </group>
 
-    <group
+    <!--<group
         android:id="@+id/groupcovid"
         android:checkableBehavior="single">
         <item
@@ -194,7 +194,7 @@
             android:icon="@drawable/covid"
             android:title="@string/covid_reg"
             android:visible="false" />
-    </group>
+    </group>-->
 
     <group
         android:id="@+id/groupcovid1"

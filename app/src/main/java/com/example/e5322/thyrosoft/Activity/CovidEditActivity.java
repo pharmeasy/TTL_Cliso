@@ -1465,8 +1465,9 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
             if (RESPONSEID.equalsIgnoreCase(Constants.RES0000)) {
                 Global.showCustomToast(activity, RESPONSE);
                 new LogUserActivityTagging(activity, "WOE-COVID", mobileno);
-                Intent i = new Intent(activity, ManagingTabsActivity.class);
-                startActivity(i);
+                /*Intent i = new Intent(activity, ManagingTabsActivity.class);
+                startActivity(i);*/
+                GlobalClass.redirectToPreviousPosition(activity,Constants.COVID_WOE_MENU_POS);
                 Constants.covidfrag_flag = "1";
                 finish();
             } else {

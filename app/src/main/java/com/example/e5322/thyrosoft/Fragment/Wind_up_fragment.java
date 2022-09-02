@@ -1,5 +1,8 @@
 package com.example.e5322.thyrosoft.Fragment;
 
+import static android.content.Context.MODE_PRIVATE;
+import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
+
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
@@ -37,6 +40,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
+import com.example.e5322.thyrosoft.Activity.HomeMenuActivity;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Adapter.Windup_adapter;
 import com.example.e5322.thyrosoft.Controller.Log;
@@ -66,9 +70,6 @@ import java.util.Date;
 import java.util.Locale;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
-
-import static android.content.Context.MODE_PRIVATE;
-import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -101,7 +102,7 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
             return null;
         }
     };
-    private static ManagingTabsActivity mContext;
+    private static HomeMenuActivity mContext;
     ImageView add, enter_arrow_enterss, enter_arrow_enteredss;
     View viewfab;
     View viewMain;
@@ -194,7 +195,7 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mContext = (ManagingTabsActivity) getActivity();
+        mContext = (HomeMenuActivity) getActivity();
 
 
         viewMain = (View) inflater.inflate(R.layout.fragment_woe_add_test, container, false);

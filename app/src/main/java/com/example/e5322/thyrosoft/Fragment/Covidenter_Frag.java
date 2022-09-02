@@ -67,7 +67,6 @@ import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
-import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Activity.MessageConstants;
 import com.example.e5322.thyrosoft.Adapter.SCollectionPAdapter;
 import com.example.e5322.thyrosoft.Adapter.ViewPagerAdapter;
@@ -2543,8 +2542,9 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
             if (RESPONSEID.equalsIgnoreCase(Constants.RES0000)) {
                 Global.showCustomToast(activity, RESPONSE);
                 new LogUserActivityTagging(activity, "WOE-COVID", mobileNo);
-                Intent i = new Intent(getActivity(), ManagingTabsActivity.class);
-                startActivity(i);
+                /*Intent i = new Intent(getActivity(), ManagingTabsActivity.class);
+                startActivity(i);*/
+                GlobalClass.redirectToPreviousPosition(getActivity(),Constants.COVID_WOE_MENU_POS);
                 Constants.covidfrag_flag = "1";
 
                 clearfields("3");

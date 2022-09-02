@@ -15,6 +15,40 @@
         android:orientation="vertical"
         tools:context=".Fragment.Ledger_details">
 
+        <LinearLayout
+            android:id="@+id/titlebar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/light_gray"
+            android:orientation="horizontal"
+            android:weightSum="5">
+
+            <ImageView
+                android:id="@+id/back"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:src="@drawable/color_back" />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="4"
+                android:gravity="center"
+                android:text="LEDGER DETAILS"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/home"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:src="@drawable/color_homr" />
+        </LinearLayout>
+
         <!-- TODO: Update blank fragment layout -->
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -39,7 +73,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:backgroundTint="@color/maroon"
-                    android:textSize="@dimen/value"/>
+                    android:textSize="@dimen/value" />
             </LinearLayout>
 
             <LinearLayout
@@ -54,7 +88,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:backgroundTint="@color/maroon"
-                    android:textSize="@dimen/value"/>
+                    android:textSize="@dimen/value" />
             </LinearLayout>
 
         </LinearLayout>
@@ -102,9 +136,9 @@
                     android:gravity="center"
                     android:padding="5dp"
                     android:text="Credit"
-                    android:textSize="@dimen/value"
+                    android:textAllCaps="true"
                     android:textColor="@color/black"
-                    android:textAllCaps="true"/>
+                    android:textSize="@dimen/value" />
 
                 <View
                     android:layout_width="1dp"
@@ -163,8 +197,8 @@
                     android:layout_gravity="center"
                     android:layout_weight="2"
                     android:gravity="top|center"
-                    android:textAllCaps="true"
                     android:text="  Sorry ! You are offline..."
+                    android:textAllCaps="true"
                     android:textColor="@color/maroon"
                     android:textSize="@dimen/label" />
 

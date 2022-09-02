@@ -26,6 +26,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -44,6 +46,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -55,7 +58,7 @@ import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.frags.RapidAntibodyFrag;
-import com.example.e5322.thyrosoft.BottomNavigationViewHelper;
+import com.example.e5322.thyrosoft.Adapter.HomeMenusAdapter;
 import com.example.e5322.thyrosoft.BuildConfig;
 import com.example.e5322.thyrosoft.Cliso_BMC.BMC_StockAvailabilityActivity;
 import com.example.e5322.thyrosoft.Controller.FeedBackQuestionsController;
@@ -118,7 +121,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     TextView navigationDrawerNameTSP, ecode, tv_generateLead;
     ImageView imageViewprofile, home;
     NavigationView navigationView;
-    BottomNavigationView bottomNavigationView;
+    //    BottomNavigationView bottomNavigationView;
     boolean IsFromNotification;
     boolean covidacc = false;
     int SCRID;
@@ -147,6 +150,11 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     private int offline_draft_counts;
     AppPreferenceManager appPreferenceManager;
     ConnectionDetector cd;
+    RecyclerView rcv_menus;
+    ImageView img_hmb, img_comm_d, img_notification;
+    LinearLayout ll_logout, ll_sync;
+    WebView webView;
+    TextView version;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -242,12 +250,12 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
 
         Constants.clevertapDefaultInstance = CleverTapAPI.getDefaultInstance(getApplicationContext());
-        CleverTapAPI.createNotificationChannelGroup(getApplicationContext(),"ClisoNotification","Notifications");
-        CleverTapAPI.createNotificationChannel(getApplicationContext(),"Cliso","Cliso","YourChannelDescription", NotificationManager.IMPORTANCE_MAX,"ClisoNotification",true);
-      //CleverTapAPI.createNotificationChannel(getApplicationContext(),"ClisoAlert","ClisoAlert","YourChannelDescription",NotificationManager.IMPORTANCE_MAX,"ClisoNotification",true);
-        if (BuildConfig.DEBUG){
+        CleverTapAPI.createNotificationChannelGroup(getApplicationContext(), "ClisoNotification", "Notifications");
+        CleverTapAPI.createNotificationChannel(getApplicationContext(), "Cliso", "Cliso", "YourChannelDescription", NotificationManager.IMPORTANCE_MAX, "ClisoNotification", true);
+        //CleverTapAPI.createNotificationChannel(getApplicationContext(),"ClisoAlert","ClisoAlert","YourChannelDescription",NotificationManager.IMPORTANCE_MAX,"ClisoNotification",true);
+        if (BuildConfig.DEBUG) {
             CleverTapAPI.setDebugLevel(CleverTapAPI.LogLevel.VERBOSE);
-        }else {
+        } else {
             CleverTapAPI.setDebugLevel(CleverTapAPI.LogLevel.OFF);
         }
         activity = this;
@@ -262,10 +270,10 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         USER_CODE = prefs.getString("USER_CODE", "");
         CLIENT_TYPE = prefs.getString("CLIENT_TYPE", "");
 
-        bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
+        /*bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         BottomNavigationViewHelper.removeShiftMode(bottomNavigationView);
-        bottomNavigationView.setItemIconTintList(null);
+        bottomNavigationView.setItemIconTintList(null);*/
 
         if (GlobalClass.checkForApi21()) {
             Window window = getWindow();
@@ -286,11 +294,34 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             }
         }
 
-        if (savedInstanceState == null) {
+        /*if (savedInstanceState == null) {
             initScreen();
         } else {
             carouselFragment = (CarouselFragment) getSupportFragmentManager().getFragments().get(0);
-        }
+        }*/
+        init();
+        initListner();
+        String Version = GlobalClass.getversion(activity);
+        GlobalClass.SetText(version, "Version " + Version);
+
+        HomeMenusAdapter adapter = new HomeMenusAdapter(this, Global.getMenusList());
+        adapter.setOnItemClickListener(new HomeMenusAdapter.OnItemClickListener() {
+            @Override
+            public void onMenuClickListener(int menuPosition) {
+                redirectToActivity(menuPosition);
+            }
+        });
+        rcv_menus.setAdapter(adapter);
+        WebSettings webSettings = webView.getSettings();
+        webSettings.setAllowContentAccess(true);
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setAppCacheEnabled(true);
+        webSettings.setDomStorageEnabled(true);
+        webSettings.setAllowFileAccess(true);
+        webSettings.setLoadWithOverviewMode(true);
+        webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
+        webSettings.setMediaPlaybackRequiresUserGesture(false);
+        webView.loadData(Global.bannersToDisplay(activity), "text/html", "UTF-8");
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -365,7 +396,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
         if (!GlobalClass.isNull(CLIENT_TYPE) && CLIENT_TYPE.equalsIgnoreCase(NHF)) {
             navigationView.getMenu().findItem(R.id.srf_covid).setVisible(appPreferenceManager.getCovidAccessResponseModel().isSrf());
-            navigationView.getMenu().findItem(R.id.covid_reg).setVisible(appPreferenceManager.getCovidAccessResponseModel().isCovidRegistration());
+            //navigationView.getMenu().findItem(R.id.covid_reg).setVisible(appPreferenceManager.getCovidAccessResponseModel().isCovidRegistration());
             navigationView.getMenu().findItem(R.id.crab_camp).setVisible(covidacc);
             navigationView.getMenu().findItem(R.id.payment).setVisible(false);
             navigationView.getMenu().findItem(R.id.otp_credit).setVisible(false);
@@ -399,7 +430,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             navigationView.getMenu().findItem(R.id.matrix_Details).setVisible(false);
             navigationView.getMenu().findItem(R.id.bs_entry).setVisible(false);
             navigationView.getMenu().findItem(R.id.srf_covid).setVisible(appPreferenceManager.getCovidAccessResponseModel().isSrf());
-            navigationView.getMenu().findItem(R.id.covid_reg).setVisible(appPreferenceManager.getCovidAccessResponseModel().isCovidRegistration());
+            //  navigationView.getMenu().findItem(R.id.covid_reg).setVisible(appPreferenceManager.getCovidAccessResponseModel().isCovidRegistration());
             navigationView.getMenu().findItem(R.id.crab_camp).setVisible(covidacc);
             navigationView.getMenu().findItem(R.id.broadCast).setVisible(false);
             navigationView.getMenu().findItem(R.id.communication).setVisible(true);
@@ -412,11 +443,11 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             navigationView.getMenu().findItem(R.id.company_contcat).setVisible(false);
             navigationView.getMenu().findItem(R.id.item_certificate).setVisible(false);
             navigationView.getMenu().findItem(R.id.item_rewards).setVisible(false);
-            bottomNavigationView.getMenu().findItem(R.id.loud).setVisible(false);
+//            bottomNavigationView.getMenu().findItem(R.id.loud).setVisible(false);
         } else {
             if (access.equals("STAFF")) {
                 navigationView.getMenu().findItem(R.id.srf_covid).setVisible(appPreferenceManager.getCovidAccessResponseModel().isSrf());
-                navigationView.getMenu().findItem(R.id.covid_reg).setVisible(appPreferenceManager.getCovidAccessResponseModel().isCovidRegistration());
+                //navigationView.getMenu().findItem(R.id.covid_reg).setVisible(appPreferenceManager.getCovidAccessResponseModel().isCovidRegistration());
                 navigationView.getMenu().findItem(R.id.crab_camp).setVisible(covidacc);
                 navigationView.getMenu().findItem(R.id.HHH).setVisible(false);//todo hide DRT Module
                 navigationView.getMenu().findItem(R.id.communication).setVisible(true);
@@ -432,7 +463,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 navigationView.getMenu().findItem(R.id.item_rewards).setVisible(false);
             } else if (access.equals("ADMIN")) {
                 navigationView.getMenu().findItem(R.id.srf_covid).setVisible(appPreferenceManager.getCovidAccessResponseModel().isSrf());
-                navigationView.getMenu().findItem(R.id.covid_reg).setVisible(appPreferenceManager.getCovidAccessResponseModel().isCovidRegistration());
+                //  navigationView.getMenu().findItem(R.id.covid_reg).setVisible(appPreferenceManager.getCovidAccessResponseModel().isCovidRegistration());
                 navigationView.getMenu().findItem(R.id.crab_camp).setVisible(covidacc);
                 navigationView.getMenu().findItem(R.id.HHH).setVisible(false);//todo hide DRT Module
                 navigationView.getMenu().findItem(R.id.communication).setVisible(true);
@@ -491,6 +522,105 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
 //        ShowOfflineDialog();
         GlobalClass.DisplayImgWithPlaceholderFromURL(activity, profile_image, imageViewprofile, R.drawable.userprofile);
+    }
+
+    private void initListner() {
+        img_hmb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+                drawerLayout.openDrawer(Gravity.LEFT);
+                GlobalClass.Hidekeyboard(drawerLayout);
+            }
+        });
+
+        img_comm_d.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent j = new Intent(ManagingTabsActivity.this, Communication_Activity.class);
+                startActivity(j);
+            }
+        });
+
+        img_notification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent k = new Intent(ManagingTabsActivity.this, Noticeboard_activity.class);
+                startActivity(k);
+            }
+        });
+
+        ll_logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //  Toast.makeText(activity, "Logout", Toast.LENGTH_SHORT).show();
+                new AlertDialog.Builder(activity)
+                        .setMessage(ToastFile.surelogout)
+                        .setCancelable(false)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                TastyToast.makeText(getApplicationContext(), getResources().getString(R.string.Success), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                                //   distoye();
+                                new LogUserActivityTagging(activity, Constants.LOGOUT, "");
+                                logout();
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+            }
+        });
+
+        ll_sync.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                    GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+                } else {
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(ManagingTabsActivity.this);
+                    builder1.setMessage("Do you want to Sync Data?");
+                    builder1.setCancelable(true);
+                    builder1.setPositiveButton(
+                            "Yes",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    SyncData();
+                                }
+                            });
+                    builder1.setNegativeButton(
+                            "No",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+                    AlertDialog alert11 = builder1.create();
+                    alert11.show();
+                }
+
+            }
+        });
+    }
+
+    private void init() {
+        rcv_menus = findViewById(R.id.rcv_menus);
+        webView = findViewById(R.id.web_view);
+        img_hmb = findViewById(R.id.img_hmb);
+        img_comm_d = findViewById(R.id.img_comm_d);
+        img_notification = findViewById(R.id.img_notification);
+        ll_logout = findViewById(R.id.ll_logout);
+        ll_sync = findViewById(R.id.ll_sync);
+        version = findViewById(R.id.version);
+    }
+
+    private void redirectToActivity(int menuPosition) {
+        Intent intent;
+        if (menuPosition == Constants.RECHARGE_MENU_POS) {
+            intent = new Intent(this, Payment_Activity.class);
+        } else {
+            intent = new Intent(this, HomeMenuActivity.class);
+        }
+        intent.putExtra("position", menuPosition);
+        startActivity(intent);
     }
 
     private void openTermsAndConditions() {
@@ -596,7 +726,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 //Redirect to offline woe
-                                Bundle bundle = new Bundle();
+                               /* Bundle bundle = new Bundle();
                                 if (covidacc) {
                                     bundle.putInt("position", 3);
                                 } else {
@@ -606,7 +736,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                                 carouselFragment = new CarouselFragment();
                                 carouselFragment.setArguments(bundle);
                                 final FragmentManager fragmentManager = getSupportFragmentManager();
-                                fragmentManager.beginTransaction().replace(R.id.container, carouselFragment).commit();
+                                fragmentManager.beginTransaction().replace(R.id.container, carouselFragment).commit();*/
 
                             }
                         });
@@ -897,7 +1027,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 startActivity(i);
             }
         } else if (SCRID == Constants.SCR_4) {
-            Bundle bundle = new Bundle();
+            /*Bundle bundle = new Bundle();
             if (CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
                 bundle.putInt("position", 0);
             } else {
@@ -919,22 +1049,24 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             carouselFragment = new CarouselFragment();
             carouselFragment.setArguments(bundle);
             FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.container, carouselFragment).commit();
+            fragmentManager.beginTransaction().replace(R.id.container, carouselFragment).commit();*/
+            redirectToActivity(Constants.CHN_MENU_POS);
 
         } else if (SCRID == Constants.SCR_5) {
-            if (!CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
+           /* if (!CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
                 Bundle bundle = new Bundle();
                 bundle.putInt("position", 3);
                 carouselFragment = new CarouselFragment();
                 carouselFragment.setArguments(bundle);
                 final FragmentManager fragmentManager = getSupportFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.container, carouselFragment).commit();
-            }
+            }*/
+            redirectToActivity(Constants.RESULT_MENU_POS);
         } else if (SCRID == Constants.SCR_6) {
             Constants.ratfrag_flag = "1";
             Constants.pushrat_flag = 1;
             Constants.universal = 1;
-            Bundle bundle = new Bundle();
+            /*Bundle bundle = new Bundle();
             if (CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
                 bundle.putInt("position", 0);
             } else {
@@ -953,7 +1085,8 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             carouselFragment = new CarouselFragment();
             carouselFragment.setArguments(bundle);
             FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.container, carouselFragment).commit();
+            fragmentManager.beginTransaction().replace(R.id.container, carouselFragment).commit();*/
+            redirectToActivity(Constants.RAT_MENU_POS);
         } else if (SCRID == Constants.SCR_Logout) {
             logout();
         }
@@ -1011,11 +1144,14 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                     .replace(R.id.container, carouselFragment)
                     .commit();*/
 
-            Offline_woe fragment = new Offline_woe();
+            /*Offline_woe fragment = new Offline_woe();
             final FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.container, fragment)
-                    .commit();
+                    .commit();*/
+                Intent startIntent = new Intent(ManagingTabsActivity.this, Offline_woe.class);
+                startActivity(startIntent);
+
         } else if (id == R.id.chn) {
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
@@ -1290,7 +1426,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 Intent i = new Intent(ManagingTabsActivity.this, SRFCovidWOEMainActivity.class);
                 startActivity(i);
             }
-        } else if (id == R.id.covid_reg) {
+        } /*else if (id == R.id.covid_reg) {
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
             } else {
@@ -1304,7 +1440,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                         .replace(R.id.container, carouselFragment)
                         .commit();
             }
-        } else if (id == R.id.otp_credit) {
+        }*/ else if (id == R.id.otp_credit) {
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
             } else {
@@ -1472,7 +1608,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.END);
+        drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
@@ -1735,33 +1871,32 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
     @Override
     public void onBackPressed() {
+//        if (!carouselFragment.onBackPressed()) {
+        // container Fragment or its associates couldn't handle the back pressed task
+        // delegating the task to super class
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getResources().getString(R.string.close_app));
+        builder.setCancelable(false);
+        builder.setPositiveButton(getResources().getString(R.string.Yes), new DialogInterface.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // moveTaskToBack(true);
+                Intent a = new Intent(Intent.ACTION_MAIN);
+                a.addCategory(Intent.CATEGORY_HOME);
+                a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(a);
+                finishAffinity();
+            }
+        });
 
-        if (!carouselFragment.onBackPressed()) {
-            // container Fragment or its associates couldn't handle the back pressed task
-            // delegating the task to super class
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(getResources().getString(R.string.close_app));
-            builder.setCancelable(false);
-            builder.setPositiveButton(getResources().getString(R.string.Yes), new DialogInterface.OnClickListener() {
-                @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    // moveTaskToBack(true);
-                    Intent a = new Intent(Intent.ACTION_MAIN);
-                    a.addCategory(Intent.CATEGORY_HOME);
-                    a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(a);
-                    finishAffinity();
-                }
-            });
-
-            builder.setNegativeButton(getResources().getString(R.string.No), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                }
-            });
-            builder.show();
-        }
+        builder.setNegativeButton(getResources().getString(R.string.No), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        builder.show();
+//        }
     }
 
     private void postdata(VideoView videoView) {

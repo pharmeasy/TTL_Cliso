@@ -3,14 +3,15 @@ package com.example.e5322.thyrosoft.Fragment;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import androidx.fragment.app.Fragment;
+
+import com.example.e5322.thyrosoft.Activity.HomeMenuActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 
@@ -27,7 +28,7 @@ public class CHN_Fragments_toChange extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private static ManagingTabsActivity mContext;
+    private static HomeMenuActivity mContext;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -71,7 +72,7 @@ public class CHN_Fragments_toChange extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        mContext = (ManagingTabsActivity) getActivity();
+        mContext = (HomeMenuActivity) getActivity();
 
 
 

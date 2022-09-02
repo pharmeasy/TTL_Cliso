@@ -2,8 +2,6 @@ package com.example.e5322.thyrosoft.RateCalculator;
 
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +11,10 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+
+import com.example.e5322.thyrosoft.Activity.HomeMenuActivity;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.RateCalculatorForModels.Base_Model_Rate_Calculator;
 
@@ -47,7 +48,7 @@ public class Test_Rate_Fragment extends Fragment {
     LinearLayout afterDiscountLayout;
     Button calculateDiscount,resetbutton;
     String B2BRate,B2CRate,CollCharge,toCompany,LogCost,resID,responseData,yours,discountedRate,fastingOrNot;
-    private static ManagingTabsActivity mContext;
+    private static HomeMenuActivity mContext;
     View view;
     EditText discountEdit;
     ArrayList<Base_Model_Rate_Calculator> value;
@@ -92,7 +93,7 @@ public class Test_Rate_Fragment extends Fragment {
 
 
 
-        mContext = (ManagingTabsActivity) getActivity();
+        mContext = (HomeMenuActivity) getActivity();
         final FragmentManager fragmentManager = getFragmentManager();
         View view = inflater.inflate(R.layout.fragment_test__rate_, container, false);
         show_selected_tests_list_test_ils = (TextView) view.findViewById(R.id.show_selected_tests_list_test_ils);

@@ -13,6 +13,7 @@ import static com.example.e5322.thyrosoft.API.Constants.GATEWAY;
 import static com.example.e5322.thyrosoft.API.Constants.MOBILE;
 import static com.example.e5322.thyrosoft.API.Constants.M_ID;
 import static com.example.e5322.thyrosoft.API.Constants.NAME;
+import static com.example.e5322.thyrosoft.API.Constants.NHF;
 import static com.example.e5322.thyrosoft.API.Constants.ORDERID;
 import static com.example.e5322.thyrosoft.API.Constants.ORDER_NO;
 import static com.example.e5322.thyrosoft.API.Constants.ORDER_TYPE;
@@ -59,6 +60,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -155,6 +157,7 @@ public class Payment_Activity extends AppCompatActivity {
     private String CLIENT_TYP = "";
     private int PaytmrequestCode = 83745;
     private String selGateway = "";
+    LinearLayout ll_noauth, ll_activity_payment;
 
     @SuppressLint("NewApi")
     @Override
@@ -179,6 +182,8 @@ public class Payment_Activity extends AppCompatActivity {
         home = (ImageView) findViewById(R.id.home);
         img_add_money_payTm = (ImageView) findViewById(R.id.img_add_money_payTm);
         img_add_money_payU = (ImageView) findViewById(R.id.img_add_money_payU);
+        ll_activity_payment = findViewById(R.id.ll_activity_payment);
+        ll_noauth = findViewById(R.id.ll_noauth);
 
         Payu.setInstance(this);
         int environment = PayuConstants.STAGING_ENV;
@@ -209,53 +214,82 @@ public class Payment_Activity extends AppCompatActivity {
         CLIENT_TYP = prefs.getString("CLIENT_TYPE", "");
 
         COME_FROM_SCREEN = getIntent().getStringExtra("COMEFROM");
-
-        if (globalClass.checkForApi21()) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(getResources().getColor(R.color.limaroon));
-        }
-
-        getProfileDetails();
-
         title.setText("Online Payment");
-        txt_minamt.setText("\u2022 " + Html.fromHtml("Minimum amount to be paid 5000"));
-        txt_mulamt.setText("\u2022 " + Html.fromHtml("Amount needs to be paid in multiples of 5000"));
-        txt_tsp_name.setText(name_tsp + " - " + usercode);
-        /* edt_closing_bal.setText(closing_balance_pref);*/
+
+        if (Global.getLoginType(mActivity) == Constants.PEflag || CLIENT_TYP.equalsIgnoreCase(NHF)) {
+            ll_activity_payment.setVisibility(View.GONE);
+            ll_noauth.setVisibility(View.VISIBLE);
+        } else {
+            if (globalClass.checkForApi21()) {
+                Window window = getWindow();
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                window.setStatusBarColor(getResources().getColor(R.color.limaroon));
+            }
+
+            getProfileDetails();
 
 
-        edt_enter_amt.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String enteredString = s.toString();
-                if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
-                        enteredString.startsWith("#") || enteredString.startsWith("$") ||
-                        enteredString.startsWith("%") || enteredString.startsWith("^") ||
-                        enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".") || enteredString.startsWith("0")) {
-                    Toast.makeText(Payment_Activity.this,
-                            ToastFile.ent_crt_amt,
-                            Toast.LENGTH_SHORT).show();
+            txt_minamt.setText("\u2022 " + Html.fromHtml("Minimum amount to be paid 5000"));
+            txt_mulamt.setText("\u2022 " + Html.fromHtml("Amount needs to be paid in multiples of 5000"));
+            txt_tsp_name.setText(name_tsp + " - " + usercode);
+            /* edt_closing_bal.setText(closing_balance_pref);*/
 
-                    if (enteredString.length() > 0) {
-                        edt_enter_amt.setText(enteredString.substring(1));
-                    } else {
-                        edt_enter_amt.setText("");
+
+            edt_enter_amt.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    String enteredString = s.toString();
+                    if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
+                            enteredString.startsWith("#") || enteredString.startsWith("$") ||
+                            enteredString.startsWith("%") || enteredString.startsWith("^") ||
+                            enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".") || enteredString.startsWith("0")) {
+                        Toast.makeText(Payment_Activity.this,
+                                ToastFile.ent_crt_amt,
+                                Toast.LENGTH_SHORT).show();
+
+                        if (enteredString.length() > 0) {
+                            edt_enter_amt.setText(enteredString.substring(1));
+                        } else {
+                            edt_enter_amt.setText("");
+                        }
+
                     }
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
 
                 }
-            }
+            });
+            btn_payu.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+//                proceedWithPayment();
+                }
+            });
 
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
+            img_add_money_payU.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    selGateway = "payU";
+                    proceedWithPayment();
+                }
+            });
 
-            @Override
-            public void afterTextChanged(Editable s) {
+            img_add_money_payTm.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    selGateway = "payTm";
+                    proceedWithPayment();
+                }
+            });
+        }
 
-            }
-        });
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -272,28 +306,7 @@ public class Payment_Activity extends AppCompatActivity {
             }
         });
 
-        btn_payu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                proceedWithPayment();
-            }
-        });
 
-        img_add_money_payU.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selGateway = "payU";
-                proceedWithPayment();
-            }
-        });
-
-        img_add_money_payTm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selGateway = "payTm";
-                proceedWithPayment();
-            }
-        });
     }
 
     private void GetDynamicPayment() {

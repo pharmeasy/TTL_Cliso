@@ -990,7 +990,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
             brandAdapter.setOnItemClickListener(new BrandAdapter.OnClickListener() {
                 @Override
                 public void onchecked(String brand, String rate) {
-                   // getBrand_name = brand; TODO AS Per the verbal communication with Mari sir to remove letter head brand name for outlab 07/07/2022
+                    //getBrand_name = brand; TODO AS Per the verbal communication with Mari sir to remove letter head brand name for outlab 07/07/2022
                 }
             });
             recy_brand.setAdapter(brandAdapter);

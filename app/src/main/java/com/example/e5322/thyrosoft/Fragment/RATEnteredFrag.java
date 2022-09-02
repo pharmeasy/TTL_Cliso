@@ -29,6 +29,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
@@ -75,7 +76,7 @@ import java.util.Locale;
  * Use the {@link RATEnteredFrag#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class RATEnteredFrag extends Fragment {
+public class RATEnteredFrag extends Fragment  {
 
     RadioButton rd_pending, rd_done, rd_expired;
     RecyclerView rc_view;
@@ -144,6 +145,14 @@ public class RATEnteredFrag extends Fragment {
 
         initui(root);
         initlistner();
+
+        OnBackPressedCallback  onBackPressedCallback =  new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                GlobalClass.redirectToHome(getActivity());
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getActivity(),onBackPressedCallback);
 
         return root;
     }

@@ -62,7 +62,7 @@ public class Offline_Woe_Adapter extends RecyclerView.Adapter<Offline_Woe_Adapte
     ArrayList<MyPojoWoe> myPojoWoe;
     private String getBarcode_string;
     private String getSampleType_string;
-    Offline_woe mfragment;
+    Offline_woe mActivity;
     String[] samples;
     SharedPreferences prefs, sharedPrefe;
     RefreshOfflineWoe refreshOfflineWoe;
@@ -91,11 +91,10 @@ public class Offline_Woe_Adapter extends RecyclerView.Adapter<Offline_Woe_Adapte
     Offline_woe offline_woe;
     Activity activity1;
 
-
-    public Offline_Woe_Adapter(ManagingTabsActivity mContext, ArrayList<MyPojoWoe> allWoe, Offline_woe fragment, ArrayList<String> setResponse, Offline_woe offline_woe, Activity activity) {
-        this.mContext = mContext;
+    public Offline_Woe_Adapter(ArrayList<MyPojoWoe> allWoe, Offline_woe mActivity, ArrayList<String> setResponse) {
+        this.mContext = mActivity;
         this.myPojoWoe = allWoe;
-        this.mfragment = fragment;
+        this.mActivity = mActivity;
         this.setResponse = setResponse;
         this.offline_woe = offline_woe;
         this.activity1 = activity;
@@ -412,7 +411,7 @@ public class Offline_Woe_Adapter extends RecyclerView.Adapter<Offline_Woe_Adapte
 
                                 boolean deletedRows = myDb.deleteData(getBarcodes);
                                 if (deletedRows == true) {
-                                    mfragment.setNewFragment();
+                                    mActivity.setNewFragment();
                                     TastyToast.makeText(mContext, ToastFile.woeDelete, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                                 } else {
                                     TastyToast.makeText(mContext, ToastFile.woeDeleteUnsuccess, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
@@ -455,7 +454,7 @@ public class Offline_Woe_Adapter extends RecyclerView.Adapter<Offline_Woe_Adapte
 
     private void uploadTRf(ArrayList<TRFModel> trflist, File vialimage) {
         if (trflist.size() > 0)
-            new AsyncTaskPost_uploadfile(offline_woe, activity1, api_key, user, barcode_patient_id, trflist, vialimage).execute();
+            new AsyncTaskPost_uploadfile(mActivity, mActivity, api_key, user, barcode_patient_id, trflist, vialimage).execute();
     }
 
 

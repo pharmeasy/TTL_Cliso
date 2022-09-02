@@ -1,14 +1,13 @@
 package com.example.e5322.thyrosoft.Activity;
 
+import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import androidx.appcompat.app.AppCompatActivity;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -18,14 +17,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Adapter.ExpandableListCommunication;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.Interface_Pass_CommunicationValue;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.CommunicationMaster;
@@ -33,6 +34,7 @@ import com.example.e5322.thyrosoft.Models.PincodeMOdel.CommunicationRepsponseMod
 import com.example.e5322.thyrosoft.Models.RequestModels.GetCommunicationsRequestModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 import com.sdsmdg.tastytoast.TastyToast;
 
@@ -40,8 +42,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-
-import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
 
 public class Communication_Activity extends AppCompatActivity {
 
@@ -200,6 +200,10 @@ public class Communication_Activity extends AppCompatActivity {
             offline_img.setVisibility(View.VISIBLE);
             expandlistcommunication.setVisibility(View.GONE);
         } else {
+            FromCPL.setBackground(getResources().getDrawable(R.drawable.enter_button));
+            enter_arrow_enter.setVisibility(View.VISIBLE);
+            ToCPL.setBackgroundColor(getResources().getColor(R.color.lightgray));
+            enter_arrow_entered.setVisibility(View.GONE);
             Getdata();
             offline_img.setVisibility(View.GONE);
             expandlistcommunication.setVisibility(View.VISIBLE);

@@ -1,5 +1,8 @@
 package com.example.e5322.thyrosoft.Fragment;
 
+import static android.content.Context.MODE_PRIVATE;
+import static com.example.e5322.thyrosoft.API.Constants.small_invalidApikey;
+
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -32,6 +35,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -46,6 +50,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Global;
+import com.example.e5322.thyrosoft.Activity.HomeMenuActivity;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Activity.MessageConstants;
 import com.example.e5322.thyrosoft.Adapter.AsteriskPasswordTransformationMethod;
@@ -80,9 +85,6 @@ import java.util.Date;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-import static android.content.Context.MODE_PRIVATE;
-import static com.example.e5322.thyrosoft.API.Constants.small_invalidApikey;
-
 
 public class Consignment_fragment extends RootFragment {
     // TODO: Rename parameter arguments, choose names that match
@@ -94,7 +96,7 @@ public class Consignment_fragment extends RootFragment {
     private String mParam1;
     private String mParam2;
     int mode = 0;
-    private static ManagingTabsActivity mContext;
+    private static HomeMenuActivity mContext;
     View viewMain, view_pre_frag;
     Button consignment_barcd_btn, bsv_barcode_scanning, Submit_consignment;
     IntentIntegrator scanIntegrator;
@@ -160,8 +162,8 @@ public class Consignment_fragment extends RootFragment {
     private ArrayList<BarcodeResponseModel.BarcodeDTO> setGlobalListBarcode;
     private ArrayList<ScanBarcodeResponseModel.PouchCodeDTO> setBarcodePouch;
     private Button btn_pouch_barcd;
-    private ArrayList<BarcodeResponseModel.BarcodeDTO> barcodelist=new ArrayList<>();
-    private ArrayList<BarcodeResponseModel.BarcodeDTO> totalbarcodelist=new ArrayList<>();
+    private ArrayList<BarcodeResponseModel.BarcodeDTO> barcodelist = new ArrayList<>();
+    private ArrayList<BarcodeResponseModel.BarcodeDTO> totalbarcodelist = new ArrayList<>();
 
     public Consignment_fragment() {
         // Required empty public constructor
@@ -191,7 +193,7 @@ public class Consignment_fragment extends RootFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        mContext = (ManagingTabsActivity) getActivity();
+        mContext = (HomeMenuActivity) getActivity();
         prefs = mContext.getSharedPreferences("Userdetails", MODE_PRIVATE);
         user = prefs.getString("Username", null);
         passwrd = prefs.getString("password", null);
@@ -277,6 +279,14 @@ public class Consignment_fragment extends RootFragment {
         bsv_barcode_scanning = (Button) viewMain.findViewById(R.id.bsv_barcode_scanning);
         Submit_consignment = (Button) viewMain.findViewById(R.id.Submit_consignment);
         ll_pouch = viewMain.findViewById(R.id.ll_pouch);
+
+        OnBackPressedCallback onBackPressedCallback =  new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                GlobalClass.redirectToHome(getActivity());
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getActivity(),onBackPressedCallback);
 
         tv_addpouch.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -514,7 +524,7 @@ public class Consignment_fragment extends RootFragment {
                 Consignment_fragment fragment = new Consignment_fragment();
                 mContext.getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_mainLayout, fragment, fragment.getClass().getSimpleName()).addToBackStack(null).commit();
-             //   checkConsgnmentFortheDay();
+                //   checkConsgnmentFortheDay();
 
             }
         });
@@ -1492,11 +1502,15 @@ public class Consignment_fragment extends RootFragment {
                             GlobalClass.Consignment_barcode = "";
 
 
-                            Next_Consignment_Entry a2Fragment = new Next_Consignment_Entry();
+                            /*Next_Consignment_Entry a2Fragment = new Next_Consignment_Entry();
                             a2Fragment.setArguments(args);
                             FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
                             transaction.addToBackStack(null);
-                            transaction.replace(R.id.fragment_mainLayout, a2Fragment).commit();
+                            transaction.replace(R.id.fragment_mainLayout, a2Fragment).commit();*/
+                            Next_Consignment_Entry a2Fragment = new Next_Consignment_Entry();
+                            a2Fragment.setArguments(args);
+                            mContext.getSupportFragmentManager().beginTransaction().
+                                    replace(R.id.fragment_mainLayout,a2Fragment,a2Fragment.getClass().getSimpleName()).addToBackStack(null).commit();
                         }
                     } else {
                         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
@@ -1555,11 +1569,14 @@ public class Consignment_fragment extends RootFragment {
                         GlobalClass.Consignment_barcode = "";
 
 
-                        Next_Consignment_Entry a2Fragment = new Next_Consignment_Entry();
+                        /*Next_Consignment_Entry a2Fragment = new Next_Consignment_Entry();
                         a2Fragment.setArguments(args);
                         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
                         transaction.addToBackStack(null);
-                        transaction.replace(R.id.fragment_mainLayout, a2Fragment).commit();
+                        transaction.replace(R.id.fragment_mainLayout, a2Fragment).commit();*/
+                        Next_Consignment_Entry a2Fragment = new Next_Consignment_Entry();
+                        a2Fragment.setArguments(args);
+                        mContext.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_mainLayout,a2Fragment,a2Fragment.getClass().getSimpleName()).addToBackStack(null).commit();
 
                     }
                 } else if (mode_value_compare.equals("Courier")) {
@@ -1803,11 +1820,15 @@ public class Consignment_fragment extends RootFragment {
                         GlobalClass.cpl_sample = cpl_count;
                         GlobalClass.Consignment_barcode = consignment_barcode;
 
-                        Next_Consignment_Entry a2Fragment = new Next_Consignment_Entry();
+                        /*Next_Consignment_Entry a2Fragment = new Next_Consignment_Entry();
                         a2Fragment.setArguments(args);
                         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
                         transaction.addToBackStack(null);
-                        transaction.replace(R.id.fragment_mainLayout, a2Fragment).commit();
+                        transaction.replace(R.id.fragment_mainLayout, a2Fragment).commit();*/
+                        Next_Consignment_Entry a2Fragment = new Next_Consignment_Entry();
+                        a2Fragment.setArguments(args);
+                        mContext.getSupportFragmentManager().beginTransaction().
+                                replace(R.id.fragment_mainLayout,a2Fragment,a2Fragment.getClass().getSimpleName()).addToBackStack(null).commit();
 
 
                     }
@@ -1844,6 +1865,7 @@ public class Consignment_fragment extends RootFragment {
         // Inflate the layout for this fragment
         return viewMain;
     }
+
 
     private void checkConsgnmentFortheDay() {
         PostQueueForConsignment = GlobalClass.setVolleyReq(getContext());
@@ -2708,7 +2730,7 @@ public class Consignment_fragment extends RootFragment {
             if (!GlobalClass.isNull(body.getRespID()) && body.getRespID().equalsIgnoreCase("RES0000")) {
                 if (GlobalClass.CheckArrayList(body.getBarcode())) {
                     barcodelist = body.getBarcode();
-                    totalbarcodelist=body.getBarcode();
+                    totalbarcodelist = body.getBarcode();
                     SetAdapter(body.getBarcode());
                 } else {
                     Global.showCustomToast(getActivity(), "No Records Found..");

@@ -1,30 +1,30 @@
 package com.example.e5322.thyrosoft.Fragment;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-import com.example.e5322.thyrosoft.Controller.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Adapter.Fragment1_ledgerDet_adapter;
 import com.example.e5322.thyrosoft.Adapter.VIewPagerAdapter_ledgerDet;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.Ledger_DetailsModel;
 import com.example.e5322.thyrosoft.Models.RequestModels.LedgerSummaryRequestModel;
@@ -40,21 +40,9 @@ import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import static android.content.Context.MODE_PRIVATE;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link Ledger_details.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link Ledger_details#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class Ledger_details extends RootFragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+public class Ledger_details extends AppCompatActivity {
+
     public static RequestQueue PostQue;
     ViewPager viewpager;
     Spinner year, month;
@@ -73,64 +61,37 @@ public class Ledger_details extends RootFragment {
     String[] monthNames = symbols.getMonths();
     int flagforsetFragment = 0;
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     private OnFragmentInteractionListener mListener;
     private int selectedMonthPosition = 0;
     private String TAG = Ledger_details.class.getSimpleName();
     private boolean flagfor1sttime = false;
     private LinearLayout offline_img;
+    Activity activity;
+    ImageView back,home;
 
     public Ledger_details() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Ledger_details.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static Ledger_details newInstance(String param1, String param2) {
-        Ledger_details fragment = new Ledger_details();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        setContentView(R.layout.fragment_ledger_details);
+        viewpager = (ViewPager) findViewById(R.id.viewpager);
+        activity = Ledger_details.this;
 
-    }
+        month = findViewById(R.id.month);
+        year = findViewById(R.id.year);
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_ledger_details, container, false);
-        viewpager = (ViewPager) view.findViewById(R.id.viewpager);
+        all = findViewById(R.id.alltab);
+        credit = findViewById(R.id.credittab);
+        debit = findViewById(R.id.debit);
 
-
-        month = (Spinner) view.findViewById(R.id.month);
-        year = (Spinner) view.findViewById(R.id.year);
-
-        all = (TextView) view.findViewById(R.id.alltab);
-        credit = (TextView) view.findViewById(R.id.credittab);
-        debit = (TextView) view.findViewById(R.id.debit);
-
-        containerlist = (LinearLayout) view.findViewById(R.id.containerlist);
-        offline_img = (LinearLayout) view.findViewById(R.id.offline_img);
-
+        containerlist = findViewById(R.id.containerlist);
+        offline_img = findViewById(R.id.offline_img);
+        back = findViewById(R.id.back);
+        home = findViewById(R.id.home);
         all.setBackground(getResources().getDrawable(R.drawable.maroon_rect_left_round));
         all.setTextColor(getResources().getColor(R.color.colorWhite));
         years = new ArrayList<String>();
@@ -138,16 +99,14 @@ public class Ledger_details extends RootFragment {
         thismonth = Calendar.getInstance().get(Calendar.MONTH);
         DateFormatSymbols symbols = new DateFormatSymbols();
         String[] monthNames = symbols.getMonths();
-
         thisYear = Calendar.getInstance().get(Calendar.YEAR);
         for (int i = thisYear; i >= thisYear - 2; i--) {
             years.add(Integer.toString(i));
 
         }
-        ArrayAdapter yearadap = new ArrayAdapter(getContext(), R.layout.spinner_property_main, years);
+        ArrayAdapter yearadap = new ArrayAdapter(activity, R.layout.spinner_property_main, years);
         yearadap.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         year.setAdapter(yearadap);
-
         year.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -159,10 +118,10 @@ public class Ledger_details extends RootFragment {
                 if (Integer.parseInt(year.getSelectedItem().toString()) == thisYear) {
                     for (int i = 0; i <= thismonth; i++) {
                         monthlist.add(monthNames[i].toString());
-                        monthadap = new ArrayAdapter(getContext(), R.layout.spinner_property_main, monthlist);
+                        monthadap = new ArrayAdapter(activity, R.layout.spinner_property_main, monthlist);
                     }
                 } else {
-                    monthadap = new ArrayAdapter(getContext(), R.layout.spinner_property_main, monthNames);
+                    monthadap = new ArrayAdapter(activity, R.layout.spinner_property_main, monthNames);
 
                 }
                 monthadap.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -193,7 +152,7 @@ public class Ledger_details extends RootFragment {
                     }
                 }
 
-                if (!GlobalClass.isNetworkAvailable(getActivity())) {
+                if (!GlobalClass.isNetworkAvailable(activity)) {
                     offline_img.setVisibility(View.VISIBLE);
                     containerlist.setVisibility(View.GONE);
                 } else {
@@ -224,7 +183,7 @@ public class Ledger_details extends RootFragment {
                 }
 
 
-                if (!GlobalClass.isNetworkAvailable(getActivity())) {
+                if (!GlobalClass.isNetworkAvailable(activity)) {
                     offline_img.setVisibility(View.VISIBLE);
                     containerlist.setVisibility(View.GONE);
                 } else {
@@ -239,8 +198,6 @@ public class Ledger_details extends RootFragment {
 
             }
         });
-
-
         monthlist = new ArrayList<String>();
         symbols = new DateFormatSymbols();
 
@@ -303,8 +260,6 @@ public class Ledger_details extends RootFragment {
 
             }
         });
-
-
         all.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -348,12 +303,23 @@ public class Ledger_details extends RootFragment {
             }
         });
 
+        home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                GlobalClass.goToHome(activity);
+            }
+        });
 
-        return view;
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
     private void initDialog() {
-        barProgressDialog = new ProgressDialog(getContext());
+        barProgressDialog = new ProgressDialog(activity);
         barProgressDialog.setTitle("Kindly wait ...");
         barProgressDialog.setMessage(ToastFile.processing_request);
         barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
@@ -375,14 +341,14 @@ public class Ledger_details extends RootFragment {
 
         barProgressDialog.show();
 
-        PostQue = GlobalClass.setVolleyReq(getContext());
+        PostQue = GlobalClass.setVolleyReq(activity);
 
 
         JSONObject jsonObject = null;
         try {
             // monthSEND= Integer.parseInt(month.getSelectedItem().toString());
 
-            SharedPreferences prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
+            SharedPreferences prefs = activity.getSharedPreferences("Userdetails", MODE_PRIVATE);
 
             String user = prefs.getString("Username", "");
             String passwrd = prefs.getString("password", "");
@@ -410,7 +376,7 @@ public class Ledger_details extends RootFragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        RequestQueue queue = GlobalClass.setVolleyReq(getContext());
+        RequestQueue queue = GlobalClass.setVolleyReq(activity);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 com.android.volley.Request.Method.POST, Api.LedgerDetLive, jsonObject,
                 new com.android.volley.Response.Listener<JSONObject>() {
@@ -503,7 +469,7 @@ public class Ledger_details extends RootFragment {
                     barProgressDialog.dismiss();
                 }
                 try {
-                   Log.v(TAG,"error ala parat " + error);
+                    Log.v(TAG, "error ala parat " + error);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -517,7 +483,7 @@ public class Ledger_details extends RootFragment {
 
     private PagerAdapter buildAdapter() {
 
-        return (new VIewPagerAdapter_ledgerDet(getChildFragmentManager()));
+        return (new VIewPagerAdapter_ledgerDet(this.getSupportFragmentManager()));
     }
 
     public interface OnFragmentInteractionListener {

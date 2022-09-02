@@ -1,14 +1,15 @@
 package com.example.e5322.thyrosoft.Adapter;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.e5322.thyrosoft.Activity.HomeMenuActivity;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.SourceILSModel.LABS;
 
@@ -19,7 +20,7 @@ class SampleCollectionAdapter extends RecyclerView.Adapter<SampleCollectionAdapt
     ArrayList<LABS> LabDetailsArraList;
     private OnItemClickListener onItemClickListener;
 
-    public SampleCollectionAdapter(ManagingTabsActivity mContext, ArrayList<LABS> LabDetailsArraList) {
+    public SampleCollectionAdapter(HomeMenuActivity mContext, ArrayList<LABS> LabDetailsArraList) {
         this.mContext = mContext;
         this.LabDetailsArraList = LabDetailsArraList;
     }

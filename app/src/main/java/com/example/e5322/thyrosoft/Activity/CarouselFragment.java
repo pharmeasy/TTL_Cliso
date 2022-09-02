@@ -10,19 +10,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
 
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.e5322.thyrosoft.API.Constants;
-import com.example.e5322.thyrosoft.API.Global;
-import com.example.e5322.thyrosoft.Adapter.PECovidAdapter;
-import com.example.e5322.thyrosoft.Adapter.PEStaffAdapter;
 import com.example.e5322.thyrosoft.AdminCovidAdapter;
 import com.example.e5322.thyrosoft.Controller.Log;
+import com.example.e5322.thyrosoft.GlobalClass;
+import com.example.e5322.thyrosoft.HomeMenuTabAdapter;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.AppPreferenceManager;
 import com.example.e5322.thyrosoft.R;
-import com.example.e5322.thyrosoft.StaffCovidadapter;
 import com.google.android.material.tabs.TabLayout;
 
 /**
@@ -31,7 +31,7 @@ import com.google.android.material.tabs.TabLayout;
 public class CarouselFragment extends Fragment {
 
     public static Object currentFragment;
-    private static ManagingTabsActivity mContext;
+    private static HomeMenuActivity mContext;
     /**
      * TabPagerIndicator
      * <p>
@@ -39,13 +39,13 @@ public class CarouselFragment extends Fragment {
      */
     protected TabLayout tabLayout;
     protected ViewPager pager;
-    String TAG = ManagingTabsActivity.class.getSimpleName();
+    String TAG = CarouselFragment.class.getSimpleName();
     String user, passwrd, access, api_key, user_code, CLIENT_TYPE;
 
 
     private ViewPagerAdapter adapter;
     private StaffViewPagerAdapter adapterStafff;
-    private StaffCovidadapter covidadapter;
+    private HomeMenuTabAdapter covidadapter;
     private AdminCovidAdapter adminCovidAdapter;
 
 
@@ -54,6 +54,7 @@ public class CarouselFragment extends Fragment {
     private SharedPreferences prefs;
     AppPreferenceManager appPreferenceManager;
     private boolean covidacc;
+    ImageView back;
 
     public CarouselFragment() {
     }
@@ -61,11 +62,14 @@ public class CarouselFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_carousel, container, false);
-        mContext = (ManagingTabsActivity) getActivity();
+        mContext = (HomeMenuActivity) getActivity();
         tabLayout = rootView.findViewById(R.id.tabs);
         pager = rootView.findViewById(R.id.vp_pages);
+        back = rootView.findViewById(R.id.back);
 
         prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
         user = prefs.getString("Username", "");
@@ -83,6 +87,17 @@ public class CarouselFragment extends Fragment {
         } else {
             tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
         }*/
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+             /*   Intent intent = new Intent(getContext(), ManagingTabsActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);*/
+                GlobalClass.redirectToHome(getActivity());
+                getActivity().finish();
+            }
+        });
 
         pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -123,9 +138,11 @@ public class CarouselFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        if (CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
-      /*      nhf_pageradapter = new NHF_pageradapter(getResources(), getChildFragmentManager());
-            pager.setAdapter(nhf_pageradapter);*/
+        covidadapter = new HomeMenuTabAdapter(getResources(), getChildFragmentManager());
+        pager.setAdapter(covidadapter);
+       /* if (CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
+      *//*      nhf_pageradapter = new NHF_pageradapter(getResources(), getChildFragmentManager());
+            pager.setAdapter(nhf_pageradapter);*//*
             adminCovidAdapter = new AdminCovidAdapter(getResources(), getChildFragmentManager());
             pager.setAdapter(adminCovidAdapter);
         } else if (Global.getLoginType(mContext) == Constants.PEflag) {
@@ -152,7 +169,7 @@ public class CarouselFragment extends Fragment {
                     pager.setAdapter(adapter);
                 }
             }
-        }
+        }*/
 
 
         tabLayout.setupWithViewPager(pager);
@@ -187,17 +204,17 @@ public class CarouselFragment extends Fragment {
                     pager.setCurrentItem(0);
                     Constants.covidfrag_flag = "0";
                 } else {
-                    pager.setCurrentItem(2);
+                    pager.setCurrentItem(positionInt);
                 }
 
                 if (Constants.covidwoe_flag.equalsIgnoreCase("1")) {
                     Constants.covidwoe_flag = "0";
                 }
 
-                if (Constants.offline_flag.equalsIgnoreCase("1")) {
+                /*if (Constants.offline_flag.equalsIgnoreCase("1")) {
                     pager.setCurrentItem(3);
                     Constants.offline_flag = "0";
-                }
+                }*/
 
                 if (Constants.universal == 1) {
                     if (Constants.ratfrag_flag.equalsIgnoreCase("1")) {
@@ -223,13 +240,13 @@ public class CarouselFragment extends Fragment {
                     pager.setCurrentItem(0);
                 }
 
-                if (Constants.offline_flag.equalsIgnoreCase("1")) {
+                /*if (Constants.offline_flag.equalsIgnoreCase("1")) {
                     pager.setCurrentItem(1);
                     Constants.offline_flag = "0";
-                }
+                }*/
             }
         }
-    }
+   }
 
     /**
      * Retrieve the currently visible Tab Fragment and propagate the onBackPressed callback
@@ -245,21 +262,17 @@ public class CarouselFragment extends Fragment {
                     currentFragment = (OnBackPressListener) nhf_pageradapter.getRegisteredFragment(pager.getCurrentItem());
                 } else {
                     if (access.equalsIgnoreCase(Constants.STAFF)) {
-
                         if (covidacc) {
                             currentFragment = (OnBackPressListener) covidadapter.getRegisteredFragment(pager.getCurrentItem());
                         } else {
                             currentFragment = (OnBackPressListener) adapterStafff.getRegisteredFragment(pager.getCurrentItem());
                         }
-
                     } else {
-
                         if (covidacc) {
                             currentFragment = (OnBackPressListener) adminCovidAdapter.getRegisteredFragment(pager.getCurrentItem());
                         } else {
                             currentFragment = (OnBackPressListener) adapter.getRegisteredFragment(pager.getCurrentItem());
                         }
-
                     }
                 }
 

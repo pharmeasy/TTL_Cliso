@@ -1,5 +1,7 @@
 package com.example.e5322.thyrosoft.Controller;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
@@ -17,8 +19,6 @@ import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static android.content.Context.MODE_PRIVATE;
 
 public class GetBarcodeListController {
 

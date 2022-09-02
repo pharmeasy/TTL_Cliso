@@ -1,5 +1,10 @@
 package com.example.e5322.thyrosoft.Fragment;
 
+import static android.content.Context.MODE_PRIVATE;
+import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
+import static java.util.Calendar.MONTH;
+import static java.util.Calendar.YEAR;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -9,14 +14,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.DisplayMetrics;
-import com.example.e5322.thyrosoft.Controller.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,16 +31,21 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.Activity.HomeMenuActivity;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Adapter.CustomCalendarAdapter;
 import com.example.e5322.thyrosoft.Adapter.ResultDtlAdapter;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.CAlendar_Inteface;
 import com.example.e5322.thyrosoft.Models.ResponseModels.ReportsResponseModel;
@@ -55,21 +59,12 @@ import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONObject;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-
-import static android.content.Context.MODE_PRIVATE;
-import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
-import static java.util.Calendar.MONTH;
-import static java.util.Calendar.YEAR;
 
 
 public class FilterReport extends Fragment implements CAlendar_Inteface {
@@ -133,7 +128,7 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mContext = (ManagingTabsActivity) getActivity();
+            mContext = (HomeMenuActivity) getActivity();
             Calendar cl = Calendar.getInstance();
             sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
             toDate = sdf.format(cl.getTime());

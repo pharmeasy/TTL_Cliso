@@ -20,13 +20,53 @@
             android:visibility="gone" />
 
     </LinearLayout>
-
-    <FrameLayout
-        android:id="@+id/container"
+    <Toolbar
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="9" />
+        android:layout_height="wrap_content"
+        android:background="#1E2536">
+        <LinearLayout
+            android:id="@+id/titlebar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="5">
 
+            <ImageView
+                android:id="@+id/img_hmb"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:src="@drawable/hamb"
+                android:tint="@color/white"/>
+            <ImageView
+                android:id="@+id/img_logo"
+                android:layout_width="@dimen/dp_120"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_weight="3"
+                android:src="@drawable/thyro_logo_white"
+                android:layout_gravity="left"
+                />
+            <ImageView
+                android:id="@+id/img_comm_d"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:src="@drawable/comm_d"
+                android:layout_marginRight="@dimen/_15sdp"
+                android:tint="@color/white" />
+
+            <ImageView
+                android:id="@+id/img_notification"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:src="@drawable/notification"
+                android:tint="@color/white" />
+        </LinearLayout>
+
+    </Toolbar>
+    <include
+        layout="@layout/home_menu_layout"/>
 
     <TextView
         android:id="@+id/tv_generateLead"
@@ -43,11 +83,11 @@
         android:visibility="gone" />
 
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
+    <!--<com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.7"
         app:labelVisibilityMode="unlabeled"
-        app:menu="@menu/navigation" />
+        app:menu="@menu/navigation" />-->
 </LinearLayout>

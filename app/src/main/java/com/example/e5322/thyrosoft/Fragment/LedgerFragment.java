@@ -1,11 +1,14 @@
 package com.example.e5322.thyrosoft.Fragment;
 
+import static android.content.Context.MODE_PRIVATE;
+import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
+
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,13 +20,16 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
+import androidx.fragment.app.Fragment;
+
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
-import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import com.example.e5322.thyrosoft.API.Global;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.RequestModels.LedgerSummaryRequestModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.LedgerSummaryResponseModel;
@@ -39,13 +45,6 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
-
-import androidx.annotation.RequiresApi;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-
-import static android.content.Context.MODE_PRIVATE;
-import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -68,7 +67,7 @@ public class LedgerFragment extends RootFragment {
     LinearLayout parent_ll;
     int monthSEND = 0;
     int thisYear = 0;
-    LinearLayout offline_img;
+    LinearLayout offline_img,ll_fragment_ledger,ll_noauth;
     ArrayList<String> years;
     ArrayList<String> monthlist;
     int thismonth = 0;
@@ -136,155 +135,163 @@ public class LedgerFragment extends RootFragment {
         txt_unbill_woe = view.findViewById(R.id.unbilled_woe);
         txt_unbillwoe = view.findViewById(R.id.txt_unbillwoe);
 
-        try {
-            if (CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
-                txt_unbillwoe.setText("Unbilled Scan");
-            } else {
-                txt_unbillwoe.setText("Unbilled WOE");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        ll_noauth = (LinearLayout) view.findViewById(R.id.ll_noauth);
+        ll_fragment_ledger = (LinearLayout) view.findViewById(R.id.ll_fragment_ledger);
 
-        txt_unbill_material = view.findViewById(R.id.unbilled_material);
-
-        // TextView dateview = getActivity().findViewById(R.id.show_date);
-        // dateview.setVisibility(View.GONE);
-
-        month = (Spinner) view.findViewById(R.id.month);
-        year = (Spinner) view.findViewById(R.id.year);
-        ledgerdetails = (Button) view.findViewById(R.id.ledgerdetails);
-
-        years = new ArrayList<String>();
-        monthlist = new ArrayList<String>();
-        thismonth = Calendar.getInstance().get(Calendar.MONTH);
-
-        DateFormatSymbols symbols = new DateFormatSymbols();
-        String[] monthNames = symbols.getMonths();
-
-        thisYear = Calendar.getInstance().get(Calendar.YEAR);
-        for (int i = thisYear; i >= thisYear - 2; i--) {
-            years.add(Integer.toString(i));
-
-        }
-
-        if (!GlobalClass.isNetworkAvailable(getActivity())) {
-            offline_img.setVisibility(View.VISIBLE);
-            parent_ll.setVisibility(View.GONE);
-        } else {
-            offline_img.setVisibility(View.GONE);
-            parent_ll.setVisibility(View.VISIBLE);
-        }
-
-
-        ArrayAdapter yearadap = new ArrayAdapter(getContext(), R.layout.spinner_property_main, years);
-        yearadap.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        year.setAdapter(yearadap);
-
-        year.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                monthlist = new ArrayList<String>();
-                years = new ArrayList<String>();
-                DateFormatSymbols symbols = new DateFormatSymbols();
-                String[] monthNames = symbols.getMonths();
-
-                if (Integer.parseInt(year.getSelectedItem().toString()) == thisYear) {
-                    for (int i = 0; i <= thismonth; i++) {
-                        monthlist.add(monthNames[i].toString());
-                        monthadap = new ArrayAdapter(getContext(), R.layout.spinner_property_main, monthlist);
-                    }
+        if (Global.isStaff(getActivity()) || Global.getLoginType(getActivity()) == Constants.PEflag) {
+            ll_noauth.setVisibility(View.VISIBLE);
+            ll_fragment_ledger.setVisibility(View.GONE);
+        }else {
+            try {
+                if (CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
+                    txt_unbillwoe.setText("Unbilled Scan");
                 } else {
-                    monthadap = new ArrayAdapter(getContext(), R.layout.spinner_property_main, monthNames);
-
+                    txt_unbillwoe.setText("Unbilled WOE");
                 }
-                monthadap.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                month.setAdapter(monthadap);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-                if (Integer.parseInt(year.getSelectedItem().toString()) == thisYear) {
-                    if (!flagfor1sttime) {
+            txt_unbill_material = view.findViewById(R.id.unbilled_material);
 
-                        flagfor1sttime = true;
-                        month.setSelection(thismonth);
+            // TextView dateview = getActivity().findViewById(R.id.show_date);
+            // dateview.setVisibility(View.GONE);
+
+            month = (Spinner) view.findViewById(R.id.month);
+            year = (Spinner) view.findViewById(R.id.year);
+            ledgerdetails = (Button) view.findViewById(R.id.ledgerdetails);
+
+            years = new ArrayList<String>();
+            monthlist = new ArrayList<String>();
+            thismonth = Calendar.getInstance().get(Calendar.MONTH);
+
+            DateFormatSymbols symbols = new DateFormatSymbols();
+            String[] monthNames = symbols.getMonths();
+
+            thisYear = Calendar.getInstance().get(Calendar.YEAR);
+            for (int i = thisYear; i >= thisYear - 2; i--) {
+                years.add(Integer.toString(i));
+
+            }
+
+            if (!GlobalClass.isNetworkAvailable(getActivity())) {
+                offline_img.setVisibility(View.VISIBLE);
+                parent_ll.setVisibility(View.GONE);
+            } else {
+                offline_img.setVisibility(View.GONE);
+                parent_ll.setVisibility(View.VISIBLE);
+            }
+
+
+            ArrayAdapter yearadap = new ArrayAdapter(getContext(), R.layout.spinner_property_main, years);
+            yearadap.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            year.setAdapter(yearadap);
+
+            year.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    monthlist = new ArrayList<String>();
+                    years = new ArrayList<String>();
+                    DateFormatSymbols symbols = new DateFormatSymbols();
+                    String[] monthNames = symbols.getMonths();
+
+                    if (Integer.parseInt(year.getSelectedItem().toString()) == thisYear) {
+                        for (int i = 0; i <= thismonth; i++) {
+                            monthlist.add(monthNames[i].toString());
+                            monthadap = new ArrayAdapter(getContext(), R.layout.spinner_property_main, monthlist);
+                        }
                     } else {
-                        if (selectedMonthPosition > thismonth) {
+                        monthadap = new ArrayAdapter(getContext(), R.layout.spinner_property_main, monthNames);
+
+                    }
+                    monthadap.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    month.setAdapter(monthadap);
+
+                    if (Integer.parseInt(year.getSelectedItem().toString()) == thisYear) {
+                        if (!flagfor1sttime) {
+
+                            flagfor1sttime = true;
                             month.setSelection(thismonth);
                         } else {
-                            month.setSelection(selectedMonthPosition);
+                            if (selectedMonthPosition > thismonth) {
+                                month.setSelection(thismonth);
+                            } else {
+                                month.setSelection(selectedMonthPosition);
+                            }
+
                         }
 
+                    } else {
+                        month.setSelection(selectedMonthPosition);
                     }
 
-                } else {
-                    month.setSelection(selectedMonthPosition);
+                    for (int i = 0; i < monthNames.length; i++) {
+                        if (month.getSelectedItem().equals(monthNames[i])) {
+                            monthSEND = i + 1;
+                            break;
+                        }
+                    }
+
+                    ledgerdetails.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                           /* Ledger_details a2Fragment = new Ledger_details();
+                            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                            transaction.addToBackStack(null);
+                            transaction.replace(R.id.fragment_mainLayout, a2Fragment).commit();*/
+                        Intent i = new Intent(getActivity(), Ledger_details.class);
+                        startActivity(i);
+
+                        }
+                    });
+
+
+                    if (!GlobalClass.isNetworkAvailable(getActivity())) {
+                        offline_img.setVisibility(View.VISIBLE);
+                        parent_ll.setVisibility(View.GONE);
+                    } else {
+                        GetData();
+                        offline_img.setVisibility(View.GONE);
+                        parent_ll.setVisibility(View.VISIBLE);
+                    }
+
+
                 }
 
-                for (int i = 0; i < monthNames.length; i++) {
-                    if (month.getSelectedItem().equals(monthNames[i])) {
-                        monthSEND = i + 1;
-                        break;
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+
+            month.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    DateFormatSymbols symbols = new DateFormatSymbols();
+                    String[] monthNames = symbols.getMonths();
+                    selectedMonthPosition = position;
+                    for (int i = 0; i < monthNames.length; i++) {
+                        if (month.getSelectedItem().equals(monthNames[i])) {
+                            monthSEND = i + 1;
+                            break;
+                        }
+                    }
+
+                    if (!GlobalClass.isNetworkAvailable(getActivity())) {
+                        offline_img.setVisibility(View.VISIBLE);
+
+                    } else {
+                        GetData();
+                        offline_img.setVisibility(View.GONE);
                     }
                 }
 
-                ledgerdetails.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Ledger_details a2Fragment = new Ledger_details();
-                        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                        transaction.addToBackStack(null);
-                        transaction.replace(R.id.fragment_mainLayout, a2Fragment).commit();
-                        /*Intent i = new Intent(getActivity(), LedgerDetailsActivity.class);
-                        getActivity().startActivity(i);*/
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
 
-                    }
-                });
-
-
-                if (!GlobalClass.isNetworkAvailable(getActivity())) {
-                    offline_img.setVisibility(View.VISIBLE);
-                    parent_ll.setVisibility(View.GONE);
-                } else {
-                    GetData();
-                    offline_img.setVisibility(View.GONE);
-                    parent_ll.setVisibility(View.VISIBLE);
                 }
-
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        month.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                DateFormatSymbols symbols = new DateFormatSymbols();
-                String[] monthNames = symbols.getMonths();
-                selectedMonthPosition = position;
-                for (int i = 0; i < monthNames.length; i++) {
-                    if (month.getSelectedItem().equals(monthNames[i])) {
-                        monthSEND = i + 1;
-                        break;
-                    }
-                }
-
-                if (!GlobalClass.isNetworkAvailable(getActivity())) {
-                    offline_img.setVisibility(View.VISIBLE);
-
-                } else {
-                    GetData();
-                    offline_img.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
+            });
+        }
 
         return view;
     }

@@ -64,7 +64,7 @@ import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
-import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import com.example.e5322.thyrosoft.Activity.HomeMenuActivity;
 import com.example.e5322.thyrosoft.Activity.MessageConstants;
 import com.example.e5322.thyrosoft.Adapter.SCollectionPAdapter;
 import com.example.e5322.thyrosoft.Adapter.ViewPagerAdapter;
@@ -1703,7 +1703,8 @@ public class RATEnterFrag extends Fragment {
                 new LogUserActivityTagging(activity, "WOE-NOVID", mobileno);
                 ClearFields();
                 Constants.universal = 1;
-                Intent i = new Intent(activity, ManagingTabsActivity.class);
+                Intent i = new Intent(activity, HomeMenuActivity.class);
+                GlobalClass.redirectToPreviousPosition(activity,Constants.RAT_MENU_POS);
                 startActivity(i);
                 Constants.ratfrag_flag = "1";
 

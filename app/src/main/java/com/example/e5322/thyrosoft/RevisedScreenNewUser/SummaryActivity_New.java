@@ -638,10 +638,11 @@ public class SummaryActivity_New extends AppCompatActivity {
 
         if (fromcome.equals("")) {
             Constants.covidwoe_flag = "1";
-            intent = new Intent(SummaryActivity_New.this, ManagingTabsActivity.class);
+            /*intent = new Intent(SummaryActivity_New.this, ManagingTabsActivity.class);
             intent.putExtra("passToWoefragment", "frgamnebt");
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+            startActivity(intent);*/
+            GlobalClass.redirectToPreviousPosition(SummaryActivity_New.this,Constants.NOVID_WOE_MENU_POS);
         } else {
             intent = new Intent(SummaryActivity_New.this, SpecialOffer_Activity.class);
             intent.putExtra("passToWoefragment", "frgamnebt");

@@ -2,11 +2,7 @@ package com.example.e5322.thyrosoft.Activity;
 
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -14,14 +10,18 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Adapter.Fragment1_ledgerDet_adapter;
 import com.example.e5322.thyrosoft.Adapter.VIewPagerAdapter_ledgerDet;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Fragment.Ledger_details;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.Ledger_DetailsModel;

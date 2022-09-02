@@ -588,8 +588,9 @@ public class Woe_Edt_Activity extends AppCompatActivity {
                         } else {
                             GlobalClass.setFlag_back_toWOE = true;
                             Constants.covidwoe_flag = "1";
-                            Intent i = new Intent(Woe_Edt_Activity.this, ManagingTabsActivity.class);
-                            startActivity(i);
+                           /* Intent i = new Intent(Woe_Edt_Activity.this, ManagingTabsActivity.class);
+                            startActivity(i);*/
+                            GlobalClass.redirectToPreviousPosition(Woe_Edt_Activity.this,Constants.NOVID_WOE_MENU_POS);
                             finish();
                         }
                         TastyToast.makeText(Woe_Edt_Activity.this, message, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);

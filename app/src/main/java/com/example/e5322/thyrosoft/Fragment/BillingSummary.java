@@ -1,12 +1,12 @@
 package com.example.e5322.thyrosoft.Fragment;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,13 +16,17 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
+
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
+import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Adapter.BillingSummaryAdapter;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.RequestModels.BillingSummaryRequestModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.BillingSummaryResponseModel;
@@ -39,8 +43,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-
-import static android.content.Context.MODE_PRIVATE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -67,7 +69,7 @@ public class BillingSummary extends RootFragment {
     String user;
     String passwrd;
     LinearLayout parent_ll;
-    LinearLayout offline_img;
+    LinearLayout offline_img, ll_noauth, ll_fragment_billing;
     String access;
     java.util.Date daysBeforeDate;
     String api_key;
@@ -148,11 +150,12 @@ public class BillingSummary extends RootFragment {
 
         txtFromDate = (TextView) rootView.findViewById(R.id.txt_from_date);
         txt_to_date = (TextView) rootView.findViewById(R.id.txt_to_date);
-        txt_nodata=rootView.findViewById(R.id.txt_nodata);
+        txt_nodata = rootView.findViewById(R.id.txt_nodata);
         list_billingSummary = (ListView) rootView.findViewById(R.id.list_billingSummary);
         offline_img = (LinearLayout) rootView.findViewById(R.id.offline_img);
         parent_ll = (LinearLayout) rootView.findViewById(R.id.parent_ll);
-
+        ll_noauth = (LinearLayout) rootView.findViewById(R.id.ll_noauth);
+        ll_fragment_billing = (LinearLayout) rootView.findViewById(R.id.ll_fragment_billing);
   /*      barProgressDialog = new ProgressDialog(getContext());
         barProgressDialog.setTitle("Kindly wait ...");
         barProgressDialog.setMessage(ToastFile.processing_request);
@@ -174,111 +177,116 @@ public class BillingSummary extends RootFragment {
         access = prefsBilling.getString("ACCESS_TYPE", null);
         api_key = prefsBilling.getString("API_KEY", null);
 
-        if (!GlobalClass.isNetworkAvailable(getActivity())) {
-            offline_img.setVisibility(View.VISIBLE);
-            parent_ll.setVisibility(View.GONE);
+        if (Global.isStaff(getActivity()) || Global.getLoginType(getActivity()) == Constants.PEflag) {
+            ll_noauth.setVisibility(View.VISIBLE);
+            ll_fragment_billing.setVisibility(View.GONE);
         } else {
-            offline_img.setVisibility(View.GONE);
-            parent_ll.setVisibility(View.VISIBLE);
-            GetData();
+            if (!GlobalClass.isNetworkAvailable(getActivity())) {
+                offline_img.setVisibility(View.VISIBLE);
+                parent_ll.setVisibility(View.GONE);
+            } else {
+                offline_img.setVisibility(View.GONE);
+                parent_ll.setVisibility(View.VISIBLE);
+                GetData();
+            }
+
+            txtFromDate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    if (view == txtFromDate) {
+                        final Calendar c = Calendar.getInstance();
+                        c.setTime(fromDate);
+                        mYear = c.get(Calendar.YEAR);
+                        mMonth = c.get(Calendar.MONTH);
+                        mDay = c.get(Calendar.DAY_OF_MONTH);
+
+                        DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), R.style.DialogTheme,
+                                new DatePickerDialog.OnDateSetListener() {
+                                    @Override
+                                    public void onDateSet(DatePicker view, int year,
+                                                          int monthOfYear, int dayOfMonth) {
+                                        sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+
+                                        String getDateSecond = dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
+
+                                        try {
+                                            fromDate = sdf.parse(getDateSecond);
+                                            fromDateTxt = sdf.format(fromDate);
+                                            txtFromDate.setText(fromDateTxt);
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                        }
+
+
+                                        if (!GlobalClass.isNetworkAvailable(getActivity())) {
+                                            offline_img.setVisibility(View.VISIBLE);
+                                            parent_ll.setVisibility(View.GONE);
+                                        } else {
+                                            offline_img.setVisibility(View.GONE);
+                                            parent_ll.setVisibility(View.VISIBLE);
+                                            GetData();
+                                        }
+                                    }
+                                }, mYear, mMonth, mDay);
+
+                        datePickerDialog.getDatePicker().setMaxDate(toDate.getTime() - 2);
+                        datePickerDialog.show();
+                    }
+                }
+            });
+
+
+            txt_to_date.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (v == txt_to_date) {
+                        final Calendar c = Calendar.getInstance();
+                        c.setTime(toDate);
+                        mYear = c.get(Calendar.YEAR);
+                        mMonth = c.get(Calendar.MONTH);
+                        mDay = c.get(Calendar.DAY_OF_MONTH);
+                        long time3 = c.getTimeInMillis();
+
+                        DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), R.style.DialogTheme,
+                                new DatePickerDialog.OnDateSetListener() {
+
+                                    @Override
+                                    public void onDateSet(DatePicker view, int year,
+                                                          int monthOfYear, int dayOfMonth) {
+                                        sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+
+                                        String getDateSecond = dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
+
+
+                                        try {
+                                            toDate = sdf.parse(getDateSecond);
+                                            toDateTxt = sdf.format(toDate);
+                                            txt_to_date.setText(toDateTxt);
+                                            System.out.println(txt_to_date);
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                        }
+
+
+                                        if (!GlobalClass.isNetworkAvailable(getActivity())) {
+                                            offline_img.setVisibility(View.VISIBLE);
+                                            parent_ll.setVisibility(View.GONE);
+                                        } else {
+                                            offline_img.setVisibility(View.GONE);
+                                            parent_ll.setVisibility(View.VISIBLE);
+                                            GetData();
+                                        }
+
+                                    }
+                                }, mYear, mMonth, mDay);
+                        datePickerDialog.getDatePicker().setMinDate(fromDate.getTime());
+                        datePickerDialog.getDatePicker().setMaxDate(result.getTime() - 2);
+                        datePickerDialog.show();
+                    }
+                }
+            });
         }
-
-        txtFromDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if (view == txtFromDate) {
-                    final Calendar c = Calendar.getInstance();
-                    c.setTime(fromDate);
-                    mYear = c.get(Calendar.YEAR);
-                    mMonth = c.get(Calendar.MONTH);
-                    mDay = c.get(Calendar.DAY_OF_MONTH);
-
-                    DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), R.style.DialogTheme,
-                            new DatePickerDialog.OnDateSetListener() {
-                                @Override
-                                public void onDateSet(DatePicker view, int year,
-                                                      int monthOfYear, int dayOfMonth) {
-                                    sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
-
-                                    String getDateSecond = dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
-
-                                    try {
-                                        fromDate = sdf.parse(getDateSecond);
-                                        fromDateTxt = sdf.format(fromDate);
-                                        txtFromDate.setText(fromDateTxt);
-                                    } catch (ParseException e) {
-                                        e.printStackTrace();
-                                    }
-
-
-                                    if (!GlobalClass.isNetworkAvailable(getActivity())) {
-                                        offline_img.setVisibility(View.VISIBLE);
-                                        parent_ll.setVisibility(View.GONE);
-                                    } else {
-                                        offline_img.setVisibility(View.GONE);
-                                        parent_ll.setVisibility(View.VISIBLE);
-                                        GetData();
-                                    }
-                                }
-                            }, mYear, mMonth, mDay);
-
-                    datePickerDialog.getDatePicker().setMaxDate(toDate.getTime() - 2);
-                    datePickerDialog.show();
-                }
-            }
-        });
-
-
-        txt_to_date.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (v == txt_to_date) {
-                    final Calendar c = Calendar.getInstance();
-                    c.setTime(toDate);
-                    mYear = c.get(Calendar.YEAR);
-                    mMonth = c.get(Calendar.MONTH);
-                    mDay = c.get(Calendar.DAY_OF_MONTH);
-                    long time3 = c.getTimeInMillis();
-
-                    DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), R.style.DialogTheme,
-                            new DatePickerDialog.OnDateSetListener() {
-
-                                @Override
-                                public void onDateSet(DatePicker view, int year,
-                                                      int monthOfYear, int dayOfMonth) {
-                                    sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
-
-                                    String getDateSecond = dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
-
-
-                                    try {
-                                        toDate = sdf.parse(getDateSecond);
-                                        toDateTxt = sdf.format(toDate);
-                                        txt_to_date.setText(toDateTxt);
-                                        System.out.println(txt_to_date);
-                                    } catch (ParseException e) {
-                                        e.printStackTrace();
-                                    }
-
-
-                                    if (!GlobalClass.isNetworkAvailable(getActivity())) {
-                                        offline_img.setVisibility(View.VISIBLE);
-                                        parent_ll.setVisibility(View.GONE);
-                                    } else {
-                                        offline_img.setVisibility(View.GONE);
-                                        parent_ll.setVisibility(View.VISIBLE);
-                                        GetData();
-                                    }
-
-                                }
-                            }, mYear, mMonth, mDay);
-                    datePickerDialog.getDatePicker().setMinDate(fromDate.getTime());
-                    datePickerDialog.getDatePicker().setMaxDate(result.getTime() - 2);
-                    datePickerDialog.show();
-                }
-            }
-        });
 
 
         return rootView;
@@ -351,7 +359,7 @@ public class BillingSummary extends RootFragment {
                                         txt_nodata.setVisibility(View.GONE);
                                         adapter = new BillingSummaryAdapter(getContext(), responseModel.getBillingList());
                                         list_billingSummary.setAdapter(adapter);
-                                    }else {
+                                    } else {
                                         list_billingSummary.setVisibility(View.GONE);
                                         txt_nodata.setVisibility(View.VISIBLE);
                                     }
