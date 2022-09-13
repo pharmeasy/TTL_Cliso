@@ -1357,6 +1357,24 @@ public class GlobalClass {
     }
 
 
+    /*public static void storeProductsSyncTime(Activity mActivity) {
+        SharedPreferences.Editor editor = mActivity.getSharedPreferences("product_recommended_pref", 0).edit();
+        editor.putLong("product_recommended", System.currentTimeMillis()); // add this line and comment below line for cache
+        editor.apply();
+    }
+
+    public static int getProdSyncDays(Context mActivity) {
+        SharedPreferences prod_sync_time_pref = mActivity.getSharedPreferences("product_recommended_pref", 0);
+        long PreviousTime = prod_sync_time_pref.getLong("product_recommended", 0);
+        long currenttime = System.currentTimeMillis();
+        long differ_millis = currenttime - PreviousTime;
+        int days = (int) (differ_millis / (1000 * 60 * 60 * 24));
+
+        System.out.println("Product_Sync_days" + days);
+        //  Global.printLog(Constants.SOUT, "", "", "Product_Sync_days" + days);
+        return days;
+    }*/
+
     public static void dynamicolordot(Context mContext, LinearLayout lin_color, int color) {
         ImageView imageView = new ImageView(mContext);
         imageView.setPadding(2, 0, 2, 2);
@@ -1897,4 +1915,5 @@ public class GlobalClass {
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
     }
+
 }

@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="Gradle: E./ClisoLatest/Cliso GIT/app/libs/httpclient-4.2.jar">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/app/libs/httpclient-4.2.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

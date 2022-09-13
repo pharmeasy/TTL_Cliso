@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
@@ -27,9 +28,11 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,6 +54,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
+import com.example.e5322.thyrosoft.Adapter.ProductRecommendedAdapter;
+import com.example.e5322.thyrosoft.CleverTapHelper;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.MyPojoWoe;
@@ -61,12 +66,14 @@ import com.example.e5322.thyrosoft.MainModelForAllTests.B2B_MASTERSMainModel;
 import com.example.e5322.thyrosoft.MainModelForAllTests.MainModel;
 import com.example.e5322.thyrosoft.MainModelForAllTests.Product_Rate_MasterModel;
 import com.example.e5322.thyrosoft.Models.BaseModel;
+import com.example.e5322.thyrosoft.Models.GetProductsRecommendedResModel;
 import com.example.e5322.thyrosoft.Models.TRFModel;
 import com.example.e5322.thyrosoft.Models.ULCResponseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ScannedBarcodeDetails;
 import com.example.e5322.thyrosoft.SqliteDb.DatabaseHelper;
 import com.example.e5322.thyrosoft.ToastFile;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
@@ -81,6 +88,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -170,6 +178,15 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
     private String version;
     ArrayList<TRFModel> trf_list = new ArrayList<>();
     private String source_type;
+    BottomSheetDialog bottomSheetDialog;
+    Button btn_reset, btn_next;
+    TextView txt_selectedtest, txt_TestRate, txt_recoTestName, txt_reco_message, txt_recoTestRate;
+    RadioButton rb_testName, rb_recoTestName;
+    RadioGroup rgb_testname, rdgrp_recotest;
+    ProductRecommendedAdapter productRecommendedAdapter;
+    RecyclerView rcv_productreco;
+    ArrayList<GetProductsRecommendedResModel.ProductListDTO> finalrecoList;
+    ArrayList<GetProductsRecommendedResModel.ProductListDTO> selectedRecoTest;
 
 
     @SuppressLint("NewApi")
@@ -1185,6 +1202,8 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
         private final ArrayList<BaseModel> AllProductArrayList;
         Context context;
         ArrayList<BaseModel> productList;
+        CleverTapHelper cleverTapHelper = new CleverTapHelper(mActivity);
+        int selectedProductRate, recommendedProductRate;
 
         public ViewAllTestAdapter(ProductLisitngActivityNew productLisitngActivityNew, ArrayList<BaseModel> testRateMasterModels, ArrayList<BaseModel> totalProducts) {
             this.context = productLisitngActivityNew;
@@ -1273,100 +1292,264 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
             holder.parent_ll.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //on click of blank box
-                    if (holder.check.getVisibility() == View.VISIBLE) {
-                        if (Global.testsNotAllowedBelow18(productList.get(position).getCode(), patientYear)) {
-                            GlobalClass.showOkAlertDialog(mActivity, "WOE not allowed if patient's age is <18 years");
-                        } else {
-                            if (productList.get(position).getCode().equalsIgnoreCase(Constants.CATC)) {
-                                boolean isCAGCA = false;
-                                for (int i = 0; i < Selcted_Test.size(); i++) {
-                                    if (Selcted_Test.get(i).getCode().equalsIgnoreCase(Constants.CAGCA)) {
-                                        isCAGCA = true;
+                    ArrayList<GetProductsRecommendedResModel.ProductListDTO> recoList = getRecoList(productList.get(position).getProduct());
+
+                    selectedProductRate = Integer.parseInt(productList.get(position).getRate().getB2c());
+                    if (recoList.size() > 0) {
+                        if (holder.check.getVisibility() == View.VISIBLE) {
+                            displayRecoProductBottomsheet(getSelectedProductDetails(recoList));
+                            oncheckproduct();
+                        } else if (holder.checked.getVisibility() == View.VISIBLE) {
+                            onCheckedBoxProduct();
+                        }
+                    } else {
+                        if (holder.check.getVisibility() == View.VISIBLE) { //on click of blank box
+                            oncheckproduct();
+                        } else if (holder.checked.getVisibility() == View.VISIBLE) {
+                            onCheckedBoxProduct();
+                        }
+                    }
+
+
+                }
+
+                private void onCheckedBoxProduct() {
+                    //on click of checked box
+                    if (!isSelectedDueToParent) {
+                        Selcted_Test.remove(testRateMasterModel);
+                        notifyDataSetChanged();
+
+                        before_discount_layout2.setVisibility(View.VISIBLE);
+                        if (testRateMasterModel.getCode().equalsIgnoreCase(Constants.THYROTEST)) {
+                            testflag = false;
+                        }
+
+                        showTestNmaes.remove(testRateMasterModel.getName());
+
+                        String displayslectedtest = TextUtils.join(",", showTestNmaes);
+                        show_selected_tests_list_test_ils1.setText(displayslectedtest);
+                        if (displayslectedtest.equals("")) {
+                            before_discount_layout2.setVisibility(View.GONE);
+                        }
+                    } else {
+                        alertDialogBuilder = new AlertDialog.Builder(ProductLisitngActivityNew.this);
+                        alertDialogBuilder
+                                .setMessage(Html.fromHtml("This test was selected because of its parent. If you wish to remove this test please remove the parent: " + parentTestCode))
+                                .setCancelable(true)
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                        AlertDialog alertDialog = alertDialogBuilder.create();
+                        alertDialog.show();
+
+                    }
+                }
+
+                private void oncheckproduct() {
+                    if (Global.testsNotAllowedBelow18(productList.get(position).getCode(), patientYear)) {
+                        GlobalClass.showOkAlertDialog(mActivity, "WOE not allowed if patient's age is <18 years");
+                    } else {
+                        if (productList.get(position).getCode().equalsIgnoreCase(Constants.CATC)) {
+                            boolean isCAGCA = false;
+                            for (int i = 0; i < Selcted_Test.size(); i++) {
+                                if (Selcted_Test.get(i).getCode().equalsIgnoreCase(Constants.CAGCA)) {
+                                    isCAGCA = true;
+                                    break;
+                                }
+                            }
+                            if (isCAGCA) {
+                                BaseModel ProfileToSelect = null;
+                                for (int i = 0; i < AllProductArrayList.size(); i++) {
+                                    if (AllProductArrayList.get(i).getCode().equalsIgnoreCase(Constants.P690)) {
+                                        ProfileToSelect = AllProductArrayList.get(i);
                                         break;
                                     }
                                 }
-                                if (isCAGCA) {
-                                    BaseModel ProfileToSelect = null;
-                                    for (int i = 0; i < AllProductArrayList.size(); i++) {
-                                        if (AllProductArrayList.get(i).getCode().equalsIgnoreCase(Constants.P690)) {
-                                            ProfileToSelect = AllProductArrayList.get(i);
-                                            break;
-                                        }
-                                    }
-                                    if (ProfileToSelect != null) {
-                                        CallCheckFunction(ProfileToSelect);
-                                    } else {
-                                        CallCheckFunction(productList.get(position));
-                                    }
-                                } else {
-                                    CallCheckFunction(productList.get(position));
-                                }
-
-
-                            } else if (productList.get(position).getCode().equalsIgnoreCase(Constants.CAGCA)) {
-                                boolean isCATC = false;
-                                for (int i = 0; i < Selcted_Test.size(); i++) {
-                                    if (Selcted_Test.get(i).getCode().equalsIgnoreCase(Constants.CATC)) {
-                                        isCATC = true;
-                                        break;
-                                    }
-                                }
-                                if (isCATC) {
-                                    BaseModel ProfileToSelect = null;
-                                    for (int i = 0; i < AllProductArrayList.size(); i++) {
-                                        if (AllProductArrayList.get(i).getCode().equalsIgnoreCase(Constants.P690)) {
-                                            ProfileToSelect = AllProductArrayList.get(i);
-                                            break;
-                                        }
-                                    }
-                                    if (ProfileToSelect != null) {
-                                        CallCheckFunction(ProfileToSelect);
-                                    } else {
-                                        CallCheckFunction(productList.get(position));
-                                    }
+                                if (ProfileToSelect != null) {
+                                    CallCheckFunction(ProfileToSelect);
                                 } else {
                                     CallCheckFunction(productList.get(position));
                                 }
                             } else {
                                 CallCheckFunction(productList.get(position));
                             }
-                        }
-                    } else if (holder.checked.getVisibility() == View.VISIBLE) {//on click of checked box
-                        if (!isSelectedDueToParent) {
-                            Selcted_Test.remove(testRateMasterModel);
-                            notifyDataSetChanged();
 
-                            before_discount_layout2.setVisibility(View.VISIBLE);
-                            if (testRateMasterModel.getCode().equalsIgnoreCase(Constants.THYROTEST)) {
-                                testflag = false;
+
+                        } else if (productList.get(position).getCode().equalsIgnoreCase(Constants.CAGCA)) {
+                            boolean isCATC = false;
+                            for (int i = 0; i < Selcted_Test.size(); i++) {
+                                if (Selcted_Test.get(i).getCode().equalsIgnoreCase(Constants.CATC)) {
+                                    isCATC = true;
+                                    break;
+                                }
                             }
-
-                            showTestNmaes.remove(testRateMasterModel.getName());
-
-                            String displayslectedtest = TextUtils.join(",", showTestNmaes);
-                            show_selected_tests_list_test_ils1.setText(displayslectedtest);
-                            if (displayslectedtest.equals("")) {
-                                before_discount_layout2.setVisibility(View.GONE);
+                            if (isCATC) {
+                                BaseModel ProfileToSelect = null;
+                                for (int i = 0; i < AllProductArrayList.size(); i++) {
+                                    if (AllProductArrayList.get(i).getCode().equalsIgnoreCase(Constants.P690)) {
+                                        ProfileToSelect = AllProductArrayList.get(i);
+                                        break;
+                                    }
+                                }
+                                if (ProfileToSelect != null) {
+                                    CallCheckFunction(ProfileToSelect);
+                                } else {
+                                    CallCheckFunction(productList.get(position));
+                                }
+                            } else {
+                                CallCheckFunction(productList.get(position));
                             }
                         } else {
-                            alertDialogBuilder = new AlertDialog.Builder(ProductLisitngActivityNew.this);
-                            alertDialogBuilder
-                                    .setMessage(Html.fromHtml("This test was selected because of its parent. If you wish to remove this test please remove the parent: " + parentTestCode))
-                                    .setCancelable(true)
-                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            dialog.dismiss();
-                                        }
-                                    });
-                            AlertDialog alertDialog = alertDialogBuilder.create();
-                            alertDialog.show();
-
+                            CallCheckFunction(productList.get(position));
                         }
                     }
                 }
+
+                public void displayRecoProductBottomsheet(ArrayList<GetProductsRecommendedResModel.ProductListDTO> recoList) {
+
+                    String BaseTest = productList.get(position).getProduct();
+                    String TargetTest = "";
+                    String TargetRate = "";
+                    String setFinalRecoList = "";
+                    String setFinalRecoRate = "";
+                    ArrayList<String> TargetTestList = new ArrayList<>();
+                    ArrayList<String> TargetRateList = new ArrayList<>();
+                    String Orderdetails = typeName + ", " + patientYear + ", " + patientGender + ", " + referenceBy + ", " + labName;
+
+
+                    for (int i = 0; i < recoList.size(); i++) {
+                        // TargetTest = TextUtils.join(",", Collections.singleton(recoList.get(i).getTestsRecommended()));
+                        TargetTestList.add(recoList.get(i).getTestsRecommended());
+                    }
+                    for (int k = 0; k < TargetTestList.size(); k++) {
+                        HashSet<String> TargetRecoTest = new HashSet<>(TargetTestList);
+                        List<String> RecoTestList = new ArrayList<>(TargetRecoTest);
+                        TargetTest = TextUtils.join(",", RecoTestList);
+                        HashSet<String> test = new HashSet<String>(Arrays.asList(TargetTest.split(",")));
+                        setFinalRecoList = TextUtils.join(",", test);
+                    }
+                    for (int j = 0; j < recoList.size(); j++) {
+                        TargetRateList.add(recoList.get(j).getPrice());
+                    }
+                    for (int k = 0; k < TargetRateList.size(); k++) {
+                        HashSet<String> TargetRecoRate = new HashSet<>(TargetRateList);
+                        List<String> RecoRateList = new ArrayList<>(TargetRecoRate);
+                        TargetRate = TextUtils.join(",", RecoRateList);
+                        HashSet<String> rate = new HashSet<String>(Arrays.asList(TargetRate.split(",")));
+                        setFinalRecoRate = TextUtils.join(",", rate);
+                    }
+
+                    cleverTapHelper.recoShown_Event(BaseTest, String.valueOf(selectedProductRate), setFinalRecoList, setFinalRecoRate, Orderdetails);
+
+                    bottomSheetDialog = new BottomSheetDialog(mActivity, R.style.BottomSheetTheme);
+                    View bottomsheet = LayoutInflater.from(mActivity).inflate(R.layout.lay_recommended_dialog, mActivity.findViewById(R.id.ll_bottom_sheet));
+                    bottomSheetDialog.setContentView(bottomsheet);
+                    bottomSheetDialog.getWindow().setLayout(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+                    bottomSheetDialog.setCancelable(false);
+
+                    btn_reset = bottomsheet.findViewById(R.id.btn_reset);
+                    btn_next = bottomsheet.findViewById(R.id.btn_next);
+                    txt_selectedtest = bottomsheet.findViewById(R.id.txt_selectedtest);
+                    txt_TestRate = bottomsheet.findViewById(R.id.txt_TestRate);
+                    rb_testName = bottomsheet.findViewById(R.id.rb_testName);
+                    rcv_productreco = bottomsheet.findViewById(R.id.rcv_productreco);
+                    rgb_testname = bottomsheet.findViewById(R.id.rgb_testname);
+
+                    //setTextView
+                    Global.setTextview(txt_selectedtest, productList.get(position).getProduct());
+                    Global.setTextview(txt_TestRate, mActivity.getString(R.string.rupeeSymbol) + " " + String.valueOf(selectedProductRate));
+                    rb_testName.setSelected(true);
+                    rb_testName.setChecked(true);
+
+                    //set recyclerveiw
+                    productRecommendedAdapter = new ProductRecommendedAdapter(ProductLisitngActivityNew.this, recoList, mActivity, new ProductRecommendedAdapter.RecommondedTestInterface() {
+                        @Override
+                        public void SelectedTest(GetProductsRecommendedResModel.ProductListDTO SelectedTestMap, boolean ischecked) {
+                            selectedRecoTest = new ArrayList<>();
+                            selectedRecoTest.add(SelectedTestMap);
+                            rgb_testname.clearCheck();
+
+                        }
+                    });
+                    rcv_productreco.setAdapter(productRecommendedAdapter);
+
+                    btn_reset.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            bottomSheetDialog.dismiss();
+                        }
+                    });
+                    btn_next.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            bottomSheetDialog.dismiss();
+                            String selected_recoetest = "";
+                            String selected_recoerate = "";
+
+                            if (selectedRecoTest != null) {
+                                for (int j = 0; j < selectedRecoTest.size(); j++) {
+                                    for (int i = 0; i < AllProductArrayList.size(); i++) {
+                                        if (selectedRecoTest.get(j).getTestsRecommended().equalsIgnoreCase(AllProductArrayList.get(i).getProduct()) || selectedRecoTest.get(j).getTestsRecommended().equalsIgnoreCase(AllProductArrayList.get(i).getCode())) {
+                                            CallCheckFunction(AllProductArrayList.get(i));
+                                            break;
+                                        }
+
+                                    }
+                                    selected_recoetest = selectedRecoTest.get(j).getTestsRecommended();
+                                    selected_recoerate = selectedRecoTest.get(j).getPrice();
+
+                                }
+                                cleverTapHelper.reconextclick_Event(true, selected_recoetest, selected_recoerate);
+                            } else {
+                                cleverTapHelper.reconextclick_Event(false, "", "");
+                            }
+                        }
+                    });
+
+                    bottomSheetDialog.show();
+                }
             });
 
+        }
+
+        private ArrayList<GetProductsRecommendedResModel.ProductListDTO> getSelectedProductDetails(ArrayList<GetProductsRecommendedResModel.ProductListDTO> code) {
+            finalrecoList = code;
+            for (int i = 0; i < code.size(); i++) {
+                for (int j = 0; j < AllProductArrayList.size(); j++) {
+                    if (AllProductArrayList.get(j).getProduct().equalsIgnoreCase(finalrecoList.get(i).getTestsRecommended())) {
+                        recommendedProductRate = selectedProductRate + Integer.parseInt(AllProductArrayList.get(j).getRate().getB2c());
+                        finalrecoList.get(i).setPrice(String.valueOf(recommendedProductRate));
+                        break;
+                    }
+                }
+
+            }
+            return finalrecoList;
+        }
+
+
+        ArrayList<GetProductsRecommendedResModel.ProductListDTO> getRecoList(String code) {
+            ArrayList<GetProductsRecommendedResModel.ProductListDTO> modelArrayList = new ArrayList<>();
+            DatabaseHelper db = new DatabaseHelper(mActivity); //my database helper file
+            db.open();
+            Cursor cursor = db.getProductData(code);
+            cursor.moveToFirst();
+            if (cursor.moveToFirst()) {
+                do {
+                    GetProductsRecommendedResModel.ProductListDTO recoBaseModel = new GetProductsRecommendedResModel.ProductListDTO();
+                    recoBaseModel.setTestsAsked(cursor.getString(0));
+                    recoBaseModel.setTestsRecommended(cursor.getString(1));
+                    recoBaseModel.setTestsRecoDisplayName(cursor.getString(2));
+                    recoBaseModel.setRecommendationMsg(cursor.getString(3));
+
+
+                    modelArrayList.add(recoBaseModel);
+
+                } while (cursor.moveToNext());
+            }
+            return modelArrayList;
         }
 
         private void CallCheckFunction(final BaseModel testRateMasterModel) {
