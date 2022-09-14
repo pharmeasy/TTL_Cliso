@@ -43,11 +43,11 @@ public class RecoProductListController {
                 public void onResponse(Call<GetProductsRecommendedResModel> call, Response<GetProductsRecommendedResModel> response) {
                     if (response.isSuccessful() && response != null) {
                         GetProductsRecommendedResModel resModel = response.body();
-                        preferences = activity.getSharedPreferences("Product_Recommended", 0);
+                        /*preferences = activity.getSharedPreferences("Product_Recommended", 0);
                         SharedPreferences.Editor editor = activity.getSharedPreferences("Product_Recommended", 0).edit();
                         String str_storeProductRecommendedDate = preferences.getString("Product_Recommended", GlobalClass.getCurrentDate());
                         editor.putString("Product_Recommended", str_storeProductRecommendedDate);
-                        editor.apply();
+                        editor.apply();*/
 
                         recommendedResModel = new GetProductsRecommendedResModel();
                         String str_recommendedAPIResponse = new Gson().toJson(resModel);

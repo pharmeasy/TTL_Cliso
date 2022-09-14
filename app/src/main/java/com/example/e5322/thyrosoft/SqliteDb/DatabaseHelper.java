@@ -69,6 +69,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    public Cursor fetchData() {
+        Cursor cursor= this.database.query(TABLE_RECO_PRODUCT,new String[]{COL_TESTS_ASKED,COL_TESTS_RECOMMENDED,COL_RECOMMENDATION_MSG,COL_TESTS_RECO_DISPLAY_NAME},null,null,null,null,null);
+        if (cursor != null){
+            cursor.moveToFirst();
+        }
+        return cursor;
+    }
+
     public boolean insertData(String barcodes, String woejson) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();

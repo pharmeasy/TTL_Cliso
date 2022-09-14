@@ -14,22 +14,15 @@
         android:padding="@dimen/_5sdp"
         android:weightSum="3">
 
-        <RadioGroup
-            android:id="@+id/rgb_testname"
+
+        <CheckBox
+            android:id="@+id/rb_testName"
+            style="@style/Widget.AppCompat.CompoundButton.RadioButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/_4sdp"
-            android:layout_weight="0.3"
-            android:padding="@dimen/_5sdp">
-
-            <RadioButton
-                android:id="@+id/rb_testName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:buttonTint="@color/black" />
-
-        </RadioGroup>
-
+            android:layout_weight="0.2"
+            android:buttonTint="@color/black"
+            android:checked="false" />
 
         <TextView
             android:id="@+id/txt_selectedtest"

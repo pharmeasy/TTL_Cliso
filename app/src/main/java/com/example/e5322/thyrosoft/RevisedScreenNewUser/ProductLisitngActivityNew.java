@@ -26,6 +26,8 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
@@ -181,8 +183,8 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
     BottomSheetDialog bottomSheetDialog;
     Button btn_reset, btn_next;
     TextView txt_selectedtest, txt_TestRate, txt_recoTestName, txt_reco_message, txt_recoTestRate;
-    RadioButton rb_testName, rb_recoTestName;
-    RadioGroup rgb_testname, rdgrp_recotest;
+    CheckBox rb_testName, rb_recoTestName;
+    //RadioGroup rgb_testname, rdgrp_recotest;
     ProductRecommendedAdapter productRecommendedAdapter;
     RecyclerView rcv_productreco;
     ArrayList<GetProductsRecommendedResModel.ProductListDTO> finalrecoList;
@@ -1455,25 +1457,51 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                     txt_TestRate = bottomsheet.findViewById(R.id.txt_TestRate);
                     rb_testName = bottomsheet.findViewById(R.id.rb_testName);
                     rcv_productreco = bottomsheet.findViewById(R.id.rcv_productreco);
-                    rgb_testname = bottomsheet.findViewById(R.id.rgb_testname);
+//                    rgb_testname = bottomsheet.findViewById(R.id.rgb_testname);
 
                     //setTextView
                     Global.setTextview(txt_selectedtest, productList.get(position).getProduct());
                     Global.setTextview(txt_TestRate, mActivity.getString(R.string.rupeeSymbol) + " " + String.valueOf(selectedProductRate));
                     rb_testName.setSelected(true);
                     rb_testName.setChecked(true);
+                    rb_testName.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                            if (rb_testName.isChecked()) {
+
+                                productRecommendedAdapter = new ProductRecommendedAdapter(ProductLisitngActivityNew.this, recoList, mActivity, true, new ProductRecommendedAdapter.RecommondedTestInterface() {
+                                    @Override
+                                    public void SelectedTest(GetProductsRecommendedResModel.ProductListDTO SelectedTestMap) {
+                                        selectedRecoTest = new ArrayList<>();
+                                        selectedRecoTest.remove(SelectedTestMap);
+                                        rb_testName.setChecked(false);
+
+                                    }
+                                });
+                                rcv_productreco.setAdapter(productRecommendedAdapter);
+                            } else {
+                                productRecommendedAdapter = new ProductRecommendedAdapter(ProductLisitngActivityNew.this, recoList, mActivity, false, new ProductRecommendedAdapter.RecommondedTestInterface() {
+                                    @Override
+                                    public void SelectedTest(GetProductsRecommendedResModel.ProductListDTO SelectedTestMap) {
+                                        rb_testName.setChecked(false);
+                                    }
+                                });
+                                rcv_productreco.setAdapter(productRecommendedAdapter);
+                            }
+                        }
+                    });
 
                     //set recyclerveiw
                     productRecommendedAdapter = new ProductRecommendedAdapter(ProductLisitngActivityNew.this, recoList, mActivity, new ProductRecommendedAdapter.RecommondedTestInterface() {
                         @Override
-                        public void SelectedTest(GetProductsRecommendedResModel.ProductListDTO SelectedTestMap, boolean ischecked) {
+                        public void SelectedTest(GetProductsRecommendedResModel.ProductListDTO SelectedTestMap) {
                             selectedRecoTest = new ArrayList<>();
                             selectedRecoTest.add(SelectedTestMap);
-                            rgb_testname.clearCheck();
-
+                            rb_testName.setChecked(false);
                         }
                     });
                     rcv_productreco.setAdapter(productRecommendedAdapter);
+
 
                     btn_reset.setOnClickListener(new View.OnClickListener() {
                         @Override

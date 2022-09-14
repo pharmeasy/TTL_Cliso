@@ -159,6 +159,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     TextView version;
     DatabaseHelper databaseHelper;
     GetProductsRecommendedResModel recommendedResModel;
+    SharedPreferences recommendedPreference;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -266,7 +267,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         activity = this;
         appPreferenceManager = new AppPreferenceManager(activity);
         cd = new ConnectionDetector(activity);
-
+        recommendedPreference = activity.getSharedPreferences("Product_Recommended", MODE_PRIVATE);
         prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
         user = prefs.getString("Username", "");
         passwrd = prefs.getString("password", "");
@@ -537,7 +538,11 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 recoProductListController.fetchRecoProductList(Global.getLoginType(activity));
             } else {
                 //TODO fetch recommended tests from SQlite
-                getDataFromsharedprefernce();
+                // getDataFromsharedprefernce();
+                /*DatabaseHelper databaseHelper = new DatabaseHelper(activity);
+                databaseHelper.open();
+                Cursor cursor = databaseHelper.fetchData();
+                cursor.moveToFirst();*/
 
             }
 
@@ -553,10 +558,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         //GetProductsRecommendedResModel obj = gson.fromJson(json, GetProductsRecommendedResModel.class);
         recommendedResModel = new GetProductsRecommendedResModel();
         recommendedResModel = gson.fromJson(json, GetProductsRecommendedResModel.class);
-
-
-        //recommendedResModel = jsonObject;
-
         if (recommendedResModel != null) {
 
             if (recommendedResModel.getProductList() != null) {
@@ -2011,6 +2012,12 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         recommendedResModel = resModel;
         try {
             if (!GlobalClass.isNull(resModel.getRes_ID()) && resModel.getRes_ID().equalsIgnoreCase(Constants.RES0000)) {
+
+                SharedPreferences.Editor editor = activity.getSharedPreferences("Product_Recommended", MODE_PRIVATE).edit();
+                String str_storeProductRecommendedDate = recommendedPreference.getString("Product_Recommended", GlobalClass.getCurrentDate());
+                editor.putString("Product_Recommended", str_storeProductRecommendedDate);
+                editor.apply();
+
                 if (resModel.getProductList() != null) {
                     databaseHelper = new DatabaseHelper(activity);
                     databaseHelper.open();
@@ -2033,8 +2040,8 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     }
 
     public boolean validationCall(String currentDate) {
-        SharedPreferences preferences = getSharedPreferences("Product_Recommended", MODE_PRIVATE);
-        String str_apiCallDate = preferences.getString("Product_Recommended", "");
+        recommendedPreference = getSharedPreferences("Product_Recommended", MODE_PRIVATE);
+        String str_apiCallDate = recommendedPreference.getString("Product_Recommended", "");
         if (!GlobalClass.checkEqualIgnoreCase(str_apiCallDate, currentDate)) {
             return true;
         } else {

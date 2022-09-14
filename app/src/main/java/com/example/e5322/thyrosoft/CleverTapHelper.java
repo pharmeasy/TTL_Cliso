@@ -84,4 +84,22 @@ public class CleverTapHelper {
         }
     }
 
+    public void woeFailureEvent(String message, String status, String barcode_id, String patientId) {
+        try {
+            HashMap<String, Object> woeFailureData = new HashMap<>();
+            woeFailureData.put("message", message);
+            woeFailureData.put("Status", status);
+            woeFailureData.put("Barcode_Id", barcode_id);
+            woeFailureData.put("Patient_Id", patientId);
+
+            if (Constants.clevertapDefaultInstance != null) {
+                Constants.clevertapDefaultInstance.pushEvent("WOE_FAILURE", woeFailureData);
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
 }

@@ -12,6 +12,8 @@ public class GetProductsRecommendedResModel {
     private String response;
     @SerializedName("Res_ID")
     private String res_ID;
+
+
     @SerializedName("ProductList")
     private ArrayList<ProductListDTO> productList;
 
@@ -48,8 +50,17 @@ public class GetProductsRecommendedResModel {
         private String testsRecoDisplayName;
         @SerializedName("RecommendationMsg")
         private String recommendationMsg;
-
+        private boolean isMaintestSelected;
         private String price;
+        public boolean isMaintestSelected() {
+            return isMaintestSelected;
+        }
+
+        public void setMaintestSelected(boolean maintestSelected) {
+            isMaintestSelected = maintestSelected;
+        }
+
+
 
         public String getPrice() {
             return price;
