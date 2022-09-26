@@ -1848,6 +1848,8 @@ public class GlobalClass {
                 || checkEqualIgnoreCase(user_code, "PUN43") || checkEqualIgnoreCase(user_code, "PUN48") || checkEqualIgnoreCase(user_code, "AN704"));
     }
 
+
+
     public static int LongestStringSequence(String message) {
         int largestSequence = 0;
         char longestChar = '\0';
