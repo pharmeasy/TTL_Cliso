@@ -2,19 +2,19 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Cliso(v1.0.2.65).iml" filepath="$PROJECT_DIR$/.idea/modules/Cliso(v1.0.2.65).iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Cliso(v1.0.2.65).app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Cliso(v1.0.2.65).app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Cliso(v1.0.2.65).app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Cliso(v1.0.2.65).app.androidTest.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Cliso(v1.0.2.65).app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Cliso(v1.0.2.65).app.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Cliso(v1.0.2.65).app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Cliso(v1.0.2.65).app.unitTest.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/libraryViewPagerIndicator/Cliso(v1.0.2.65).libraryViewPagerIndicator.iml" filepath="$PROJECT_DIR$/.idea/modules/libraryViewPagerIndicator/Cliso(v1.0.2.65).libraryViewPagerIndicator.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/libraryViewPagerIndicator/Cliso(v1.0.2.65).libraryViewPagerIndicator.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/libraryViewPagerIndicator/Cliso(v1.0.2.65).libraryViewPagerIndicator.androidTest.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/libraryViewPagerIndicator/Cliso(v1.0.2.65).libraryViewPagerIndicator.main.iml" filepath="$PROJECT_DIR$/.idea/modules/libraryViewPagerIndicator/Cliso(v1.0.2.65).libraryViewPagerIndicator.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/libraryViewPagerIndicator/Cliso(v1.0.2.65).libraryViewPagerIndicator.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/libraryViewPagerIndicator/Cliso(v1.0.2.65).libraryViewPagerIndicator.unitTest.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sdkui/Cliso(v1.0.2.65).sdkui.iml" filepath="$PROJECT_DIR$/.idea/modules/sdkui/Cliso(v1.0.2.65).sdkui.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sdkui/Cliso(v1.0.2.65).sdkui.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/sdkui/Cliso(v1.0.2.65).sdkui.androidTest.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sdkui/Cliso(v1.0.2.65).sdkui.main.iml" filepath="$PROJECT_DIR$/.idea/modules/sdkui/Cliso(v1.0.2.65).sdkui.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sdkui/Cliso(v1.0.2.65).sdkui.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/sdkui/Cliso(v1.0.2.65).sdkui.unitTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Cliso1.0.2.64.iml" filepath="$PROJECT_DIR$/.idea/modules/Cliso1.0.2.64.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Cliso1.0.2.64.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Cliso1.0.2.64.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Cliso1.0.2.64.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Cliso1.0.2.64.app.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Cliso1.0.2.64.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Cliso1.0.2.64.app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Cliso1.0.2.64.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Cliso1.0.2.64.app.unitTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/libraryViewPagerIndicator/Cliso1.0.2.64.libraryViewPagerIndicator.iml" filepath="$PROJECT_DIR$/.idea/modules/libraryViewPagerIndicator/Cliso1.0.2.64.libraryViewPagerIndicator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/libraryViewPagerIndicator/Cliso1.0.2.64.libraryViewPagerIndicator.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/libraryViewPagerIndicator/Cliso1.0.2.64.libraryViewPagerIndicator.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/libraryViewPagerIndicator/Cliso1.0.2.64.libraryViewPagerIndicator.main.iml" filepath="$PROJECT_DIR$/.idea/modules/libraryViewPagerIndicator/Cliso1.0.2.64.libraryViewPagerIndicator.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/libraryViewPagerIndicator/Cliso1.0.2.64.libraryViewPagerIndicator.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/libraryViewPagerIndicator/Cliso1.0.2.64.libraryViewPagerIndicator.unitTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sdkui/Cliso1.0.2.64.sdkui.iml" filepath="$PROJECT_DIR$/.idea/modules/sdkui/Cliso1.0.2.64.sdkui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sdkui/Cliso1.0.2.64.sdkui.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/sdkui/Cliso1.0.2.64.sdkui.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sdkui/Cliso1.0.2.64.sdkui.main.iml" filepath="$PROJECT_DIR$/.idea/modules/sdkui/Cliso1.0.2.64.sdkui.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sdkui/Cliso1.0.2.64.sdkui.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/sdkui/Cliso1.0.2.64.sdkui.unitTest.iml" />
     </modules>
   </component>
 </project>

@@ -432,9 +432,9 @@ public class Global {
         arrayList.add(model);
 
         model = new MenusModel();
-        model.setMenuName("RECHARGE");
-        model.setMenuIcon(R.drawable.ic_rupees);
-        model.setMenuPosition(Constants.RECHARGE_MENU_POS);//101
+        model.setMenuName("WIND UP");
+        model.setMenuIcon(R.drawable.wind_up_data);
+        model.setMenuPosition(Constants.WINDUP_MENU_POS);//8
         arrayList.add(model);
 
         model = new MenusModel();
@@ -450,37 +450,35 @@ public class Global {
         arrayList.add(model);
 
         model = new MenusModel();
+        model.setMenuName("RECEIPT");
+        model.setMenuIcon(R.drawable.ic_rupees);
+        model.setMenuPosition(Constants.RECEIPT_MENU_POS);//4
+        arrayList.add(model);
+
+        model = new MenusModel();
         model.setMenuName("NOVID WOE");
         model.setMenuIcon(R.drawable.woe_d);
         model.setMenuPosition(Constants.NOVID_WOE_MENU_POS);//2
         arrayList.add(model);
 
         model = new MenusModel();
+        model.setMenuName("COVID WOE");
+        model.setMenuIcon(R.drawable.woe_d);
+        model.setMenuPosition(Constants.COVID_WOE_MENU_POS);//0
+        arrayList.add(model);
+
+        model = new MenusModel();
+        model.setMenuName("RECHARGE");
+        model.setMenuIcon(R.drawable.ic_rupees);
+        model.setMenuPosition(Constants.RECHARGE_MENU_POS);//101
+        arrayList.add(model);
+
+
+        model = new MenusModel();
         model.setMenuName("VIEW ALL");
         model.setMenuIcon(R.drawable.ic_viewall);
         model.setMenuPosition(Constants.NOVID_WOE_MENU_POS);//2
         arrayList.add(model);
-
-       /* model = new MenusModel();
-        model.setMenuName("WIND UP");
-        model.setMenuIcon(R.drawable.wind_up_data);
-        model.setMenuPosition(Constants.WINDUP_MENU_POS);//8
-        arrayList.add(model);
-
-        model = new MenusModel();
-        model.setMenuName("RECEIPT");
-        model.setMenuIcon(R.drawable.ic_rupees);
-        model.setMenuPosition(Constants.RECEIPT_MENU_POS);//4
-        arrayList.add(model);
-
-
-
-        model = new MenusModel();
-        model.setMenuName("COVID WOE");
-        model.setMenuIcon(R.drawable.woe_d);
-        model.setMenuPosition(Constants.COVID_WOE_MENU_POS);//0
-        arrayList.add(model);*/
-
 
         return arrayList;
     }
@@ -559,16 +557,5 @@ public class Global {
         return bannerHtml;
     }
 
-    public static String getAPIKey(Activity activity) {
-        String api_key = "";
-        try {
-            SharedPreferences preferences = activity.getSharedPreferences("Userdetails", Context.MODE_PRIVATE);
-            if (!GlobalClass.isNull(preferences.getString("API_KEY", ""))) {
-                api_key = preferences.getString("API_KEY", "");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return api_key;
-    }
+
 }

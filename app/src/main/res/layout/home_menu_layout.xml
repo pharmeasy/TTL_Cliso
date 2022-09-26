@@ -77,52 +77,6 @@
         app:cardCornerRadius="@dimen/_5sdp">
 
         <LinearLayout
-            android:id="@+id/ll_contact_support"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="@dimen/_8sdp"
-            android:weightSum="3">
-
-            <TextView
-                android:id="@+id/tv_support"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2.4"
-                android:text="Contact 24x7 Thyrocare Franchise Support"
-                android:textSize="@dimen/_14sdp"
-                android:textColor="@color/black"
-                android:padding="@dimen/_4sdp"
-                android:textStyle="bold"
-                android:textAlignment="viewStart" />
-
-            <ImageView
-                android:id="@+id/img_call"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.3"
-                android:layout_marginLeft="@dimen/_10sdp"
-                android:layout_marginRight="@dimen/_10sdp"
-                android:src="@drawable/call" />
-
-            <ImageView
-                android:id="@+id/img_whatsapp"
-                android:layout_width="@dimen/dimen_0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.3"
-                android:src="@drawable/ic_whatsapp" />
-
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/_8sdp"
-        android:elevation="@dimen/_5sdp"
-        app:cardCornerRadius="@dimen/_5sdp">
-
-        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"

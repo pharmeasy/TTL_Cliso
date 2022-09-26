@@ -64,7 +64,6 @@ import com.example.e5322.thyrosoft.Cliso_BMC.BMC_StockAvailabilityActivity;
 import com.example.e5322.thyrosoft.Controller.FeedBackQuestionsController;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Controller.LogUserActivityTagging;
-import com.example.e5322.thyrosoft.Controller.RecoProductListController;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.MyPojoWoe;
 import com.example.e5322.thyrosoft.Fragment.Offline_woe;
 import com.example.e5322.thyrosoft.GlobalClass;
@@ -72,7 +71,6 @@ import com.example.e5322.thyrosoft.HHHtest.SelectTestsActivity;
 import com.example.e5322.thyrosoft.Kotlin.KTActivity.AccreditationActivity;
 import com.example.e5322.thyrosoft.Kotlin.KTActivity.FAQ_activity;
 import com.example.e5322.thyrosoft.Models.FeedbackQuestionsResponseModel;
-import com.example.e5322.thyrosoft.Models.GetProductsRecommendedResModel;
 import com.example.e5322.thyrosoft.Models.GetVideoResponse_Model;
 import com.example.e5322.thyrosoft.Models.GetVideopost_model;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.AppPreferenceManager;
@@ -153,13 +151,10 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     AppPreferenceManager appPreferenceManager;
     ConnectionDetector cd;
     RecyclerView rcv_menus;
-    ImageView img_hmb, img_comm_d, img_notification, img_call, img_whatsapp;
-    LinearLayout ll_logout, ll_sync, ll_contact_support;
+    ImageView img_hmb, img_comm_d, img_notification;
+    LinearLayout ll_logout, ll_sync;
     WebView webView;
     TextView version;
-    DatabaseHelper databaseHelper;
-    GetProductsRecommendedResModel recommendedResModel;
-    SharedPreferences recommendedPreference;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -252,7 +247,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
         );
         setContentView(R.layout.activity_main_ll);
-        databaseHelper = new DatabaseHelper(this);
 
 
         Constants.clevertapDefaultInstance = CleverTapAPI.getDefaultInstance(getApplicationContext());
@@ -267,7 +261,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         activity = this;
         appPreferenceManager = new AppPreferenceManager(activity);
         cd = new ConnectionDetector(activity);
-        recommendedPreference = activity.getSharedPreferences("Product_Recommended", MODE_PRIVATE);
+
         prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
         user = prefs.getString("Username", "");
         passwrd = prefs.getString("password", "");
@@ -387,7 +381,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             }
             GetQuestions();
             openTermsAndConditions();
-            callRecoProductAPI();
         }
 
         try {
@@ -531,52 +524,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         GlobalClass.DisplayImgWithPlaceholderFromURL(activity, profile_image, imageViewprofile, R.drawable.userprofile);
     }
 
-    private void callRecoProductAPI() {
-        if (cd.isConnectingToInternet()) {
-            if (validationCall(GlobalClass.getCurrentDate())) {
-                RecoProductListController recoProductListController = new RecoProductListController(ManagingTabsActivity.this, activity);
-                recoProductListController.fetchRecoProductList(Global.getLoginType(activity));
-            } else {
-                //TODO fetch recommended tests from SQlite
-                // getDataFromsharedprefernce();
-                /*DatabaseHelper databaseHelper = new DatabaseHelper(activity);
-                databaseHelper.open();
-                Cursor cursor = databaseHelper.fetchData();
-                cursor.moveToFirst();*/
-
-            }
-
-        } else {
-            Toast.makeText(this, MessageConstants.CHECK_INTERNET_CONN, Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void getDataFromsharedprefernce() {
-        SharedPreferences preferences = getSharedPreferences("MyRecommendedProduct", MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = preferences.getString("MyRecommendedProduct", "");
-        //GetProductsRecommendedResModel obj = gson.fromJson(json, GetProductsRecommendedResModel.class);
-        recommendedResModel = new GetProductsRecommendedResModel();
-        recommendedResModel = gson.fromJson(json, GetProductsRecommendedResModel.class);
-        if (recommendedResModel != null) {
-
-            if (recommendedResModel.getProductList() != null) {
-                databaseHelper = new DatabaseHelper(activity);
-                databaseHelper.open();
-                databaseHelper.begintransaction();
-                databaseHelper.deleteAll("Reco_Product");
-                if (GlobalClass.isArraylistNotNull(recommendedResModel.getProductList())) {
-                    for (int i = 0; i < recommendedResModel.getProductList().size(); i++) {
-                        GetProductsRecommendedResModel.ProductListDTO productListDTO = recommendedResModel.getProductList().get(i);
-                        databaseHelper.insertRecoProductData(productListDTO);
-                    }
-                }
-                databaseHelper.endtransaction();
-                databaseHelper.close();
-            }
-        }
-    }
-
     private void initListner() {
         img_hmb.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -652,23 +599,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
             }
         });
-
-        img_whatsapp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent whatsappIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://api.whatsapp.com/send?phone=+918422888222" + "#"));
-                startActivity(whatsappIntent);
-            }
-        });
-
-        img_call.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_DIAL);
-                intent.setData(Uri.parse("tel:+918422888222"));
-                startActivity(intent);
-            }
-        });
     }
 
     private void init() {
@@ -680,10 +610,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         ll_logout = findViewById(R.id.ll_logout);
         ll_sync = findViewById(R.id.ll_sync);
         version = findViewById(R.id.version);
-        ll_contact_support = findViewById(R.id.ll_contact_support);
-        img_whatsapp = findViewById(R.id.img_whatsapp);
-        img_call = findViewById(R.id.img_call);
-
     }
 
     private void redirectToActivity(int menuPosition) {
@@ -1223,8 +1149,8 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             fragmentManager.beginTransaction()
                     .replace(R.id.container, fragment)
                     .commit();*/
-            Intent startIntent = new Intent(ManagingTabsActivity.this, Offline_woe.class);
-            startActivity(startIntent);
+                Intent startIntent = new Intent(ManagingTabsActivity.this, Offline_woe.class);
+                startActivity(startIntent);
 
         } else if (id == R.id.chn) {
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
@@ -2006,47 +1932,5 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             activity.startActivity(intent);
             ((Activity) activity).finish();
         }
-    }
-
-    public void getRecoProductResponse(GetProductsRecommendedResModel resModel) {
-        recommendedResModel = resModel;
-        try {
-            if (!GlobalClass.isNull(resModel.getRes_ID()) && resModel.getRes_ID().equalsIgnoreCase(Constants.RES0000)) {
-
-                SharedPreferences.Editor editor = activity.getSharedPreferences("Product_Recommended", MODE_PRIVATE).edit();
-                String str_storeProductRecommendedDate = recommendedPreference.getString("Product_Recommended", GlobalClass.getCurrentDate());
-                editor.putString("Product_Recommended", str_storeProductRecommendedDate);
-                editor.apply();
-
-                if (resModel.getProductList() != null) {
-                    databaseHelper = new DatabaseHelper(activity);
-                    databaseHelper.open();
-                    databaseHelper.begintransaction();
-                    databaseHelper.deleteAll("Reco_Product");
-                    if (GlobalClass.isArraylistNotNull(resModel.getProductList())) {
-                        for (int i = 0; i < resModel.getProductList().size(); i++) {
-                            GetProductsRecommendedResModel.ProductListDTO productListDTO = resModel.getProductList().get(i);
-                            databaseHelper.insertRecoProductData(productListDTO);
-                        }
-                    }
-                    databaseHelper.endtransaction();
-                    databaseHelper.close();
-                }
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public boolean validationCall(String currentDate) {
-        recommendedPreference = getSharedPreferences("Product_Recommended", MODE_PRIVATE);
-        String str_apiCallDate = recommendedPreference.getString("Product_Recommended", "");
-        if (!GlobalClass.checkEqualIgnoreCase(str_apiCallDate, currentDate)) {
-            return true;
-        } else {
-            return false;
-        }
-
     }
 }

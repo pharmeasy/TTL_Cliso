@@ -68,7 +68,6 @@ import com.example.e5322.thyrosoft.Adapter.SampleTypeBarcodeAdapter;
 import com.example.e5322.thyrosoft.Adapter.TRFDisplayAdapter;
 import com.example.e5322.thyrosoft.Adapter.ViewPagerAdapter;
 import com.example.e5322.thyrosoft.AsyncTaskPost_uploadfile;
-import com.example.e5322.thyrosoft.CleverTapHelper;
 import com.example.e5322.thyrosoft.Controller.GetLocationController;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Controller.LogUserActivityTagging;
@@ -270,7 +269,6 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     private boolean isprescition = false;
     private String ADDITIONAL1 = "";
     private SampleTypeBarcodeAdapter sampleTypeBarcodeAdapter;
-    CleverTapHelper cleverTapHelper;
 
 
     @SuppressLint({"WrongViewCast", "NewApi"})
@@ -331,8 +329,6 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         btn_choosefile_presc = findViewById(R.id.btn_choosefile_presc);
         lin_preview_pres = findViewById(R.id.lin_preview_pres);
         txt_fileupload_pres = findViewById(R.id.txt_fileupload_pres);
-
-        cleverTapHelper = new CleverTapHelper(Scan_Barcode_ILS_New.this);
 
         ll_location_note.setVisibility(cd.isConnectingToInternet() ? View.VISIBLE : View.GONE);
 
@@ -1660,7 +1656,6 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                                     } else {
                                         flagcallonce = false;
                                         TastyToast.makeText(Scan_Barcode_ILS_New.this, message, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                                        cleverTapHelper.woeFailureEvent(message, status, barcode_id, barcode_patient_id);
                                     }
                                 } else {
                                     flagcallonce = false;

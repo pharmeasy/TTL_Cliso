@@ -1845,7 +1845,7 @@ public class GlobalClass {
 
     public static boolean allowForOfflineUse(String user_code) {
         return !isNull(user_code) && (checkEqualIgnoreCase(user_code, "PUN52") || checkEqualIgnoreCase(user_code, "PJ011")
-                || checkEqualIgnoreCase(user_code, "PUN43") || checkEqualIgnoreCase(user_code, "PUN48"));
+                || checkEqualIgnoreCase(user_code, "PUN43") || checkEqualIgnoreCase(user_code, "PUN48") || checkEqualIgnoreCase(user_code, "AN704"));
     }
 
     public static int LongestStringSequence(String message) {

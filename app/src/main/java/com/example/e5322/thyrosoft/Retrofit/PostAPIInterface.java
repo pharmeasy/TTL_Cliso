@@ -20,7 +20,6 @@ import com.example.e5322.thyrosoft.Models.Covidotpresponse;
 import com.example.e5322.thyrosoft.Models.Covidratemodel;
 import com.example.e5322.thyrosoft.Models.EmailModel;
 import com.example.e5322.thyrosoft.Models.EmailValidationResponse;
-import com.example.e5322.thyrosoft.Models.GetProductsRecommendedResModel;
 import com.example.e5322.thyrosoft.Models.GetVideoLanguageWiseRequestModel;
 import com.example.e5322.thyrosoft.Models.Hospital_model;
 import com.example.e5322.thyrosoft.Models.Hospital_req;
@@ -54,11 +53,9 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
-import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
-import retrofit2.http.Path;
 
 public interface PostAPIInterface {
 
@@ -146,7 +143,4 @@ public interface PostAPIInterface {
 
     @POST("MatrixData")
     Call<EscalationMatrixResponseModel> getMatrix(@Body EscalationMatrixRequestModel escalationMatrixRequestModel);
-
-    @GET("ProductsRecommended/{tenant_id}")
-    Call<GetProductsRecommendedResModel> getProductRecommended(@Header("API_KEY") String apiKey, @Path("tenant_id") int tenant_id);
 }
