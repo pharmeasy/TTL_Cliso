@@ -1848,8 +1848,6 @@ public class GlobalClass {
                 || checkEqualIgnoreCase(user_code, "PUN43") || checkEqualIgnoreCase(user_code, "PUN48") || checkEqualIgnoreCase(user_code, "AN704"));
     }
 
-
-
     public static int LongestStringSequence(String message) {
         int largestSequence = 0;
         char longestChar = '\0';
@@ -1889,13 +1887,14 @@ public class GlobalClass {
         int intvalue = Integer.parseInt(value);
         return numberFormat.format(intvalue);
     }
+
     public static boolean isNumeric(String s) {
         return s != null && s.matches("^[0-9]*$");
     }
 
-    public static void redirectToPreviousPosition(Context context , int position) {
+    public static void redirectToPreviousPosition(Context context, int position) {
         Intent intent = new Intent(context, HomeMenuActivity.class);
-        intent.putExtra("position",position);
+        intent.putExtra("position", position);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
     }
