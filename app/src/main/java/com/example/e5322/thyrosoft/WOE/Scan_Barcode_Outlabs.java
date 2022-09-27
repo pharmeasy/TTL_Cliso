@@ -69,6 +69,7 @@ import com.example.e5322.thyrosoft.Adapter.SampleTypeBarcodeAdapter;
 import com.example.e5322.thyrosoft.Adapter.TRFDisplayAdapter;
 import com.example.e5322.thyrosoft.Adapter.ViewPagerAdapter;
 import com.example.e5322.thyrosoft.AsyncTaskPost_uploadfile;
+import com.example.e5322.thyrosoft.CleverTapHelper;
 import com.example.e5322.thyrosoft.Controller.GetLocationController;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Controller.LogUserActivityTagging;
@@ -89,6 +90,7 @@ import com.example.e5322.thyrosoft.Models.ResponseModels.VerifyBarcodeResponseMo
 import com.example.e5322.thyrosoft.Models.ResponseModels.WOEResponseModel;
 import com.example.e5322.thyrosoft.Models.TRFModel;
 import com.example.e5322.thyrosoft.R;
+import com.example.e5322.thyrosoft.RevisedScreenNewUser.Scan_Barcode_ILS_New;
 import com.example.e5322.thyrosoft.ScannedBarcodeDetails;
 import com.example.e5322.thyrosoft.SqliteDb.DatabaseHelper;
 import com.example.e5322.thyrosoft.ToastFile;
@@ -247,6 +249,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
     private boolean checkBarcodeFlag = false;
     private BottomSheetDialog bottomSheetDialog;
     private SampleTypeBarcodeAdapter sampleTypeBarcodeAdapter;
+    CleverTapHelper cleverTapHelper;
 
     public static String Req_Date_Req(String time, String inputPattern, String outputPattern) {
         SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
@@ -352,6 +355,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         tv_location = findViewById(R.id.tv_location);
         tv_lab = findViewById(R.id.tv_lab);
         ll_location_note = findViewById(R.id.ll_location_note);
+        cleverTapHelper = new CleverTapHelper(Scan_Barcode_Outlabs.this);
 
         ll_location_note.setVisibility(cd.isConnectingToInternet() ? View.VISIBLE : View.GONE);
 
@@ -1804,6 +1808,8 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                                 Gson woeGson = new Gson();
                                 WOEResponseModel woeResponseModel = woeGson.fromJson(String.valueOf(response), WOEResponseModel.class);
                                 barcode_patient_id = woeResponseModel.getBarcode_patient_id();
+                                status = woeResponseModel.getStatus();
+                                barcode_id = woeResponseModel.getBarcode_id();
                                 Log.e(TAG, "BARCODE PATIENT ID --->" + barcode_patient_id);
                                 message = woeResponseModel.getMessage();
                                 if (woeResponseModel != null) {
@@ -1822,6 +1828,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                                     } else {
                                         flagcallonce = false;
                                         TastyToast.makeText(Scan_Barcode_Outlabs.this, message, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                        cleverTapHelper.woeFailureEvent(message, status, barcode_id, barcode_patient_id);
                                     }
                                 } else {
                                     flagcallonce = false;

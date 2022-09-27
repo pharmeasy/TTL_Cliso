@@ -7,9 +7,8 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.example.e5322.thyrosoft.Models.TRFModel;
-
-import java.util.ArrayList;
+import com.example.e5322.thyrosoft.GlobalClass;
+import com.example.e5322.thyrosoft.Models.GetProductsRecommendedResModel;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "Offline_Woe.db";
@@ -19,19 +18,55 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_3 = "WOEJSON";
     public static final String COL_4 = "ERROR";
 
+    //Recommended Product
+    public static final String TABLE_RECO_PRODUCT = "Reco_Product";
+    public static final String COL_TESTS_ASKED = "TestsAsked";
+    public static final String COL_TESTS_RECOMMENDED = "TestsRecommended";
+    public static final String COL_TESTS_RECO_DISPLAY_NAME = "TestsRecoDisplayName";
+    public static final String COL_RECOMMENDATION_MSG = "RecommendationMsg";
+    public static final String COL_TEST_PACKAGE_LIST = "TestsPackage";
+
     public DatabaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, 2);
+        super(context, DATABASE_NAME, null, 3);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table " + TABLE_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT,BARCODES TEXT,WOEJSON TEXT,ERROR TEXT)");
+        db.execSQL("create table " + TABLE_RECO_PRODUCT + "(TestsAsked TEXT,TestsRecommended TEXT,TestsRecoDisplayName TEXT,RecommendationMsg TEXT,TestsPackage TEXT)");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_RECO_PRODUCT);
         onCreate(db);
+    }
+
+    public void insertRecoProductData(GetProductsRecommendedResModel.ProductListDTO productListDTO) {
+        SQLiteDatabase database = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_TESTS_ASKED, !GlobalClass.isNull(productListDTO.getTestsAsked()) ? productListDTO.getTestsAsked() : "");
+        contentValues.put(COL_TESTS_RECOMMENDED, !GlobalClass.isNull(productListDTO.getTestsRecommended()) ? productListDTO.getTestsRecommended() : "");
+        contentValues.put(COL_TESTS_RECO_DISPLAY_NAME, !GlobalClass.isNull(productListDTO.getTestsRecoDisplayName()) ? productListDTO.getTestsRecoDisplayName() : "");
+        contentValues.put(COL_RECOMMENDATION_MSG, !GlobalClass.isNull(productListDTO.getRecommendationMsg()) ? productListDTO.getRecommendationMsg() : "");
+        contentValues.put(COL_TEST_PACKAGE_LIST, String.valueOf(GlobalClass.CheckArrayList(productListDTO.getTestsPackageList()) ? productListDTO.getTestsPackageList() : ""));
+        database.insert(TABLE_RECO_PRODUCT, null, contentValues);
+
+    }
+
+    public Cursor getProductData(String test_code) {
+        SQLiteDatabase database = this.getWritableDatabase();
+        Cursor cursor = database.rawQuery("select * from " + TABLE_RECO_PRODUCT + " WHERE TestsAsked = " + "'" + test_code + "'", null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+        return cursor;
+    }
+
+    public void deleteAll(String tablename) {
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        sqLiteDatabase.execSQL("delete from " + tablename);
     }
 
     public boolean insertData(String barcodes, String woejson) {

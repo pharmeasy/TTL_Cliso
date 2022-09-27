@@ -1887,14 +1887,13 @@ public class GlobalClass {
         int intvalue = Integer.parseInt(value);
         return numberFormat.format(intvalue);
     }
-
     public static boolean isNumeric(String s) {
         return s != null && s.matches("^[0-9]*$");
     }
 
-    public static void redirectToPreviousPosition(Context context, int position) {
+    public static void redirectToPreviousPosition(Context context , int position) {
         Intent intent = new Intent(context, HomeMenuActivity.class);
-        intent.putExtra("position", position);
+        intent.putExtra("position",position);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
     }
