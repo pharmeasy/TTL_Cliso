@@ -43,14 +43,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void insertRecoProductData(GetProductsRecommendedResModel.ProductListDTO productListDTO) {
+    public void insertRecoProductData(GetProductsRecommendedResModel.ProductListDTO productListDTO, String s) {
         SQLiteDatabase database = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_TESTS_ASKED, !GlobalClass.isNull(productListDTO.getTestsAsked()) ? productListDTO.getTestsAsked() : "");
         contentValues.put(COL_TESTS_RECOMMENDED, !GlobalClass.isNull(productListDTO.getTestsRecommended()) ? productListDTO.getTestsRecommended() : "");
         contentValues.put(COL_TESTS_RECO_DISPLAY_NAME, !GlobalClass.isNull(productListDTO.getTestsRecoDisplayName()) ? productListDTO.getTestsRecoDisplayName() : "");
         contentValues.put(COL_RECOMMENDATION_MSG, !GlobalClass.isNull(productListDTO.getRecommendationMsg()) ? productListDTO.getRecommendationMsg() : "");
-        contentValues.put(COL_TEST_PACKAGE_LIST, String.valueOf(GlobalClass.CheckArrayList(productListDTO.getTestsPackageList()) ? productListDTO.getTestsPackageList() : ""));
+        contentValues.put(COL_TEST_PACKAGE_LIST, !GlobalClass.isNull(s) ? s : "");
         database.insert(TABLE_RECO_PRODUCT, null, contentValues);
 
     }

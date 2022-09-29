@@ -101,13 +101,6 @@ public class ProductRecommendedAdapter extends RecyclerView.Adapter<ProductRecom
         return listDTOS.size();
     }
 
-  /*  public void setOnItemClickListener(OnClickRecoTestListner clickListener) {
-        this.onClickRecoTestListner = clickListener;
-    }
-*/
-
-
-
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView txt_reco_message, txt_recoTestRate;

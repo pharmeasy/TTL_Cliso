@@ -536,7 +536,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         if (cd.isConnectingToInternet()) {
             if (validationCall(GlobalClass.getCurrentDate())) {
                 RecoProductListController recoProductListController = new RecoProductListController(ManagingTabsActivity.this, activity);
-                recoProductListController.fetchRecoProductList(Global.getLoginType(activity));
+                recoProductListController.fetchRecoProductList(api_key,Global.getLoginType(activity));
             }
         } else {
             Toast.makeText(this, MessageConstants.CHECK_INTERNET_CONN, Toast.LENGTH_SHORT).show();
@@ -2001,7 +2001,10 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                     if (GlobalClass.isArraylistNotNull(resModel.getProductList())) {
                         for (int i = 0; i < resModel.getProductList().size(); i++) {
                             GetProductsRecommendedResModel.ProductListDTO productListDTO = resModel.getProductList().get(i);
-                            databaseHelper.insertRecoProductData(productListDTO);
+                            ArrayList<String> strings = resModel.getProductList().get(i).getTestsPackageList();
+                            String s = String.join(",", strings);
+                            System.out.println(">>>>>>>>>>>>>>>>>>> arraylistString " + s);
+                            databaseHelper.insertRecoProductData(productListDTO,s);
                         }
                     }
                     databaseHelper.close();

@@ -136,14 +136,13 @@ public interface PostAPIInterface {
 
     @POST("getPatients")
     Call<PatientDetailsAPiResponseModel> CallGetPatientDetailsAPI(@Body GetPatientDetailsRequestModel requestModel);
-
     @Multipart
     @POST("DocumentUpload")
     Call<UploadPrescResponseModel> UploadPrescriptionAPI(@Part MultipartBody.Part ImgUrl,
-                                                         @Part("SourceCode") RequestBody SourceCode,
-                                                         @Part("Patientid") RequestBody Patientid,
-                                                         @Part("DocType") RequestBody DocType,
-                                                         @Part("ENTRYBY") RequestBody ENTRYBY);
+                                               @Part("SourceCode") RequestBody SourceCode,
+                                               @Part("Patientid") RequestBody Patientid,
+                                               @Part("DocType") RequestBody DocType,
+                                               @Part("ENTRYBY") RequestBody ENTRYBY);
 
     @POST("MatrixData")
     Call<EscalationMatrixResponseModel> getMatrix(@Body EscalationMatrixRequestModel escalationMatrixRequestModel);

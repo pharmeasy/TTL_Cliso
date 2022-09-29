@@ -1197,7 +1197,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
         Context context;
         ArrayList<BaseModel> productList;
         CleverTapHelper cleverTapHelper = new CleverTapHelper(mActivity);
-        int selectedProductRate, recommendedProductRate;
+        int selectedProductRate, recommendedProductRate, recoRate;
         BottomSheetDialog bottomSheetDialog;
         Button btn_reset, btn_next;
         TextView txt_selectedtest, txt_TestRate;
@@ -1294,8 +1294,10 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                 public void onClick(View v) {
 
                     ArrayList<GetProductsRecommendedResModel.ProductListDTO> recoList = getRecoList(productList.get(position).getProduct());
-                    selectedProductRate = Integer.parseInt(productList.get(position).getRate().getB2c());
 
+                    for (int i = 0; i < productList.get(position).getBrandDtls().size(); i++) {
+                        selectedProductRate = Integer.parseInt(productList.get(position).getBrandDtls().get(i).getBrandRate());
+                    }
                     if (recoList.size() > 0) {
 
                         //on click of blank box
@@ -1491,10 +1493,14 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                     for (int i = 0; i < code.size(); i++) {
                         for (int j = 0; j < AllProductArrayList.size(); j++) {
                             if (AllProductArrayList.get(j).getProduct().equalsIgnoreCase(finalrecoList.get(i).getTestsRecommended()) || AllProductArrayList.get(j).getCode().equalsIgnoreCase(finalrecoList.get(i).getTestsRecommended())) {
+
+                                for (int k = 0; k < AllProductArrayList.get(j).getBrandDtls().size(); k++) {
+                                    recoRate = Integer.parseInt(AllProductArrayList.get(j).getBrandDtls().get(k).getBrandRate());
+                                }
                                 if (finalrecoList.get(i).getTestsRecoDisplayName().contains("+")) {
-                                    recommendedProductRate = selectedProductRate + Integer.parseInt(AllProductArrayList.get(j).getRate().getB2c());
+                                    recommendedProductRate = selectedProductRate + recoRate;
                                 } else {
-                                    recommendedProductRate = Integer.parseInt(AllProductArrayList.get(j).getRate().getB2c());
+                                    recommendedProductRate = recoRate;
                                 }
                                 finalrecoList.get(i).setPrice(String.valueOf(recommendedProductRate));
                                 break;
@@ -1552,8 +1558,8 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                     rb_testName = bottomsheet.findViewById(R.id.rb_testName);
                     rcv_productreco = bottomsheet.findViewById(R.id.rcv_productreco);
 
-                    Global.setTextview(rb_testName, productList.get(position).getProduct());
-                    rb_testName.setText(productList.get(position).getProduct());
+                    // Global.setTextview(rb_testName, productList.get(position).getName());
+                    rb_testName.setText(productList.get(position).getName());
                     Global.setTextview(txt_TestRate, mActivity.getString(R.string.rupeeSymbol) + " " + String.valueOf(selectedProductRate));
                     productRecommendedAdapter = new ProductRecommendedAdapter(ProductLisitngActivityNew.this, listDTOS, mActivity);
                     rcv_productreco.setAdapter(productRecommendedAdapter);
@@ -1569,11 +1575,19 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                     rb_testName.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            productRecommendedAdapter = new ProductRecommendedAdapter(ProductLisitngActivityNew.this, listDTOS, mActivity);
+                            productRecommendedAdapter = new ProductRecommendedAdapter(ProductLisitngActivityNew.this, listDTOS, mActivity, new AppInterfaces.OnClickRecoTestListner() {
+                                @Override
+                                public void onchecked(GetProductsRecommendedResModel.ProductListDTO listDTOS, boolean isChecked, boolean isMainChecked) {
+                                    if (isMainChecked) {
+                                        rb_testName.setChecked(false);
+                                        SelectedTestMap = new ArrayList<>();
+                                        SelectedTestMap.add(listDTOS);
+                                    }
+                                }
+                            });
+                            rcv_productreco.setAdapter(productRecommendedAdapter);
                             SelectedTestMap = new ArrayList<>();
                             SelectedTestMap.remove(listDTOS);
-                            productRecommendedAdapter.notifyDataSetChanged();
-                            rcv_productreco.setAdapter(productRecommendedAdapter);
                         }
                     });
                     productRecommendedAdapter = new ProductRecommendedAdapter(ProductLisitngActivityNew.this, listDTOS, mActivity, new AppInterfaces.OnClickRecoTestListner() {
@@ -1583,6 +1597,9 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                                 SelectedTestMap = new ArrayList<>();
                                 SelectedTestMap.add(listDTOS);
                                 rb_testName.setChecked(false);
+                            } else {
+                                SelectedTestMap.remove(listDTOS);
+                                rb_testName.setChecked(true);
                             }
                         }
                     });
@@ -1600,6 +1617,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                                     for (int i = 0; i < AllProductArrayList.size(); i++) {
                                         System.out.println(SelectedTestMap.get(j).getTestsPackageList() + " >>>>>>>>>>>>>>>>> Test Packages");
                                         if (SelectedTestMap.get(j).getTestsRecommended().equalsIgnoreCase(AllProductArrayList.get(i).getProduct()) || SelectedTestMap.get(j).getTestsRecommended().equalsIgnoreCase(AllProductArrayList.get(i).getCode())) {
+
                                             CallCheckFunction(AllProductArrayList.get(i));
                                             break;
                                         }
@@ -1629,10 +1647,16 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                         do {
                             GetProductsRecommendedResModel.ProductListDTO recoBaseModel = new GetProductsRecommendedResModel.ProductListDTO();
 
+                            String str_TestPackages = cursor.getString(4);
+                            String[] arrayTestPackages = str_TestPackages.split(",");
+                            List<String> string = Arrays.asList(arrayTestPackages);
+                            ArrayList<String> arrayPackageList = new ArrayList<String>(string);
+
                             recoBaseModel.setTestsAsked(cursor.getString(0));
                             recoBaseModel.setTestsRecommended(cursor.getString(1));
                             recoBaseModel.setTestsRecoDisplayName(cursor.getString(2));
                             recoBaseModel.setRecommendationMsg(cursor.getString(3));
+                            recoBaseModel.setTestsPackageList(arrayPackageList);
 
 
                             modelArrayList.add(recoBaseModel);

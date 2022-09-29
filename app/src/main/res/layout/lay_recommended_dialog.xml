@@ -23,6 +23,7 @@
             android:layout_weight="2.1"
             android:text="T3-T4-TSH + Lipid Profile combo"
             android:buttonTint="@color/black"
+            android:textSize="@dimen/_14sdp"
             android:textStyle="bold"
             android:checked="false" />
 
