@@ -543,6 +543,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         }
     }
 
+
     private boolean validationCall(String currentDate) {
         recommendedPreference = getSharedPreferences("Product_Recommended", MODE_PRIVATE);
         String str_apiCallDate = recommendedPreference.getString("Product_Recommended", "");

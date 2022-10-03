@@ -55,14 +55,13 @@ public class CleverTapHelper {
             HashMap<String, Object> recoShownData = new HashMap<>();
             recoShownData.put("Base_Test", BaseTest);
             recoShownData.put("Base_Rate", BaseRate);
-            recoShownData.put("Target_Test", TargetTest + "," + BaseTest);
+            recoShownData.put("Target_Test", TargetTest);
             recoShownData.put("Target_Rate", TargetRate);
             recoShownData.put("Order_Details", OrderDetails);
 
             if (Constants.clevertapDefaultInstance != null) {
                 Constants.clevertapDefaultInstance.pushEvent("reco_shown", recoShownData);
             }
-
         } catch (Exception ex) {
             ex.printStackTrace();
         }

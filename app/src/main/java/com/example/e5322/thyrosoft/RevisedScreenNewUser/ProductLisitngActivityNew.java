@@ -1490,20 +1490,21 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
 
                 public ArrayList<GetProductsRecommendedResModel.ProductListDTO> getSelectedProductDetails(ArrayList<GetProductsRecommendedResModel.ProductListDTO> code) {
                     finalrecoList = code;
-                    for (int i = 0; i < code.size(); i++) {
-                        for (int j = 0; j < AllProductArrayList.size(); j++) {
-                            if (AllProductArrayList.get(j).getProduct().equalsIgnoreCase(finalrecoList.get(i).getTestsRecommended()) || AllProductArrayList.get(j).getCode().equalsIgnoreCase(finalrecoList.get(i).getTestsRecommended())) {
+                    for (int i = 0; i < finalrecoList.size(); i++) {
+                        String s = finalrecoList.get(i).getTestsRecommended();
+                        String[] arrayTestPackages = s.split(",");
+                        List<String> string = Arrays.asList(arrayTestPackages);
+                        recoRate = 0;
+                        for (int a = 0; a < string.size(); a++) {
+                            for (int j = 0; j < AllProductArrayList.size(); j++) {
+                                if (AllProductArrayList.get(j).getProduct().equalsIgnoreCase(string.get(a)) || AllProductArrayList.get(j).getCode().equalsIgnoreCase(string.get(a))) {
+                                    for (int k = 0; k < AllProductArrayList.get(j).getBrandDtls().size(); k++) {
+                                        recoRate = recoRate + Integer.parseInt(AllProductArrayList.get(j).getBrandDtls().get(k).getBrandRate());
 
-                                for (int k = 0; k < AllProductArrayList.get(j).getBrandDtls().size(); k++) {
-                                    recoRate = Integer.parseInt(AllProductArrayList.get(j).getBrandDtls().get(k).getBrandRate());
+                                    }
+                                    finalrecoList.get(i).setPrice(String.valueOf(recoRate));
+                                    break;
                                 }
-                                if (finalrecoList.get(i).getTestsRecoDisplayName().contains("+")) {
-                                    recommendedProductRate = selectedProductRate + recoRate;
-                                } else {
-                                    recommendedProductRate = recoRate;
-                                }
-                                finalrecoList.get(i).setPrice(String.valueOf(recommendedProductRate));
-                                break;
                             }
                         }
 
@@ -1520,6 +1521,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                     ArrayList<String> TargetTestList = new ArrayList<>();
                     ArrayList<String> TargetRateList = new ArrayList<>();
                     String Orderdetails = typeName + ", " + patientYear + ", " + patientGender + ", " + referenceBy + ", " + labName;
+
 
                     //for cleverTap
                     for (int i = 0; i < listDTOS.size(); i++) {
@@ -1613,28 +1615,30 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                             String selected_recoetest = "";
                             String selected_recoerate = "";
                             if (SelectedTestMap != null) {
+                                Selcted_Test.remove(testRateMasterModel);
                                 for (int j = 0; j < SelectedTestMap.size(); j++) {
-                                    for (int i = 0; i < AllProductArrayList.size(); i++) {
-                                        System.out.println(SelectedTestMap.get(j).getTestsPackageList() + " >>>>>>>>>>>>>>>>> Test Packages");
-                                        if (SelectedTestMap.get(j).getTestsRecommended().equalsIgnoreCase(AllProductArrayList.get(i).getProduct()) || SelectedTestMap.get(j).getTestsRecommended().equalsIgnoreCase(AllProductArrayList.get(i).getCode())) {
-
-                                            CallCheckFunction(AllProductArrayList.get(i));
-                                            break;
+                                    String s = SelectedTestMap.get(j).getTestsRecommended();
+                                    String[] arrayTestPackages = s.split(",");
+                                    List<String> recoTest = Arrays.asList(arrayTestPackages);
+                                    for (int k = 0; k < recoTest.size(); k++) {
+                                        for (int i = 0; i < AllProductArrayList.size(); i++) {
+                                            if (recoTest.get(k).equalsIgnoreCase(AllProductArrayList.get(i).getProduct()) || recoTest.get(k).equalsIgnoreCase(AllProductArrayList.get(i).getCode())) {
+                                                CallCheckFunction(AllProductArrayList.get(i));
+                                                break;
+                                            }
                                         }
                                     }
                                     selected_recoetest = SelectedTestMap.get(j).getTestsRecommended();
                                     selected_recoerate = SelectedTestMap.get(j).getPrice();
                                 }
+
                                 cleverTapHelper.reconextclick_Event(true, selected_recoetest, selected_recoerate);
                             } else {
                                 cleverTapHelper.reconextclick_Event(false, "", "");
                             }
                         }
                     });
-
                     bottomSheetDialog.show();
-
-
                 }
 
                 private ArrayList<GetProductsRecommendedResModel.ProductListDTO> getRecoList(String code) {
