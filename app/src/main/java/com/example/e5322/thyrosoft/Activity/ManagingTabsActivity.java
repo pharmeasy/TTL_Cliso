@@ -536,7 +536,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         if (cd.isConnectingToInternet()) {
             if (validationCall(GlobalClass.getCurrentDate())) {
                 RecoProductListController recoProductListController = new RecoProductListController(ManagingTabsActivity.this, activity);
-                recoProductListController.fetchRecoProductList(api_key,Global.getLoginType(activity));
+                recoProductListController.fetchRecoProductList(api_key, Global.getLoginType(activity));
             }
         } else {
             Toast.makeText(this, MessageConstants.CHECK_INTERNET_CONN, Toast.LENGTH_SHORT).show();
@@ -630,7 +630,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             }
         });
 
-        img_whatsapp.setOnClickListener(new View.OnClickListener() {
+        ll_contact_support.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent whatsappIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://api.whatsapp.com/send?phone=+918422888222" + "#"));
@@ -1200,8 +1200,8 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             fragmentManager.beginTransaction()
                     .replace(R.id.container, fragment)
                     .commit();*/
-            Intent startIntent = new Intent(ManagingTabsActivity.this, Offline_woe.class);
-            startActivity(startIntent);
+                Intent startIntent = new Intent(ManagingTabsActivity.this, Offline_woe.class);
+                startActivity(startIntent);
 
         } else if (id == R.id.chn) {
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
@@ -1856,6 +1856,10 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         editor.clear();
         editor.commit();
 
+        SharedPreferences.Editor product_recommended = getSharedPreferences("Product_Recommended", 0).edit();
+        product_recommended.clear();
+        product_recommended.commit();
+
         SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(ManagingTabsActivity.this);
         SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
         prefsEditor1.clear();
@@ -1997,15 +2001,13 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
                 if (resModel.getProductList() != null) {
                     databaseHelper = new DatabaseHelper(activity);
-                    databaseHelper.open();
                     databaseHelper.deleteAll("Reco_Product");
+                    databaseHelper.open();
+
                     if (GlobalClass.isArraylistNotNull(resModel.getProductList())) {
                         for (int i = 0; i < resModel.getProductList().size(); i++) {
                             GetProductsRecommendedResModel.ProductListDTO productListDTO = resModel.getProductList().get(i);
-                            ArrayList<String> strings = resModel.getProductList().get(i).getTestsPackageList();
-                            String s = String.join(",", strings);
-                            System.out.println(">>>>>>>>>>>>>>>>>>> arraylistString " + s);
-                            databaseHelper.insertRecoProductData(productListDTO,s);
+                            databaseHelper.insertRecoProductData(productListDTO);
                         }
                     }
                     databaseHelper.close();

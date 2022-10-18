@@ -1,5 +1,7 @@
 package com.example.e5322.thyrosoft.RevisedScreenNewUser;
 
+import static com.example.e5322.thyrosoft.ToastFile.invalid_brcd;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -11,7 +13,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -24,8 +25,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.volley.RequestQueue;
 import com.example.e5322.thyrosoft.API.Global;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.MyPojoWoe;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.Woe;
@@ -45,12 +51,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import static com.example.e5322.thyrosoft.ToastFile.invalid_brcd;
 
 public class Offline_edt_activity extends AppCompatActivity implements RecyclerInterface {
     ProgressDialog barProgressDialog;
@@ -492,7 +492,7 @@ public class Offline_edt_activity extends AppCompatActivity implements RecyclerI
 
         woe.setEMAIL_ID(myPojoWoe.getWoe().getEMAIL_ID());
         woe.setENTERED_BY(myPojoWoe.getWoe().getENTERED_BY());
-        woe.setGENDER(myPojoWoe.getWoe().getGENDER());
+        woe.setGENDER(saveGenderId);
         woe.setLAB_ADDRESS(myPojoWoe.getWoe().getLAB_ADDRESS());
         woe.setLAB_ID(myPojoWoe.getWoe().getLAB_ID());
         woe.setLAB_NAME(myPojoWoe.getWoe().getLAB_NAME());

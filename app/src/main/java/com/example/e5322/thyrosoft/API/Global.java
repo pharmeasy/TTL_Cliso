@@ -485,7 +485,9 @@ public class Global {
     }
 
     public static String bannersToDisplay(Activity activity) {
+        SharedPreferences preferences = activity.getSharedPreferences("Userdetails", Context.MODE_PRIVATE);
         String loginType = String.valueOf(getLoginType(activity));
+        String sourceType = preferences.getString("SOURCE_TYPE", "");
         String bannerHtml = "<!DOCTYPE html>\n" +
                 "<html lang=\"en\">\n" +
                 "<head>\n" +
@@ -520,9 +522,9 @@ public class Global {
                 "      var iframeEl = document.getElementById(\"bannerIFrame\");\n" +
                 "      window.onload = function () {\n" +
                 "        iframeEl.contentWindow.postMessage({type: 'bannerConditions', payload: {\n" +
-                "        \"tenant_id\": \"" + loginType + "\",\n" +
+                "        \"tenant_id\": \""+loginType+"\",\n" +
                 "        \"citi_name\": \"Bengaluru\",\n" +
-                "        \"category\": \"GQC\",\n" +
+                "        \"category\": \""+sourceType+"\",\n" +
                 "        \"banner_location_id\": \"CLISOAPP\",\n" +
                 "        \"device\": \"MOBILE\"\n" +
                 "    }, ruleName: \"dx_franchise_cliso_banners\"},\"*\");\n" +
@@ -558,17 +560,5 @@ public class Global {
         return bannerHtml;
     }
 
-    public static String getAPIKey(Activity activity) {
-        String api_key = "";
-        try {
-            SharedPreferences preferences = activity.getSharedPreferences("Userdetails", Context.MODE_PRIVATE);
-            if (!GlobalClass.isNull(preferences.getString("API_KEY", ""))) {
-                api_key = preferences.getString("API_KEY", "");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return api_key;
-    }
 
 }

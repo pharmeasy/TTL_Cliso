@@ -42,18 +42,13 @@ public class RecoProductListController {
                     if (response.isSuccessful() && response.body() != null) {
                         GetProductsRecommendedResModel resModel = response.body();
 
-                        /*preferences = activity.getSharedPreferences("Product_Recommended", 0);
-                        SharedPreferences.Editor editor = activity.getSharedPreferences("Product_Recommended", 0).edit();
-                        String str_storeProductRecommendedDate = preferences.getString("Product_Recommended", GlobalClass.getCurrentDate());
-                        editor.putString("Product_Recommended", str_storeProductRecommendedDate);
-                        editor.apply();*/
-
                         recommendedResModel = new GetProductsRecommendedResModel();
                         String str_recommendedAPIResponse = new Gson().toJson(resModel);
                         SharedPreferences appSharedPrefs = activity.getSharedPreferences("MyRecommendedProduct", Context.MODE_PRIVATE);
                         SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
                         prefsEditor1.putString("MyRecommendedProduct", str_recommendedAPIResponse);
                         prefsEditor1.apply();
+
                         managingTabsActivity.getRecoProductResponse(resModel);
                     }
                 }

@@ -1,6 +1,7 @@
 package com.example.e5322.thyrosoft.RevisedScreenNewUser;
 
 import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
+import static com.example.e5322.thyrosoft.GlobalClass.listdata;
 import static com.example.e5322.thyrosoft.GlobalClass.redirectToLogin;
 import static com.example.e5322.thyrosoft.ToastFile.invalid_brcd;
 
@@ -179,8 +180,8 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
     private String version;
     ArrayList<TRFModel> trf_list = new ArrayList<>();
     private String source_type;
-    ArrayList<GetProductsRecommendedResModel.ProductListDTO> finalrecoList;
-    ArrayList<GetProductsRecommendedResModel.ProductListDTO> SelectedTestMap;
+    ArrayList<GetProductsRecommendedResModel.ProductListDTO> finalrecoList = new ArrayList<>();
+    ArrayList<GetProductsRecommendedResModel.ProductListDTO> SelectedTestMap = new ArrayList<>();
 
 
     @SuppressLint("NewApi")
@@ -1197,10 +1198,10 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
         Context context;
         ArrayList<BaseModel> productList;
         CleverTapHelper cleverTapHelper = new CleverTapHelper(mActivity);
-        int selectedProductRate, recommendedProductRate, recoRate;
+        int selectedProductRate, recoRate;
         BottomSheetDialog bottomSheetDialog;
         Button btn_reset, btn_next;
-        TextView txt_selectedtest, txt_TestRate;
+        TextView txt_TestRate;
         RadioButton rb_testName;
         RecyclerView rcv_productreco;
         ProductRecommendedAdapter productRecommendedAdapter;
@@ -1525,7 +1526,6 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
 
                     //for cleverTap
                     for (int i = 0; i < listDTOS.size(); i++) {
-                        // TargetTest = TextUtils.join(",", Collections.singleton(recoList.get(i).getTestsRecommended()));
                         TargetTestList.add(listDTOS.get(i).getTestsRecommended());
                     }
                     for (int k = 0; k < TargetTestList.size(); k++) {
@@ -1555,12 +1555,10 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
 
                     btn_reset = bottomsheet.findViewById(R.id.btn_reset);
                     btn_next = bottomsheet.findViewById(R.id.btn_next);
-                    // txt_selectedtest = bottomsheet.findViewById(R.id.txt_selectedtest);
                     txt_TestRate = bottomsheet.findViewById(R.id.txt_TestRate);
                     rb_testName = bottomsheet.findViewById(R.id.rb_testName);
                     rcv_productreco = bottomsheet.findViewById(R.id.rcv_productreco);
 
-                    // Global.setTextview(rb_testName, productList.get(position).getName());
                     rb_testName.setText(productList.get(position).getName());
                     Global.setTextview(txt_TestRate, mActivity.getString(R.string.rupeeSymbol) + " " + String.valueOf(selectedProductRate));
                     productRecommendedAdapter = new ProductRecommendedAdapter(ProductLisitngActivityNew.this, listDTOS, mActivity);
@@ -1572,6 +1570,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                             bottomSheetDialog.dismiss();
                         }
                     });
+
 
                     rb_testName.setChecked(true);
                     rb_testName.setOnClickListener(new View.OnClickListener() {
@@ -1587,9 +1586,9 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                                     }
                                 }
                             });
-                            rcv_productreco.setAdapter(productRecommendedAdapter);
                             SelectedTestMap = new ArrayList<>();
                             SelectedTestMap.remove(listDTOS);
+                            rcv_productreco.setAdapter(productRecommendedAdapter);
                         }
                     });
                     productRecommendedAdapter = new ProductRecommendedAdapter(ProductLisitngActivityNew.this, listDTOS, mActivity, new AppInterfaces.OnClickRecoTestListner() {
@@ -1614,29 +1613,43 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                             bottomSheetDialog.dismiss();
                             String selected_recoetest = "";
                             String selected_recoerate = "";
-                            if (SelectedTestMap != null) {
-                                Selcted_Test.remove(testRateMasterModel);
-                                for (int j = 0; j < SelectedTestMap.size(); j++) {
-                                    String s = SelectedTestMap.get(j).getTestsRecommended();
-                                    String[] arrayTestPackages = s.split(",");
-                                    List<String> recoTest = Arrays.asList(arrayTestPackages);
-                                    for (int k = 0; k < recoTest.size(); k++) {
-                                        for (int i = 0; i < AllProductArrayList.size(); i++) {
-                                            if (recoTest.get(k).equalsIgnoreCase(AllProductArrayList.get(i).getProduct()) || recoTest.get(k).equalsIgnoreCase(AllProductArrayList.get(i).getCode())) {
-                                                CallCheckFunction(AllProductArrayList.get(i));
-                                                break;
+                            try {
+                                if (SelectedTestMap.size() > 0 && SelectedTestMap != null) {
+                                    Selcted_Test.remove(testRateMasterModel);
+                                    ArrayList<GetProductsRecommendedResModel.ProductListDTO> tempMap = new ArrayList<>();
+                                    //SelectedTestMap =RemoveDuplicate();
+                                    for (int j = 0; j < SelectedTestMap.size(); j++) {
+
+                                        String str_testRecommended = SelectedTestMap.get(j).getTestsRecommended();
+                                        String[] arrayTestPackages = str_testRecommended.split(",");
+                                        List<String> recoTest = Arrays.asList(arrayTestPackages);
+
+
+                                        for (int k = 0; k < recoTest.size(); k++) {
+                                            for (int i = 0; i < AllProductArrayList.size(); i++) {
+                                                if (recoTest.get(k).equalsIgnoreCase(AllProductArrayList.get(i).getProduct()) || recoTest.get(k).equalsIgnoreCase(AllProductArrayList.get(i).getCode())) {
+                                                    CallCheckFunction(AllProductArrayList.get(i));
+
+                                                }
                                             }
                                         }
-                                    }
-                                    selected_recoetest = SelectedTestMap.get(j).getTestsRecommended();
-                                    selected_recoerate = SelectedTestMap.get(j).getPrice();
-                                }
 
-                                cleverTapHelper.reconextclick_Event(true, selected_recoetest, selected_recoerate);
-                            } else {
-                                cleverTapHelper.reconextclick_Event(false, "", "");
+
+                                        selected_recoetest = SelectedTestMap.get(j).getTestsRecommended();
+                                        selected_recoerate = SelectedTestMap.get(j).getPrice();
+                                        SelectedTestMap.removeAll(listDTOS);
+                                    }
+
+                                    cleverTapHelper.reconextclick_Event(true, selected_recoetest, selected_recoerate);
+                                } else {
+
+                                    cleverTapHelper.reconextclick_Event(false, "", "");
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
                         }
+
                     });
                     bottomSheetDialog.show();
                 }
@@ -1646,26 +1659,22 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                     DatabaseHelper db = new DatabaseHelper(mActivity); //my database helper file
                     db.open();
                     Cursor cursor = db.getProductData(code);
-                    cursor.moveToFirst();
-                    if (cursor.moveToFirst()) {
-                        do {
-                            GetProductsRecommendedResModel.ProductListDTO recoBaseModel = new GetProductsRecommendedResModel.ProductListDTO();
 
-                            String str_TestPackages = cursor.getString(4);
-                            String[] arrayTestPackages = str_TestPackages.split(",");
-                            List<String> string = Arrays.asList(arrayTestPackages);
-                            ArrayList<String> arrayPackageList = new ArrayList<String>(string);
+                    if (cursor != null) {
+                        cursor.moveToFirst();
+                        if (cursor.moveToFirst()) {
+                            do {
+                                GetProductsRecommendedResModel.ProductListDTO recoBaseModel = new GetProductsRecommendedResModel.ProductListDTO();
 
-                            recoBaseModel.setTestsAsked(cursor.getString(0));
-                            recoBaseModel.setTestsRecommended(cursor.getString(1));
-                            recoBaseModel.setTestsRecoDisplayName(cursor.getString(2));
-                            recoBaseModel.setRecommendationMsg(cursor.getString(3));
-                            recoBaseModel.setTestsPackageList(arrayPackageList);
+                                recoBaseModel.setTestsAsked(cursor.getString(0));
+                                recoBaseModel.setTestsRecommended(cursor.getString(1));
+                                recoBaseModel.setTestsRecoDisplayName(cursor.getString(2));
+                                recoBaseModel.setRecommendationMsg(cursor.getString(3));
 
+                                modelArrayList.add(recoBaseModel);
 
-                            modelArrayList.add(recoBaseModel);
-
-                        } while (cursor.moveToNext());
+                            } while (cursor.moveToNext());
+                        }
                     }
                     return modelArrayList;
                 }
@@ -1834,6 +1843,23 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
 
             before_discount_layout2.setVisibility(View.VISIBLE);
             showTestNmaes = new ArrayList<>();
+
+            ArrayList<BaseModel> tempMap = new ArrayList<>();
+            for (int i = 0; i < Selcted_Test.size(); i++) {
+                boolean isExist = false;
+                for (int k = 0; k < tempMap.size(); k++) {
+                    if (Selcted_Test.get(i).getCode().equals(tempMap.get(k).getCode()) || Selcted_Test.get(i).getProduct().equals(tempMap.get(k).getCode())) {
+                        isExist = true;
+                    }
+                }
+                if (!isExist) {
+                    tempMap.add(Selcted_Test.get(i));
+                }
+
+            }
+            Selcted_Test = tempMap;
+
+            System.out.println("test model>>>>>>>>>>>" + new Gson().toJson(tempMap));
 
             for (int i = 0; i < Selcted_Test.size(); i++) {
                 showTestNmaes.add(Selcted_Test.get(i).getName());
