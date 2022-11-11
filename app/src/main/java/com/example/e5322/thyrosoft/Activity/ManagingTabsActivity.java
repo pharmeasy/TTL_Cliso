@@ -42,10 +42,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
@@ -59,6 +61,8 @@ import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.frags.RapidAntibodyFrag;
 import com.example.e5322.thyrosoft.Adapter.HomeMenusAdapter;
+import com.example.e5322.thyrosoft.Adapter.PackageAdapter;
+import com.example.e5322.thyrosoft.Controller.PackageController;
 import com.example.e5322.thyrosoft.BuildConfig;
 import com.example.e5322.thyrosoft.Cliso_BMC.BMC_StockAvailabilityActivity;
 import com.example.e5322.thyrosoft.Controller.FeedBackQuestionsController;
@@ -75,6 +79,8 @@ import com.example.e5322.thyrosoft.Models.FeedbackQuestionsResponseModel;
 import com.example.e5322.thyrosoft.Models.GetProductsRecommendedResModel;
 import com.example.e5322.thyrosoft.Models.GetVideoResponse_Model;
 import com.example.e5322.thyrosoft.Models.GetVideopost_model;
+import com.example.e5322.thyrosoft.Models.PackageReqModel;
+import com.example.e5322.thyrosoft.Models.PackageResponseModel;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.AppPreferenceManager;
 import com.example.e5322.thyrosoft.Models.RequestModels.GetBaselineDetailsRequestModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.FeedbackQuestionRequestModel;
@@ -154,12 +160,15 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     ConnectionDetector cd;
     RecyclerView rcv_menus;
     ImageView img_hmb, img_comm_d, img_notification, img_call, img_whatsapp;
-    LinearLayout ll_logout, ll_sync, ll_contact_support;
+    LinearLayout ll_logout, ll_sync, ll_contact_support, ll_package;
     WebView webView;
     TextView version;
     DatabaseHelper databaseHelper;
     GetProductsRecommendedResModel recommendedResModel;
     SharedPreferences recommendedPreference;
+    CardView card_banner;
+    RecyclerView rcv_packages;
+    PackageAdapter packageAdapter;
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -311,6 +320,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         GlobalClass.SetText(version, "Version " + Version);
 
         callRecoProductAPI();
+        callPackageAPI();
 
         HomeMenusAdapter adapter = new HomeMenusAdapter(this, Global.getMenusList());
         adapter.setOnItemClickListener(new HomeMenusAdapter.OnItemClickListener() {
@@ -378,7 +388,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             }
         }
 
-        if (Global.getLoginType(activity) != Constants.PEflag) {
+        /*if (Global.getLoginType(activity) != Constants.PEflag) {
             if (Global.showratedialog) {
                 Global.showratedialog = false;
                 if (appPreferenceManager.getVersionResponseModel() != null && !GlobalClass.isNull(appPreferenceManager.getVersionResponseModel().getIsShow())) {
@@ -386,10 +396,10 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                         ShowratePopup();
                     }
                 }
-            }
+            }*/
             GetQuestions();
             openTermsAndConditions();
-        }
+       // }
 
         try {
             db = new DatabaseHelper(ManagingTabsActivity.this);
@@ -532,6 +542,21 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         GlobalClass.DisplayImgWithPlaceholderFromURL(activity, profile_image, imageViewprofile, R.drawable.userprofile);
     }
 
+    private void callPackageAPI() {
+        PackageReqModel packageReqModel = new PackageReqModel();
+        PackageReqModel.FactsDTO factsDTO = new PackageReqModel.FactsDTO();
+        factsDTO.setCategory("GQC");
+        factsDTO.setCiti_name("Bengaluru");
+        factsDTO.setTenant_id(0);
+        factsDTO.setDevice("WEB");
+
+        packageReqModel.setFacts(factsDTO);
+        packageReqModel.setRuleName("dx_cliso_widgets_v0");
+
+        PackageController packageController = new PackageController(ManagingTabsActivity.this, activity);
+        packageController.fetchPackages(packageReqModel);
+    }
+
     private void callRecoProductAPI() {
         if (cd.isConnectingToInternet()) {
             if (validationCall(GlobalClass.getCurrentDate())) {
@@ -660,6 +685,9 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         ll_contact_support = findViewById(R.id.ll_contact_support);
         img_whatsapp = findViewById(R.id.img_whatsapp);
         img_call = findViewById(R.id.img_call);
+      //  card_banner = findViewById(R.id.card_banner);
+        rcv_packages = findViewById(R.id.rcv_packages);
+        ll_package = findViewById(R.id.ll_package);
 
     }
 
@@ -1200,8 +1228,8 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             fragmentManager.beginTransaction()
                     .replace(R.id.container, fragment)
                     .commit();*/
-                Intent startIntent = new Intent(ManagingTabsActivity.this, Offline_woe.class);
-                startActivity(startIntent);
+            Intent startIntent = new Intent(ManagingTabsActivity.this, Offline_woe.class);
+            startActivity(startIntent);
 
         } else if (id == R.id.chn) {
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
@@ -2017,5 +2045,30 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void getPackageResponse(PackageResponseModel packageResponseModel) {
+        try {
+            if (packageResponseModel != null) {
+                ArrayList<PackageResponseModel.ResultDTO.WidgetDTO> widgetDTOS = new ArrayList<>();
+                if (packageResponseModel.getResult().getWidget() != null)
+                    /*if (model.getResult().getWidget() != null)*/ {
+                    widgetDTOS.addAll(packageResponseModel.getResult().getWidget());
+
+
+                    ll_package.setVisibility(View.VISIBLE);
+                    rcv_packages.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+                    packageAdapter = new PackageAdapter(activity, widgetDTOS);
+                    rcv_packages.setAdapter(packageAdapter);
+
+                } else {
+                    ll_package.setVisibility(View.GONE);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }

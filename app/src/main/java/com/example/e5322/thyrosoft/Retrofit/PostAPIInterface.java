@@ -28,6 +28,8 @@ import com.example.e5322.thyrosoft.Models.LeadDataResponseModel;
 import com.example.e5322.thyrosoft.Models.LeadRequestModel;
 import com.example.e5322.thyrosoft.Models.LeadResponseModel;
 import com.example.e5322.thyrosoft.Models.OTPrequest;
+import com.example.e5322.thyrosoft.Models.PackageReqModel;
+import com.example.e5322.thyrosoft.Models.PackageResponseModel;
 import com.example.e5322.thyrosoft.Models.PayTmChecksumRequestModel;
 import com.example.e5322.thyrosoft.Models.PayTmChecksumResponseModel;
 import com.example.e5322.thyrosoft.Models.PostBarcodeModel;
@@ -149,4 +151,7 @@ public interface PostAPIInterface {
 
     @GET("ProductsRecommended/{tenant_id}")
     Call<GetProductsRecommendedResModel> getProductRecommended(@Header("API_KEY") String apiKey, @Path("tenant_id") int tenant_id);
+
+    @POST("banner")
+    Call<PackageResponseModel> getPackages(@Body PackageReqModel packageReqModel);
 }

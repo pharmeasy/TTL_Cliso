@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -14,6 +15,7 @@ import android.view.WindowManager;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,7 +36,6 @@ import com.example.e5322.thyrosoft.Models.PincodeMOdel.CommunicationRepsponseMod
 import com.example.e5322.thyrosoft.Models.RequestModels.GetCommunicationsRequestModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 import com.sdsmdg.tastytoast.TastyToast;
 
@@ -47,7 +48,7 @@ public class Communication_Activity extends AppCompatActivity {
 
     public static com.android.volley.RequestQueue PostQueOtp;
     public static RequestQueue PostQue;
-    FloatingActionButton addCommunication;
+    RelativeLayout whatsapp_support,rl_support;
     TextView FromCPL, ToCPL;
     ImageView back, home;
     ImageView enter_arrow_enter, enter_arrow_entered;
@@ -81,7 +82,8 @@ public class Communication_Activity extends AppCompatActivity {
         enter_arrow_entered = (ImageView) findViewById(R.id.enter_arrow_entered);
         unchecked_entered_ll = (LinearLayout) findViewById(R.id.unchecked_entered_ll);
         enter_ll_unselected = (LinearLayout) findViewById(R.id.enter_ll_unselected);
-        addCommunication = (FloatingActionButton) findViewById(R.id.addCommunication);
+        rl_support = findViewById(R.id.rl_support);
+        whatsapp_support = findViewById(R.id.whatsapp_support);
         offline_img = (LinearLayout) findViewById(R.id.offline_img);
         prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
         user = prefs.getString("Username", "");
@@ -173,12 +175,15 @@ public class Communication_Activity extends AppCompatActivity {
             }
         });
 
-        addCommunication.setOnClickListener(new View.OnClickListener() {
+        whatsapp_support.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(Communication_Activity.this, ComposeCommunication_activity.class);
+                /*Intent i = new Intent(Communication_Activity.this, ComposeCommunication_activity.class);
 //                i.putExtra("comefrom", comefrom);
-                startActivity(i);
+                startActivity(i);*/
+
+                Intent whatsappIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://api.whatsapp.com/send?phone=+918422888222" + "#"));
+                startActivity(whatsappIntent);
             }
         });
 

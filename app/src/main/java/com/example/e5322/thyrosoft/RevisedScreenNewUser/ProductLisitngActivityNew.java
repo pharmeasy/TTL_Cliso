@@ -1,7 +1,8 @@
 package com.example.e5322.thyrosoft.RevisedScreenNewUser;
 
 import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
-import static com.example.e5322.thyrosoft.GlobalClass.listdata;
+import static com.example.e5322.thyrosoft.API.Constants.kycType;
+import static com.example.e5322.thyrosoft.API.Constants.pincode;
 import static com.example.e5322.thyrosoft.GlobalClass.redirectToLogin;
 import static com.example.e5322.thyrosoft.ToastFile.invalid_brcd;
 
@@ -27,7 +28,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
@@ -1548,7 +1548,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                     cleverTapHelper.recoShown_Event(BaseTest, String.valueOf(selectedProductRate), setFinalRecoList, setFinalRecoRate, Orderdetails);
 
                     bottomSheetDialog = new BottomSheetDialog(mActivity, R.style.BottomSheetTheme);
-                    View bottomsheet = LayoutInflater.from(mActivity).inflate(R.layout.lay_recommended_dialog, mActivity.findViewById(R.id.ll_bottom_sheet));
+                    View bottomsheet = LayoutInflater.from(mActivity).inflate(R.layout.lay_recommended_dialog, mActivity.findViewById(R.id.ll_reco_bottomsheet));
                     bottomSheetDialog.setContentView(bottomsheet);
                     bottomSheetDialog.getWindow().setLayout(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
                     bottomSheetDialog.setCancelable(false);

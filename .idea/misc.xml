@@ -101,17 +101,36 @@
         <entry key="..\:/ClisoLatest/Cliso GIT/app/src/main/res/layout/woe_list_ll.xml" value="0.21419410004275333" />
         <entry key="..\:/ClisoLatest/Cliso GIT/app/src/main/res/menu/activity_main_drawer.xml" value="0.21419410004275333" />
         <entry key="..\:/ClisoLatest/Cliso GIT/app/src/main/res/menu/navigation.xml" value="0.21419410004275333" />
+        <entry key="..\:/ClisoRecoExperiment/app/src/main/res/drawable/border.xml" value="0.2585" />
+        <entry key="..\:/ClisoRecoExperiment/app/src/main/res/drawable/border_background.xml" value="0.2585" />
+        <entry key="..\:/ClisoRecoExperiment/app/src/main/res/drawable/border_background_green.xml" value="0.1345" />
+        <entry key="..\:/ClisoRecoExperiment/app/src/main/res/drawable/button_background.xml" value="0.2095" />
+        <entry key="..\:/ClisoRecoExperiment/app/src/main/res/drawable/button_bg.xml" value="0.2585" />
         <entry key="..\:/ClisoRecoExperiment/app/src/main/res/drawable/dottedborder_backgraound.xml" value="0.195" />
+        <entry key="..\:/ClisoRecoExperiment/app/src/main/res/drawable/next_button.xml" value="0.2585" />
+        <entry key="..\:/ClisoRecoExperiment/app/src/main/res/drawable/shadow.xml" value="0.2585" />
+        <entry key="..\:/ClisoRecoExperiment/app/src/main/res/drawable/transprent_background_button.xml" value="0.2095" />
+        <entry key="..\:/ClisoRecoExperiment/app/src/main/res/layout/activity_consignment_entry_form.xml" value="0.2911500641299701" />
         <entry key="..\:/ClisoRecoExperiment/app/src/main/res/layout/activity_escalation_matrix.xml" value="0.2911500641299701" />
+        <entry key="..\:/ClisoRecoExperiment/app/src/main/res/layout/activity_main_ll.xml" value="0.2911500641299701" />
         <entry key="..\:/ClisoRecoExperiment/app/src/main/res/layout/activity_poduct_lisitng.xml" value="0.16545532278751604" />
+        <entry key="..\:/ClisoRecoExperiment/app/src/main/res/layout/activity_woepayment.xml" value="0.2911500641299701" />
+        <entry key="..\:/ClisoRecoExperiment/app/src/main/res/layout/app_bar_main_data.xml" value="0.2911500641299701" />
+        <entry key="..\:/ClisoRecoExperiment/app/src/main/res/layout/fragment_communication.xml" value="0.2911500641299701" />
         <entry key="..\:/ClisoRecoExperiment/app/src/main/res/layout/fragment_edit__woe.xml" value="0.2911500641299701" />
         <entry key="..\:/ClisoRecoExperiment/app/src/main/res/layout/fragment_offline_workorder.xml" value="0.2911500641299701" />
+        <entry key="..\:/ClisoRecoExperiment/app/src/main/res/layout/fragment_start__new__woe.xml" value="0.2911500641299701" />
         <entry key="..\:/ClisoRecoExperiment/app/src/main/res/layout/fragment_test__rate_.xml" value="0.2911500641299701" />
         <entry key="..\:/ClisoRecoExperiment/app/src/main/res/layout/home_menu_layout.xml" value="0.2911500641299701" />
+        <entry key="..\:/ClisoRecoExperiment/app/src/main/res/layout/lay_contact_support.xml" value="0.2911500641299701" />
+        <entry key="..\:/ClisoRecoExperiment/app/src/main/res/layout/lay_package_details.xml" value="0.33" />
+        <entry key="..\:/ClisoRecoExperiment/app/src/main/res/layout/lay_petct.xml" value="0.1" />
         <entry key="..\:/ClisoRecoExperiment/app/src/main/res/layout/lay_recommended_dialog.xml" value="0.33" />
+        <entry key="..\:/ClisoRecoExperiment/app/src/main/res/layout/lay_sample_dialog.xml" value="0.2911500641299701" />
         <entry key="..\:/ClisoRecoExperiment/app/src/main/res/layout/offline_edt_ll.xml" value="0.2911500641299701" />
         <entry key="..\:/ClisoRecoExperiment/app/src/main/res/layout/product_recommend_lay.xml" value="0.2902949978623343" />
         <entry key="..\:/ClisoRecoExperiment/app/src/main/res/layout/single_layout_woe_patient_details.xml" value="0.2911500641299701" />
+        <entry key="..\:/ClisoRecoExperiment/app/src/main/res/layout/single_ll_test_list.xml" value="0.2911500641299701" />
         <entry key="..\:/ClisoRecoExperiment/app/src/main/res/layout/view_menu_item.xml" value="0.2911500641299701" />
         <entry key="..\:/GIT/Cliso GIT/app/src/main/res/drawable/bg_rounded_button.xml" value="0.1295" />
         <entry key="..\:/GIT/Cliso GIT/app/src/main/res/drawable/bg_rounded_button_grey.xml" value="0.1295" />

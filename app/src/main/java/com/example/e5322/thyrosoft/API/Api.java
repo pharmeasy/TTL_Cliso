@@ -3,7 +3,7 @@ package com.example.e5322.thyrosoft.API;
 
 public class Api {
     //TODO live
-  /*  public static String LIVEAPI = "https://b2capi.thyrocare.com/API/B2B/";
+    /*public static String LIVEAPI = "https://b2capi.thyrocare.com/API/B2B/";
     public static String Cloud_base = "https://clisoapi.thyrocare.com/v1/";
     public static String URL_with_http = "https://b2capi.thyrocare.com/API/B2B/";
     public static String SGC = "https://b2capi.thyrocare.com/API/BDN/api/";
@@ -39,6 +39,7 @@ public class Api {
     public static String Cloud_base_v2 = "http://stagingclisoapi.thyrocare.com/v2/";
 
 
+    public static String PACKAGE_API = "https://clisomw.thyrocare.com/";
     public static String imgURL = "http://www.charbi.com/assets/photo/Emp/";
     public static String traningvideo = "http://www.charbi.com//CDN//Applications//Android//XiaoYing_Video_1547111134141.mp4";
     public static final String APIKEYFORPAYMENTGATEWAY_PAYU = "yLZ4cKcEgPsnZn1s9b9FHhR9cUbO4AdM0z3fvmKQjiw=";

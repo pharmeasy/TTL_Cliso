@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
@@ -72,8 +72,8 @@
                     android:gravity="center"
                     android:text="From CPL"
                     android:textAllCaps="true"
-                    android:textSize="@dimen/value"
-                    android:textColor="@color/colorBlack" />
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/value" />
 
                 <ImageView
                     android:id="@+id/enter_arrow_enter"
@@ -105,9 +105,9 @@
                     android:background="@color/lightgray"
                     android:gravity="center"
                     android:text="To CPL"
-                    android:textSize="@dimen/value"
                     android:textAllCaps="true"
-                    android:textColor="@color/colorBlack" />
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/value" />
 
                 <ImageView
                     android:id="@+id/enter_arrow_entered"
@@ -127,7 +127,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <ExpandableListView
                 android:id="@+id/expandlistcommunication"
@@ -160,21 +161,78 @@
                     android:layout_weight="2"
                     android:gravity="top|center"
                     android:text="  Sorry ! You are offline..."
-                    android:textColor="@color/maroon"
                     android:textAllCaps="true"
+                    android:textColor="@color/maroon"
                     android:textSize="@dimen/label" />
 
             </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/addCommunication"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="15dp"
-        android:src="@drawable/plus_btn"
-        app:backgroundTint="@color/maroon" />
+        <RelativeLayout
+            android:id="@+id/rl_support"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:orientation="vertical">
+
+                <LinearLayout
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#FEF3B3">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:padding="@dimen/_10sdp"
+                        android:text="For enhance experience and quick resolution of queries, we have launched 24x7 WhatsApp helpline."
+                        android:textAlignment="center"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/_11sdp" />
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:id="@+id/whatsapp_support"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#0277BD">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/imageView"
+                            android:layout_width="@dimen/_50sdp"
+                            android:layout_height="@dimen/_50sdp"
+                            android:layout_gravity="center_horizontal"
+                            android:padding="@dimen/_5sdp"
+                            android:src="@drawable/ic_whatsapp" />
+
+                        <TextView
+                            android:id="@+id/searchTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center|center_horizontal"
+                            android:padding="@dimen/_5sdp"
+                            android:text="Contact Support"
+                            android:textAlignment="center"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_15sdp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+            </LinearLayout>
+        </RelativeLayout>
+
+    </LinearLayout>
 </RelativeLayout>
