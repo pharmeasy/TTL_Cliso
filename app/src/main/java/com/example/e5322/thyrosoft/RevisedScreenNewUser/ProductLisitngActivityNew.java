@@ -120,7 +120,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
     ProgressDialog barProgressDialog;
     ArrayList<String> showTestNmaes = new ArrayList<>();
     String user, passwrd, access, api_key;
-    SharedPreferences prefs, pref_brand;
+    SharedPreferences prefs, pref_brand, getRandomIdPref;
     SharedPreferences.Editor editor_brand;
     LinearLayout before_discount_layout2, ulc_nonulc_ll, ulc_ll, product_list_ll, ulc_code_edt_ll, ulc_woe_ll;
     TextView title;
@@ -179,7 +179,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
     Button verify_ulc;
     private String version;
     ArrayList<TRFModel> trf_list = new ArrayList<>();
-    private String source_type;
+    private String source_type, pincode, email_id;
     ArrayList<GetProductsRecommendedResModel.ProductListDTO> finalrecoList = new ArrayList<>();
     ArrayList<GetProductsRecommendedResModel.ProductListDTO> SelectedTestMap = new ArrayList<>();
 
@@ -215,6 +215,8 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
         companycost_test = (TextView) findViewById(R.id.companycost_test);
         test_txt = (TextView) findViewById(R.id.test_txt);
         recycler_ulc_woe = (RecyclerView) findViewById(R.id.recycler_ulc_woe);
+
+        CleverTapHelper cleverTapHelper = new CleverTapHelper(mActivity);
 
         linearLayoutManager = new LinearLayoutManager(ProductLisitngActivityNew.this);
         linearLayoutManagerBarcode = new LinearLayoutManager(ProductLisitngActivityNew.this);
@@ -273,6 +275,8 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
         campID = preferences.getString("getcampIDtoPass", null);
         homeaddress = preferences.getString("patientAddress", null);
         getFinalPhoneNumberToPost = preferences.getString("kycinfo", null);
+        pincode = preferences.getString("pincode", null);
+        email_id = preferences.getString("EMAIL_ID", null);
 
         pref_brand = getSharedPreferences("BRANDPREF", MODE_PRIVATE);
         if (GlobalClass.isNull(shr_brandname)) {
@@ -293,6 +297,8 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
         access = prefs.getString("ACCESS_TYPE", "");
         api_key = prefs.getString("API_KEY", "");
         source_type = prefs.getString("SOURCE_TYPE", "");
+        getRandomIdPref = getSharedPreferences("Temp_Wo_Id", MODE_PRIVATE);
+        String randomId = getRandomIdPref.getString("Temp_Wo_Id", "");
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -364,6 +370,11 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                 String name = "";
                 String code = "";
                 String product = "";
+                int strcount = 0;
+                for (int a = 0; a < s1.length(); a++) {
+                    if (s1.charAt(a) != ' ')
+                        strcount++;
+                }
 
                 if (testRateMasterModels.size() != 0) {
                     for (int i = 0; i < testRateMasterModels.size(); i++) {
@@ -385,7 +396,19 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                             filteredFiles.add(testRateMasterModels.get(i));
                         }
 
-                        callAdapter(filteredFiles);
+                        // callAdapter(filteredFiles);
+                    }
+                    callAdapter(filteredFiles);
+                    if (filteredFiles.size() == 0 && s1.length() != 0) {
+                        String Header = "CLISO APP" + "," + version;
+                        String PatientDetails = patientName + "," + patientGender + "," + patientYear + "," + sampleCollectionTime + "," +
+                                sampleCollectionPoint + "," + referenceBy + "," + homeaddress + "," + typeName + "," + labName + "," + pincode + "," + email_id + "," + getFinalPhoneNumberToPost;
+                        System.out.println("Header :   " + Header);
+                        System.out.println("PatientDetails :   " + PatientDetails);
+                        System.out.println("RandomId :   " + randomId);
+                        System.out.println("Search Term :   " + s1);
+                        System.out.println("Search Count :   " + strcount);
+                        cleverTapHelper.NullSearchEvent(Header, PatientDetails, randomId, s1, strcount);
                     }
                 } else {
                     before_discount_layout2.setVisibility(View.GONE);

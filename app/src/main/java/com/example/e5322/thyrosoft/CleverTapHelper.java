@@ -99,4 +99,21 @@ public class CleverTapHelper {
         }
 
     }
+
+    public void NullSearchEvent(String header, String patientdetails, String Temp_wo_id, String search_term, int searchTermCount) {
+        try {
+            HashMap<String, Object> nullSearchData = new HashMap<>();
+            nullSearchData.put("Header", header);
+            nullSearchData.put("PatientDetails", patientdetails);
+            nullSearchData.put("Temp_wo_id", Temp_wo_id);
+            nullSearchData.put("Search_Term", search_term);
+            nullSearchData.put("SearchTermCount", searchTermCount);
+
+            if (Constants.clevertapDefaultInstance != null) {
+                Constants.clevertapDefaultInstance.pushEvent("NULL_SEARCH", nullSearchData);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

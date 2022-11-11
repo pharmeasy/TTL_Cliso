@@ -147,6 +147,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 import in.galaxyofandroid.spinerdialog.OnSpinerItemClick;
 import in.galaxyofandroid.spinerdialog.SpinnerDialog;
@@ -278,7 +279,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     private ArrayList<String> statusForColor;
     private int minute;
     private int hour;
-    private SharedPreferences prefs;
+    private SharedPreferences prefs,getRandomId;
     private String user;
     private String passwrd;
     private String access, usercode;
@@ -1233,6 +1234,18 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
 
     }
+    private String getRandomString() {
+        String char_random = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        StringBuilder str_random = new StringBuilder();
+        Random rnd = new Random();
+        while (str_random.length() < 16) { // length of the random string.
+            int index = (int) (rnd.nextFloat() * char_random.length());
+            str_random.append(char_random.charAt(index));
+        }
+        String final_random_str = str_random.toString();
+        return final_random_str;
+
+    }
 
     private void setResetCommModes() {
         cb_email.setChecked(false);
@@ -1846,7 +1859,11 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             spinyr.setSelection(0);
         }
 
-
+        getRandomId = activity.getSharedPreferences("Temp_Wo_Id", Context.MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor1 = getRandomId.edit();
+        prefsEditor1.putString("Temp_Wo_Id", getRandomString());
+        prefsEditor1.apply();
+        System.out.println(activity.getSharedPreferences("Temp_Wo_Id",Context.MODE_PRIVATE).getString("Temp_Wo_Id", getRandomString()) + "Random Id");
     }
 
     private void SetBrandSpinner() {
