@@ -1204,7 +1204,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
                 builder.addPart("orderid", new StringBody("" + lead_id));
                 builder.addPart("hc", new StringBody("0"));
                 builder.addPart("tsp", new StringBody(""));
-                builder.addPart("pay_type", new StringBody("Postpaid"));
+                /*builder.addPart("pay_type", new StringBody("Postpaid"));*/ //TODO This parameter is removed due to security issues
 
                 if (imagefile != null) {
                     if (imagefile.exists()) {
