@@ -822,7 +822,12 @@ public class Login extends Activity implements View.OnClickListener {
                     if (barProgressDialog != null && barProgressDialog.isShowing()) {
                         barProgressDialog.dismiss();
                     }
-                    Toast.makeText(Login.this, ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
+                    if(getErrorCodeMsg(error)){
+                        Toast.makeText(Login.this, ToastFile.toManyAttempts, Toast.LENGTH_SHORT).show();
+                    }else {
+                        Toast.makeText(Login.this, ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
+                    }
+                    //Toast.makeText(Login.this, ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
                     System.out.println("" + error);
                 }
             });
@@ -836,6 +841,18 @@ public class Login extends Activity implements View.OnClickListener {
                 barProgressDialog.dismiss();
             }
         }
+    }
+    private boolean getErrorCodeMsg(VolleyError error) {
+        try {
+            if(error != null && error.networkResponse != null){
+                if(error.networkResponse.statusCode == 429){
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 //cleverTap Changes
     private void setCleverTapLoginDetails(LoginResponseModel loginResponseModel) {

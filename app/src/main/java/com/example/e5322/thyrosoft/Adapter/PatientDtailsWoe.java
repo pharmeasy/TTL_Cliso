@@ -313,6 +313,9 @@ public class PatientDtailsWoe extends RecyclerView.Adapter<PatientDtailsWoe.View
 
                     if (resID.equals("RES0000")) {
                         Constants.covidwoe_flag = "1";
+                        if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                            barProgressDialog.dismiss();
+                        }
                         TastyToast.makeText(context1, ToastFile.woe_dlt, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                         //Intent intent = new Intent(context1, HomeMenuActivity.class);
                         GlobalClass.setFlagBackToWoe = true;

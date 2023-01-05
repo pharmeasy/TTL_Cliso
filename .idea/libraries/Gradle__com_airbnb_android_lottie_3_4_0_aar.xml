@@ -1,16 +1,12 @@
 <component name="libraryTable">
   <library name="Gradle: com.airbnb.android:lottie:3.4.0@aar">
     <ANNOTATIONS>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/16e9741dda7029adab6d3932163df9b4/annotations.zip!/" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/db7bf01ead8939a8f2e774a091c6f87b/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/03b13d06bf79ca4b787dfff06c3dd826/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/16e9741dda7029adab6d3932163df9b4/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/16e9741dda7029adab6d3932163df9b4/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/16e9741dda7029adab6d3932163df9b4/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/db7bf01ead8939a8f2e774a091c6f87b/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/db7bf01ead8939a8f2e774a091c6f87b/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/db7bf01ead8939a8f2e774a091c6f87b/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/03b13d06bf79ca4b787dfff06c3dd826/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/03b13d06bf79ca4b787dfff06c3dd826/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/03b13d06bf79ca4b787dfff06c3dd826/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

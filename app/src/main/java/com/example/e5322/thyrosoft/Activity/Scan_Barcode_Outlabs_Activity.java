@@ -58,6 +58,7 @@ import com.example.e5322.thyrosoft.Adapter.SampleTypeBarcodeAdapter;
 import com.example.e5322.thyrosoft.Adapter.TRFDisplayAdapter;
 import com.example.e5322.thyrosoft.Adapter.ViewPagerAdapter;
 import com.example.e5322.thyrosoft.AsyncTaskPost_uploadfile;
+import com.example.e5322.thyrosoft.CleverTapHelper;
 import com.example.e5322.thyrosoft.Controller.GetLocationController;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Controller.LogUserActivityTagging;
@@ -218,6 +219,10 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
     private boolean isBarcodeNumeric = false;
     private BottomSheetDialog bottomSheetDialog;
     private SampleTypeBarcodeAdapter sampleTypeBarcodeAdapter;
+    CleverTapHelper cleverTapHelper;
+    String Header, PatientDetails, randomId, cartList;
+    SharedPreferences getRandomIdPref;
+    String getRecoCount, getRecoSelectedCount, getRecoShownTest, getRecoSelectedTest;
 
 
     @SuppressLint("NewApi")
@@ -240,6 +245,40 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
         passwrd = prefs.getString("password", "");
         access = prefs.getString("ACCESS_TYPE", "");
         api_key = prefs.getString("API_KEY", "");
+
+        preferences = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
+        patientName = preferences.getString("name", "");
+        patientYear = preferences.getString("age", "");
+        patientYearType = preferences.getString("ageType", "");
+        patientGender = preferences.getString("gender", "");
+        brandName = preferences.getString("WOEbrand", "");
+        if (brandName.equalsIgnoreCase("EQNX")) {
+            brandName = "WHATERS";
+        } else {
+            brandName = preferences.getString("WOEbrand", "");
+        }
+        typeName = preferences.getString("woetype", "");
+        sampleCollectionDate = preferences.getString("date", "");
+        sampleCollectionTime = preferences.getString("sct", "");
+        sr_number = preferences.getString("SR_NO", "");
+        pass_to_api = Integer.parseInt(sr_number);
+        referenceBy = preferences.getString("refBy", "");
+        sampleCollectionPoint = preferences.getString("labAddress", "");
+        sampleGivingClient = preferences.getString("labname", "");
+        refeID = preferences.getString("refId", "");
+        labAddress = preferences.getString("labAddress", "");
+        labID = preferences.getString("labIDaddress", "");
+        labName = preferences.getString("labname", "");
+        btechID = preferences.getString("btechIDToPass", "");
+        campID = preferences.getString("getcampIDtoPass", "");
+        homeaddress = preferences.getString("patientAddress", "");
+        getFinalPhoneNumberToPost = preferences.getString("kycinfo", "");
+        getPincode = preferences.getString("pincode", "");
+        EMAIL_ID = preferences.getString("EMAIL_ID", "");
+
+        getFinalEmailIdToPost = "";
+        getRandomIdPref = getSharedPreferences("Temp_Wo_Id", MODE_PRIVATE);
+        randomId = getRandomIdPref.getString("Temp_Wo_Id", "");
 
 
         preferences = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
@@ -271,6 +310,10 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
         if (bundle1 != null) {
 
             testsData = bundle1.getString("writeTestName");
+            getRecoCount = bundle1.getString("reco_count");
+            getRecoSelectedCount = bundle1.getString("reco_Selected_count");
+            getRecoShownTest = bundle1.getString("reco_shown_test");
+            getRecoSelectedTest = bundle1.getString("reco_selected_test");
 
             Log.e(TAG, "onCreate: size " + selectedOutlabTests.size());
 
@@ -455,11 +498,18 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                 }
                 GlobalClass.specimenttype = Specimenttype;
                 scanIntegrator.initiateScan();
+//                System.out.println(Header + "," + PatientDetails + "," + randomId + "," + cartList + "," + GlobalClass.specimenttype + "," + "Barcode Scanner" + "," + " : Barcode event");
+                cleverTapHelper.barcodeScanEvent(Header, PatientDetails, randomId, cartList, GlobalClass.specimenttype, "Scan_Barcode");
+
             }
         });
         recycler_barcode.setAdapter(bmc_scanBarcodeAdapter);
 
-
+        Header = "CLISO APP" + "," + versionNameTopass;
+        PatientDetails = patientName + "," + patientYear + "," + patientGender + ", CLISO APP," +
+                sampleCollectionTime + "," + labAddress + "," + referenceBy + "," + homeaddress + "," + typeName + "," + labName + "," + getPincode + "," + EMAIL_ID + "," + getFinalPhoneNumberToPost;
+        cartList = passProducts + "," + b2b_rate + "," + b2c_rate;
+        cleverTapHelper.submitPageRedirectEvent(Header, PatientDetails, randomId, cartList);
     }
 
 
@@ -813,6 +863,9 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                 }
                 GlobalClass.specimenttype = Specimenttype;
                 scanIntegrator.initiateScan();
+               // System.out.println(Header + "," + PatientDetails + "," + randomId + "," + cartList + "," + GlobalClass.specimenttype + "," + "Barcode Scanner" + "," + " : Barcode event");
+                cleverTapHelper.barcodeScanEvent(Header, PatientDetails, randomId, cartList, GlobalClass.specimenttype, "Scan_Barcode");
+
             }
         });
         recycler_barcode.setAdapter(cliso_scanBarcodeAdapter);
@@ -1141,6 +1194,10 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
     }
 
     private void openDialogBox() {
+
+       // System.out.println(Header + "," + PatientDetails + "," + randomId + "," + cartList + "," + barcodelists + "," + " : Barcode verify pop event");
+        cleverTapHelper.barcodeVerifyPopup(Header, PatientDetails, randomId, cartList, String.valueOf(barcodelists));
+
         bottomSheetDialog = new BottomSheetDialog(this, R.style.BottomSheetTheme);
         View bottomSheet = LayoutInflater.from(this).inflate(R.layout.lay_sample_dialog, this.findViewById(R.id.ll_bottom_sheet));
         bottomSheetDialog.setContentView(bottomSheet);
@@ -1173,38 +1230,6 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
         if (getRemark == null) {
             getRemark = "Manual";
         }
-
-        preferences = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
-        patientName = preferences.getString("name", "");
-        patientYear = preferences.getString("age", "");
-        patientYearType = preferences.getString("ageType", "");
-        patientGender = preferences.getString("gender", "");
-        brandName = preferences.getString("WOEbrand", "");
-        if (brandName.equalsIgnoreCase("EQNX")) {
-            brandName = "WHATERS";
-        } else {
-            brandName = preferences.getString("WOEbrand", "");
-        }
-        typeName = preferences.getString("woetype", "");
-        sampleCollectionDate = preferences.getString("date", "");
-        sampleCollectionTime = preferences.getString("sct", "");
-        sr_number = preferences.getString("SR_NO", "");
-        pass_to_api = Integer.parseInt(sr_number);
-        referenceBy = preferences.getString("refBy", "");
-        sampleCollectionPoint = preferences.getString("labAddress", "");
-        sampleGivingClient = preferences.getString("labname", "");
-        refeID = preferences.getString("refId", "");
-        labAddress = preferences.getString("labAddress", "");
-        labID = preferences.getString("labIDaddress", "");
-        labName = preferences.getString("labname", "");
-        btechID = preferences.getString("btechIDToPass", "");
-        campID = preferences.getString("getcampIDtoPass", "");
-        homeaddress = preferences.getString("patientAddress", "");
-        getFinalPhoneNumberToPost = preferences.getString("kycinfo", "");
-        getPincode = preferences.getString("pincode", "");
-        EMAIL_ID = preferences.getString("EMAIL_ID", "");
-
-        getFinalEmailIdToPost = "";
 
 
         DateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
@@ -1321,6 +1346,12 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        ArrayList<String> barcodelists = new ArrayList<>();
+        for (int a = 0; a < FinalBarcodeDetailsList.size(); a++) {
+            barcodelists.add(FinalBarcodeDetailsList.get(a).getBarcode());
+        }
+       // System.out.println("submit event : " + Header + "," + PatientDetails + "," + randomId + "," + cartList + "," + String.valueOf(barcodelists));
+        cleverTapHelper.woeSubmitEvent(Header, PatientDetails, randomId, cartList, String.valueOf(barcodelists),getRecoCount,getRecoSelectedCount,getRecoShownTest,getRecoSelectedTest);
 
         if (Global.isoffline) {
             StoreWOEoffline(json);
@@ -1355,6 +1386,8 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                                 message = woeResponseModel.getMessage();
                                 if (woeResponseModel != null) {
                                     if (!GlobalClass.isNull(woeResponseModel.getStatus()) && woeResponseModel.getStatus().equalsIgnoreCase("SUCCESS")) {
+                                     //   System.out.println("Success Event Woe3" + Header + "," + PatientDetails + "," + randomId + "," + cartList + "," + String.valueOf(barcodelists) + "," + woeResponseModel.getStatus() + "," + getCollectedAmt);
+                                        cleverTapHelper.woeSubmitSuccessEvent(Header, PatientDetails, randomId, cartList, String.valueOf(barcodelists),(woeResponseModel.getStatus()), getCollectedAmt, "",getRecoCount,getRecoSelectedCount,getRecoShownTest,getRecoSelectedTest);
                                         GlobalClass.transID = "";
                                         new LogUserActivityTagging(mActivity, "WOE-NOVID", barcode_patient_id);
 
@@ -1532,6 +1565,9 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                     }
                     GlobalClass.specimenttype = Specimenttype;
                     scanIntegrator.initiateScan();
+                  //  System.out.println(Header + "," + PatientDetails + "," + randomId + "," + cartList + "," + GlobalClass.specimenttype + "," + "Barcode Scanner" + "," + " : Barcode event");
+                    cleverTapHelper.barcodeScanEvent(Header, PatientDetails, randomId, cartList, GlobalClass.specimenttype, "Scan_Barcode");
+
                 }
             });
             recycler_barcode.setAdapter(bmc_scanBarcodeAdapter);

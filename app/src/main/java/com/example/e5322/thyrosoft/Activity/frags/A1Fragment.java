@@ -2,11 +2,12 @@ package com.example.e5322.thyrosoft.Activity.frags;
 
 
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.e5322.thyrosoft.Fragment.Woe_fragment;
 import com.example.e5322.thyrosoft.R;

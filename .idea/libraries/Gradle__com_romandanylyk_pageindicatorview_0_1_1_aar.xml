@@ -1,12 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.romandanylyk:pageindicatorview:0.1.1@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/814372aaef784c127b9889824b375fb2/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/814372aaef784c127b9889824b375fb2/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/814372aaef784c127b9889824b375fb2/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/748dfc1d1f9a2f53a79f17be21a9466e/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/748dfc1d1f9a2f53a79f17be21a9466e/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/748dfc1d1f9a2f53a79f17be21a9466e/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/40b1d2733ce44386871ca879fbc64e85/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/40b1d2733ce44386871ca879fbc64e85/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/40b1d2733ce44386871ca879fbc64e85/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

@@ -1,8 +1,6 @@
 package com.example.e5322.thyrosoft.RevisedScreenNewUser;
 
 import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
-import static com.example.e5322.thyrosoft.API.Constants.kycType;
-import static com.example.e5322.thyrosoft.API.Constants.pincode;
 import static com.example.e5322.thyrosoft.GlobalClass.redirectToLogin;
 import static com.example.e5322.thyrosoft.ToastFile.invalid_brcd;
 
@@ -23,6 +21,8 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -40,6 +40,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.view.ActionMode;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -182,6 +183,18 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
     private String source_type, pincode, email_id;
     ArrayList<GetProductsRecommendedResModel.ProductListDTO> finalrecoList = new ArrayList<>();
     ArrayList<GetProductsRecommendedResModel.ProductListDTO> SelectedTestMap = new ArrayList<>();
+    String Header, PatientDetails, randomId;
+    String slectedpackage = "";
+    String recoDialogcount, recoSelectedCount, recoShownSkus = "", reco_Selected_Skus = "";
+    String BaseTest = "";
+    String TargetTest = "";
+    String TargetRate = "";
+    String Target_B2BRate = "";
+    String Target_B2CRate = "";
+    String setFinalRecoList = "";
+    String setFinalRecoRate = "";
+    String setFinalB2BRate = "";
+    String setFinalB2CRate = "";
 
 
     @SuppressLint("NewApi")
@@ -193,14 +206,14 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
 
         sv_testsList1 = (EditText) findViewById(R.id.sv_testsList1);
         ulc_code_edt = (EditText) findViewById(R.id.ulc_code_edt);
-        exp_list = (ExpandableListView) findViewById(R.id.exp_list);
+//        exp_list = (ExpandableListView) findViewById(R.id.exp_list);
         recycler_all_test = (RecyclerView) findViewById(R.id.recycler_all_test);
         btn_save = (Button) findViewById(R.id.btn_save);
         btn_clear = (Button) findViewById(R.id.btn_clear);
         title = (TextView) findViewById(R.id.title);
         back = (ImageView) findViewById(R.id.back);
         home = (ImageView) findViewById(R.id.home);
-        go_button = (Button) findViewById(R.id.go_button);
+//        go_button = (Button) findViewById(R.id.go_button);
         ulc_woe_btn = (Button) findViewById(R.id.ulc_woe_btn);
         verify_ulc = (Button) findViewById(R.id.verify_ulc);
         before_discount_layout2 = (LinearLayout) findViewById(R.id.before_discount_layout2);
@@ -212,7 +225,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
         ulc_radiobtn = (RadioButton) findViewById(R.id.ulc_radiobtn);
         nonulc_radiobtn = (RadioButton) findViewById(R.id.nonulc_radiobtn);
         show_selected_tests_list_test_ils1 = (TextView) findViewById(R.id.show_selected_tests_list_test_ils1);
-        companycost_test = (TextView) findViewById(R.id.companycost_test);
+//        companycost_test = (TextView) findViewById(R.id.companycost_test);
         test_txt = (TextView) findViewById(R.id.test_txt);
         recycler_ulc_woe = (RecyclerView) findViewById(R.id.recycler_ulc_woe);
 
@@ -298,7 +311,10 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
         api_key = prefs.getString("API_KEY", "");
         source_type = prefs.getString("SOURCE_TYPE", "");
         getRandomIdPref = getSharedPreferences("Temp_Wo_Id", MODE_PRIVATE);
-        String randomId = getRandomIdPref.getString("Temp_Wo_Id", "");
+        randomId = getRandomIdPref.getString("Temp_Wo_Id", "");
+        Header = "CLISO APP" + "," + version;
+        PatientDetails = patientName + "," + patientGender + "," + patientYear + "," + sampleCollectionTime + "," +
+                sampleCollectionPoint + "," + referenceBy + "," + homeaddress + "," + typeName + "," + labName + "," + pincode + "," + email_id + "," + getFinalPhoneNumberToPost;
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -350,6 +366,27 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
             }
         });
 
+        sv_testsList1.setCustomSelectionActionModeCallback(new android.view.ActionMode.Callback() {
+            @Override
+            public boolean onCreateActionMode(android.view.ActionMode actionMode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(android.view.ActionMode actionMode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(android.view.ActionMode actionMode, MenuItem menuItem) {
+                return false;
+            }
+
+            @Override
+            public void onDestroyActionMode(android.view.ActionMode actionMode) {
+
+            }
+        });
         sv_testsList1.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -400,9 +437,6 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                     }
                     callAdapter(filteredFiles);
                     if (filteredFiles.size() == 0 && s1.length() != 0) {
-                        String Header = "CLISO APP" + "," + version;
-                        String PatientDetails = patientName + "," + patientGender + "," + patientYear + "," + sampleCollectionTime + "," +
-                                sampleCollectionPoint + "," + referenceBy + "," + homeaddress + "," + typeName + "," + labName + "," + pincode + "," + email_id + "," + getFinalPhoneNumberToPost;
                         System.out.println("Header :   " + Header);
                         System.out.println("PatientDetails :   " + PatientDetails);
                         System.out.println("RandomId :   " + randomId);
@@ -750,6 +784,8 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
         btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                GlobalClass.recoCount = 0;
+                GlobalClass.recoSelectedCount = 0;
                 String getTExtdata = show_selected_tests_list_test_ils1.getText().toString();
                 if (Selcted_Test.size() == 0) {
                     Toast.makeText(mActivity, ToastFile.slt_test, Toast.LENGTH_SHORT).show();
@@ -850,6 +886,10 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                     bundle.putString("payment", payment);
                     bundle.putString("writeTestName", getTExtdata);
                     bundle.putString("b2b_rate", b2b_rate);
+                    bundle.putString("reco_count", recoDialogcount);
+                    bundle.putString("reco_Selected_count", recoSelectedCount);
+                    bundle.putString("reco_shown_test", recoShownSkus);
+                    bundle.putString("reco_selected_test", reco_Selected_Skus);
 //                    bundle.putString("NHL_rate", nhl_rate);
 //                    bundle.putInt("isNhlAvailable", isNhlAvailable);
                     bundle.putStringArrayList("TestCodesPass", getTestNameLits);
@@ -894,6 +934,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                 }
             }
         }
+        cleverTapHelper.SearchPageLoadEvent(Header, PatientDetails, randomId);
     }
 
     private int getNhlrate(ArrayList<BaseModel> selcted_test) {
@@ -1221,7 +1262,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
         Context context;
         ArrayList<BaseModel> productList;
         CleverTapHelper cleverTapHelper = new CleverTapHelper(mActivity);
-        int selectedProductRate, recoRate;
+        int selectedProductRate, recoRate, b2brate, b2crate, selectedProductctB2Crate;
         BottomSheetDialog bottomSheetDialog;
         Button btn_reset, btn_next;
         TextView txt_TestRate;
@@ -1320,7 +1361,8 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                     ArrayList<GetProductsRecommendedResModel.ProductListDTO> recoList = getRecoList(productList.get(position).getProduct());
 
                     for (int i = 0; i < productList.get(position).getBrandDtls().size(); i++) {
-                        selectedProductRate = Integer.parseInt(productList.get(position).getBrandDtls().get(i).getBrandRate());
+                        selectedProductRate = Integer.parseInt(productList.get(position).getRate().getB2b());
+                        selectedProductctB2Crate = Integer.parseInt(productList.get(position).getRate().getB2c());
                     }
                     if (recoList.size() > 0) {
 
@@ -1385,6 +1427,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                                 }
                             }
                         } else if (holder.checked.getVisibility() == View.VISIBLE) {
+                            String displayslectedtest = "";
                             if (!isSelectedDueToParent) {
                                 Selcted_Test.remove(testRateMasterModel);
                                 notifyDataSetChanged();
@@ -1396,7 +1439,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
 
                                 showTestNmaes.remove(testRateMasterModel.getName());
 
-                                String displayslectedtest = TextUtils.join(",", showTestNmaes);
+                                displayslectedtest = TextUtils.join(",", showTestNmaes);
                                 show_selected_tests_list_test_ils1.setText(displayslectedtest);
                                 if (displayslectedtest.equals("")) {
                                     before_discount_layout2.setVisibility(View.GONE);
@@ -1415,6 +1458,8 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                                 alertDialog.show();
 
                             }
+                            cleverTapHelper.skuUncheckedEvent(Header, PatientDetails, randomId, displayslectedtest, String.valueOf(testRateMasterModel.getName()));
+                           // System.out.println("SKUUncheckedEvent :" + Header + "," + PatientDetails + "," + randomId + ","+displayslectedtest + "," + testRateMasterModel.getName());
                         }
                     } else {
                         //on click of blank box
@@ -1477,6 +1522,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                                 }
                             }
                         } else if (holder.checked.getVisibility() == View.VISIBLE) {//on click of checked box
+                            String displayslectedtest = "";
                             if (!isSelectedDueToParent) {
                                 Selcted_Test.remove(testRateMasterModel);
                                 notifyDataSetChanged();
@@ -1488,7 +1534,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
 
                                 showTestNmaes.remove(testRateMasterModel.getName());
 
-                                String displayslectedtest = TextUtils.join(",", showTestNmaes);
+                                displayslectedtest = TextUtils.join(",", showTestNmaes);
                                 show_selected_tests_list_test_ils1.setText(displayslectedtest);
                                 if (displayslectedtest.equals("")) {
                                     before_discount_layout2.setVisibility(View.GONE);
@@ -1507,6 +1553,8 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                                 alertDialog.show();
 
                             }
+                            cleverTapHelper.skuUncheckedEvent(Header, PatientDetails, randomId, displayslectedtest, String.valueOf(testRateMasterModel.getName()));
+                          //  System.out.println("SKUUncheckedEvent :" + Header + "," + PatientDetails + "," + randomId + displayslectedtest + "," + testRateMasterModel.getName());
                         }
                     }
 
@@ -1519,14 +1567,19 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                         String[] arrayTestPackages = s.split(",");
                         List<String> string = Arrays.asList(arrayTestPackages);
                         recoRate = 0;
+                        b2brate = 0;
+                        b2crate = 0;
                         for (int a = 0; a < string.size(); a++) {
                             for (int j = 0; j < AllProductArrayList.size(); j++) {
                                 if (AllProductArrayList.get(j).getProduct().equalsIgnoreCase(string.get(a)) || AllProductArrayList.get(j).getCode().equalsIgnoreCase(string.get(a))) {
                                     for (int k = 0; k < AllProductArrayList.get(j).getBrandDtls().size(); k++) {
                                         recoRate = recoRate + Integer.parseInt(AllProductArrayList.get(j).getBrandDtls().get(k).getBrandRate());
-
+                                        b2brate = b2brate + Integer.parseInt(AllProductArrayList.get(j).getRate().getB2b());
+                                        b2crate = b2crate + Integer.parseInt(AllProductArrayList.get(j).getRate().getB2c());
                                     }
                                     finalrecoList.get(i).setPrice(String.valueOf(recoRate));
+                                    finalrecoList.get(i).setB2brate(String.valueOf(b2brate));
+                                    finalrecoList.get(i).setB2cRate(String.valueOf(b2crate));
                                     break;
                                 }
                             }
@@ -1537,13 +1590,23 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                 }
 
                 public void displayRecoProductBottomSheet(ArrayList<GetProductsRecommendedResModel.ProductListDTO> listDTOS) {
-                    String BaseTest = productList.get(position).getProduct();
-                    String TargetTest = "";
+                    GlobalClass.recoCount++;
+                    recoDialogcount = String.valueOf(GlobalClass.recoCount);
+                    BaseTest = productList.get(position).getProduct();
+                    /*String TargetTest = "";
                     String TargetRate = "";
+                    String Target_B2BRate = "";
+                    String Target_B2CRate = "";
                     String setFinalRecoList = "";
                     String setFinalRecoRate = "";
+                    String setFinalB2BRate = "";
+                    String setFinalB2CRate = "";*/
+
+
                     ArrayList<String> TargetTestList = new ArrayList<>();
                     ArrayList<String> TargetRateList = new ArrayList<>();
+                    ArrayList<String> TargetB2brateList = new ArrayList<>();
+                    ArrayList<String> TargetB2crateList = new ArrayList<>();
                     String Orderdetails = typeName + ", " + patientYear + ", " + patientGender + ", " + referenceBy + ", " + labName;
 
 
@@ -1568,8 +1631,39 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                         HashSet<String> rate = new HashSet<String>(Arrays.asList(TargetRate.split(",")));
                         setFinalRecoRate = TextUtils.join(",", rate);
                     }
-                    cleverTapHelper.recoShown_Event(BaseTest, String.valueOf(selectedProductRate), setFinalRecoList, setFinalRecoRate, Orderdetails);
+                    for (int a = 0; a < listDTOS.size(); a++) {
+                        TargetB2brateList.add(listDTOS.get(a).getB2brate());
+                    }
+                    for (int b = 0; b < TargetB2brateList.size(); b++) {
+                        HashSet<String> TargetB2BRate = new HashSet<>(TargetB2brateList);
+                        List<String> b2bList = new ArrayList<>(TargetB2BRate);
+                        Target_B2BRate = TextUtils.join(",", b2bList);
+                        HashSet<String> b2brate = new HashSet<>(Arrays.asList(Target_B2BRate.split(",")));
+                        setFinalB2BRate = TextUtils.join(",", b2brate);
+                    }
+                    for (int a = 0; a < listDTOS.size(); a++) {
+                        TargetB2crateList.add(listDTOS.get(a).getB2cRate());
+                    }
 
+
+                    for (int b = 0; b < TargetB2crateList.size(); b++) {
+                        HashSet<String> TartgetB2cRate = new HashSet<>(TargetB2crateList);
+                        List<String> b2cList = new ArrayList<>(TartgetB2cRate);
+                        Target_B2CRate = TextUtils.join(",", b2cList);
+                        HashSet<String> b2crate = new HashSet<>(Arrays.asList(Target_B2CRate.split(",")));
+                        setFinalB2CRate = TextUtils.join(",", b2crate);
+                    }
+
+
+                    String displayslectedtest = TextUtils.join(",", showTestNmaes);
+                   // System.out.println("RecoShownEvent : " + Header + "," + PatientDetails + "," + displayslectedtest + "," + randomId + "," + BaseTest + "," + TargetTest + "," + selectedProductRate + "," + selectedProductctB2Crate + "," + setFinalB2BRate + "," + setFinalB2CRate + "," + true);
+                    cleverTapHelper.recoShown_Event(Header, PatientDetails, randomId, displayslectedtest, BaseTest, TargetTest, String.valueOf(selectedProductRate), String.valueOf(selectedProductctB2Crate), setFinalB2BRate, setFinalB2CRate,true);
+                    if (recoShownSkus.isEmpty()) {
+
+                        recoShownSkus = BaseTest;
+                    } else {
+                        recoShownSkus = recoShownSkus + "," + BaseTest;
+                    }
                     bottomSheetDialog = new BottomSheetDialog(mActivity, R.style.BottomSheetTheme);
                     View bottomsheet = LayoutInflater.from(mActivity).inflate(R.layout.lay_recommended_dialog, mActivity.findViewById(R.id.ll_reco_bottomsheet));
                     bottomSheetDialog.setContentView(bottomsheet);
@@ -1601,11 +1695,20 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                         public void onClick(View view) {
                             productRecommendedAdapter = new ProductRecommendedAdapter(ProductLisitngActivityNew.this, listDTOS, mActivity, new AppInterfaces.OnClickRecoTestListner() {
                                 @Override
-                                public void onchecked(GetProductsRecommendedResModel.ProductListDTO listDTOS, boolean isChecked, boolean isMainChecked) {
+                                public void onchecked(GetProductsRecommendedResModel.ProductListDTO listDTOS, boolean isChecked, boolean isMainChecked, String recoSelectedTest) {
                                     if (isMainChecked) {
                                         rb_testName.setChecked(false);
                                         SelectedTestMap = new ArrayList<>();
                                         SelectedTestMap.add(listDTOS);
+                                        if (recoSelectedTest != null) {
+                                            if (reco_Selected_Skus.isEmpty()) {
+                                                reco_Selected_Skus = recoSelectedTest;
+                                            } else {
+                                                reco_Selected_Skus = reco_Selected_Skus + "," + recoSelectedTest;
+                                            }
+                                        } else {
+                                            reco_Selected_Skus = "";
+                                        }
                                     }
                                 }
                             });
@@ -1616,11 +1719,22 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                     });
                     productRecommendedAdapter = new ProductRecommendedAdapter(ProductLisitngActivityNew.this, listDTOS, mActivity, new AppInterfaces.OnClickRecoTestListner() {
                         @Override
-                        public void onchecked(GetProductsRecommendedResModel.ProductListDTO listDTOS, boolean isChecked, boolean isMainChecked) {
+                        public void onchecked(GetProductsRecommendedResModel.ProductListDTO listDTOS, boolean isChecked, boolean isMainChecked, String recoselectedTest) {
                             if (isMainChecked) {
                                 SelectedTestMap = new ArrayList<>();
                                 SelectedTestMap.add(listDTOS);
                                 rb_testName.setChecked(false);
+
+                                if (recoselectedTest != null) {
+                                    if (reco_Selected_Skus.isEmpty()) {
+                                        reco_Selected_Skus = recoselectedTest;
+                                    } else {
+                                        reco_Selected_Skus = reco_Selected_Skus + "," + recoselectedTest;
+                                    }
+                                } else {
+                                    reco_Selected_Skus = "";
+                                }
+
                             } else {
                                 SelectedTestMap.remove(listDTOS);
                                 rb_testName.setChecked(true);
@@ -1634,8 +1748,12 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                         @Override
                         public void onClick(View view) {
                             bottomSheetDialog.dismiss();
+                            GlobalClass.recoSelectedCount++;
+                            recoSelectedCount = String.valueOf(GlobalClass.recoSelectedCount);
                             String selected_recoetest = "";
                             String selected_recoerate = "";
+                            String targetB2bRate = "";
+                            String targetB2cRate = "";
                             try {
                                 if (SelectedTestMap.size() > 0 && SelectedTestMap != null) {
                                     Selcted_Test.remove(testRateMasterModel);
@@ -1660,13 +1778,18 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
 
                                         selected_recoetest = SelectedTestMap.get(j).getTestsRecommended();
                                         selected_recoerate = SelectedTestMap.get(j).getPrice();
+                                        targetB2bRate = SelectedTestMap.get(j).getB2brate();
+                                        targetB2cRate = SelectedTestMap.get(j).getB2cRate();
                                         SelectedTestMap.removeAll(listDTOS);
                                     }
-
-                                    cleverTapHelper.reconextclick_Event(true, selected_recoetest, selected_recoerate);
+                                    String displayslectedtest = TextUtils.join(",", showTestNmaes);
+                                   // System.out.println("RecoNextClickEvent : " + Header + "," + PatientDetails + "," + displayslectedtest + "," + randomId + "," + true + "," + BaseTest + "," + TargetTest + "," + String.valueOf(selectedProductRate) + "," + String.valueOf(selectedProductctB2Crate) + "," + targetB2bRate + "," + targetB2cRate);
+                                    cleverTapHelper.reconextclick_Event(Header, PatientDetails, randomId, displayslectedtest, true, BaseTest, TargetTest, String.valueOf(selectedProductRate),targetB2bRate, String.valueOf(selectedProductctB2Crate),targetB2cRate);
                                 } else {
 
-                                    cleverTapHelper.reconextclick_Event(false, "", "");
+                                    String displayslectedtest = TextUtils.join(",", showTestNmaes);
+                                  //  System.out.println("RecoNextClickEvent : " + Header + "," + PatientDetails + "," + displayslectedtest + "," + randomId + "," + false + "," + BaseTest + "," + TargetTest + "," + String.valueOf(selectedProductRate) + "," + String.valueOf(selectedProductctB2Crate) + "," + setFinalB2BRate + "," + setFinalB2CRate);
+                                    cleverTapHelper.reconextclick_Event(Header, PatientDetails, randomId, displayslectedtest, false, BaseTest, "", String.valueOf(selectedProductRate),"" , String.valueOf(selectedProductctB2Crate), "");
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -1710,7 +1833,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
 
             str = str + testRateMasterModel.getCode() + ",";
 
-            String slectedpackage = "";
+            /*String slectedpackage = "";*/
 
 
             slectedpackage = testRateMasterModel.getName();
@@ -1896,7 +2019,8 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
             if (displayslectedtest.equals("")) {
                 before_discount_layout2.setVisibility(View.GONE);
             }
-
+            cleverTapHelper.skuCheckedEvent(Header, PatientDetails, randomId, displayslectedtest, slectedpackage);
+            //System.out.println("SKUCheckedEvent :" + Header + "," + PatientDetails + "," + randomId + "," + displayslectedtest + "," + slectedpackage);
 
         }
 

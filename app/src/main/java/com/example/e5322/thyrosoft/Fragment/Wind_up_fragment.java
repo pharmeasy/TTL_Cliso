@@ -193,6 +193,14 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
     }
 
     @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(getView() != null){
+            GlobalClass.ComingFrom = "Wind_UP_Screen";
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mContext = (HomeMenuActivity) getActivity();

@@ -1,12 +1,8 @@
 <component name="libraryTable">
   <library name="Gradle: com.github.tcking:viewquery:1.6@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2cb7414a2824123fdc7d606736837185/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2cb7414a2824123fdc7d606736837185/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2cb7414a2824123fdc7d606736837185/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/7fa582d3cac389d0aa39a9702023e76c/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/7fa582d3cac389d0aa39a9702023e76c/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/7fa582d3cac389d0aa39a9702023e76c/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b03476c32b231187a8579a34bb5d75b3/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b03476c32b231187a8579a34bb5d75b3/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

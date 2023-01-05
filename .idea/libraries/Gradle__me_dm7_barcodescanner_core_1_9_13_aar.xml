@@ -1,12 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: me.dm7.barcodescanner:core:1.9.13@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8e526c11806578653b23ea2aa8f7a313/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8e526c11806578653b23ea2aa8f7a313/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8e526c11806578653b23ea2aa8f7a313/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4b51e25aa23749e45c6ea9c428269b5f/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4b51e25aa23749e45c6ea9c428269b5f/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4b51e25aa23749e45c6ea9c428269b5f/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6b25886459102cc8a16cc436dae7cad8/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6b25886459102cc8a16cc436dae7cad8/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6b25886459102cc8a16cc436dae7cad8/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

@@ -197,4 +197,5 @@ public class ToastFile {
     public static String PAYMENT_TRANSACTION_FAILED = "Payment transaction failed";
     public static String TRANSACTION_CANCELLED = "Transaction cancelled.";
     public static String SELECT_VALID_COLL_TIME = "Select valid collection time";
+    public static String toManyAttempts = "Login failed due to too many login attempts, try again in 5 mins";
 }

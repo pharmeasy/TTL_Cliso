@@ -139,6 +139,16 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
         }
     }
 
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(getView() != null){
+
+            GlobalClass.ComingFrom = "Result_screen";
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

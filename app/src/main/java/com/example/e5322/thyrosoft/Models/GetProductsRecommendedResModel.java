@@ -52,6 +52,8 @@ public class GetProductsRecommendedResModel {
         private ArrayList<String> testsPackageList;
 
         private String price;
+        private String b2brate;
+        private String b2cRate;
 
         public String getPrice() {
             return price;
@@ -59,6 +61,22 @@ public class GetProductsRecommendedResModel {
 
         public void setPrice(String price) {
             this.price = price;
+        }
+
+        public String getB2brate() {
+            return b2brate;
+        }
+
+        public void setB2brate(String b2brate) {
+            this.b2brate = b2brate;
+        }
+
+        public String getB2cRate() {
+            return b2cRate;
+        }
+
+        public void setB2cRate(String b2cRate) {
+            this.b2cRate = b2cRate;
         }
 
         public String getTestsAsked() {

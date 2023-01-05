@@ -1,12 +1,8 @@
 <component name="libraryTable">
   <library name="Gradle: com.google.mlkit:common:17.1.1@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ac519e51e83e1b0c9d4b787764fb28f9/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ac519e51e83e1b0c9d4b787764fb28f9/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ac519e51e83e1b0c9d4b787764fb28f9/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6e376628531b3b2e271d11f114b677fb/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6e376628531b3b2e271d11f114b677fb/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6e376628531b3b2e271d11f114b677fb/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/888f663048a38c5e6815f126ca822656/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/888f663048a38c5e6815f126ca822656/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

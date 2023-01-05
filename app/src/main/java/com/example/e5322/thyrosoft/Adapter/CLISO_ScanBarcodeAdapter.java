@@ -1,9 +1,14 @@
 package com.example.e5322.thyrosoft.Adapter;
 
+import static android.content.Context.MODE_PRIVATE;
+import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
@@ -33,6 +38,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.Activity.Scan_Barcode_Outlabs_Activity;
+import com.example.e5322.thyrosoft.CleverTapHelper;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.RecyclerInterface;
@@ -49,9 +55,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
-
-import static android.content.Context.MODE_PRIVATE;
-import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
 
 public class CLISO_ScanBarcodeAdapter extends RecyclerView.Adapter<CLISO_ScanBarcodeAdapter.ViewHolder> implements SendScanBarcodeDetails {
     public static InputFilter EMOJI_FILTER = new InputFilter() {
@@ -80,6 +83,14 @@ public class CLISO_ScanBarcodeAdapter extends RecyclerView.Adapter<CLISO_ScanBar
     String TAG = CLISO_ScanBarcodeAdapter.class.getSimpleName();
     ArrayList<ScannedBarcodeDetails> distinctspecimentlist;
     private CLISO_ScanBarcodeAdapter.OnItemClickListener onItemClickListener;
+
+    CleverTapHelper cleverTapHelper;
+    String Header, PatientDetails, randomId, cartList, version,vialType;
+    SharedPreferences getRandomIdPref, savepatientDetails;
+    String nameString, getFinalAge, saveGenderId, getFinalTime, labname, labAddress, patientAddress, referrredBy, kycinfo, typename, getPincode, EMAIL_ID, displayslectedtest;
+    int b2b = 0;
+    int b2c = 0;
+
     View.OnClickListener onScanbarcodeClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -123,6 +134,38 @@ public class CLISO_ScanBarcodeAdapter extends RecyclerView.Adapter<CLISO_ScanBar
         passwrd = prefs.getString("password", null);
         access = prefs.getString("ACCESS_TYPE", null);
         api_key = prefs.getString("API_KEY", null);
+
+        savepatientDetails = context.getSharedPreferences("savePatientDetails", MODE_PRIVATE);
+        nameString = savepatientDetails.getString("name", "");
+        getFinalAge = savepatientDetails.getString("age", "");
+        saveGenderId = savepatientDetails.getString("gender", "");
+        getFinalTime = savepatientDetails.getString("sct", "");
+        labname = savepatientDetails.getString("labname", "");
+        labAddress = savepatientDetails.getString("labAddress", "");
+        patientAddress = savepatientDetails.getString("patientAddress", "");
+        referrredBy = savepatientDetails.getString("refBy", "");
+        kycinfo = savepatientDetails.getString("kycinfo", "");
+        typename = savepatientDetails.getString("woetype", "");
+        getPincode = savepatientDetails.getString("pincode", "");
+        EMAIL_ID = savepatientDetails.getString("EMAIL_ID", "");
+
+        getRandomIdPref = context.getSharedPreferences("Temp_Wo_Id", MODE_PRIVATE);
+        randomId = getRandomIdPref.getString("Temp_Wo_Id", "");
+
+        cleverTapHelper = new CleverTapHelper((Activity) context);
+
+        PackageInfo pInfo = null;
+        try {
+            pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        version = pInfo.versionName;
+
+        Header = "CLISO APP" + "," + version;
+        PatientDetails = nameString + "," + getFinalAge + "," + saveGenderId + ", CLISO APP," +
+                getFinalTime + "," + labAddress + "," + referrredBy + "," + patientAddress + "," + typename + "," + labname + "," + getPincode + "," + EMAIL_ID + ",";
+
 
         holder.enter_barcode.setTag(position);
         holder.setback.setOnClickListener(new View.OnClickListener() {
@@ -244,6 +287,9 @@ public class CLISO_ScanBarcodeAdapter extends RecyclerView.Adapter<CLISO_ScanBar
                                 barcode = parentObjectOtp.getString("barcode");
                                 response1 = parentObjectOtp.getString("response");
                                 if (response1.equalsIgnoreCase("BARCODE DOES NOT EXIST")) {
+                                    System.out.println(Header+ ","+ PatientDetails + "," + randomId + "," + cartList + "," +GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type()+","+ "Scanned Barcode" + "," +barcode+"," + response1);
+                                    cleverTapHelper.barcodeScanSuccessEvent(Header,PatientDetails,randomId,cartList,GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type(),"ScannedBarcode",barcode,response1);
+
                                     holder.scanBarcode.setText(distinctspecimentlist.get(position).getSpecimen_type() + " : " + distinctspecimentlist.get(position).getBarcode());
                                     progressDialog.dismiss();
 
@@ -503,6 +549,9 @@ public class CLISO_ScanBarcodeAdapter extends RecyclerView.Adapter<CLISO_ScanBar
                                                 barcode = parentObjectOtp.getString("barcode");
                                                 response1 = parentObjectOtp.getString("response");
                                                 if (response1.equalsIgnoreCase("BARCODE DOES NOT EXIST")) {
+                                                    System.out.println(Header+ ","+ PatientDetails + "," + randomId + "," + cartList + "," +GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type()+","+ "Scanned Barcode" + "," +barcode+"," + response1);
+                                                    cleverTapHelper.barcodeScanSuccessEvent(Header,PatientDetails,randomId,cartList,GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type(),"ScannedBarcode",barcode,response1);
+
                                                     enter_barcode.setText(searchBarcode);
                                                     progressDialog.dismiss();
                                                 } else if (ERROR.equalsIgnoreCase(caps_invalidApikey)) {

@@ -1,12 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.mindorks:paracamera:0.2.2@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/7ee55d2d2581fd7aa75bf5b9cc8f942e/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/7ee55d2d2581fd7aa75bf5b9cc8f942e/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/7ee55d2d2581fd7aa75bf5b9cc8f942e/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/fb39c6fbfddb9a4bcf170d8d0d795a9b/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/fb39c6fbfddb9a4bcf170d8d0d795a9b/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/fb39c6fbfddb9a4bcf170d8d0d795a9b/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/36f296ec8cbee534b306e60b8dc9dcce/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/36f296ec8cbee534b306e60b8dc9dcce/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/36f296ec8cbee534b306e60b8dc9dcce/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

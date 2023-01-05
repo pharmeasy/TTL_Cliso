@@ -1,12 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.paytm.easypay:easypay-appinvoke:1.7.3@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/bc85e2ea1584af263f24d280cdeb5583/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/bc85e2ea1584af263f24d280cdeb5583/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/bc85e2ea1584af263f24d280cdeb5583/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/87d491790e914197c989fa7bb03dc4dd/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/87d491790e914197c989fa7bb03dc4dd/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/87d491790e914197c989fa7bb03dc4dd/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/596fd91e01ba10db5f1435efd49afab6/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/596fd91e01ba10db5f1435efd49afab6/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/596fd91e01ba10db5f1435efd49afab6/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

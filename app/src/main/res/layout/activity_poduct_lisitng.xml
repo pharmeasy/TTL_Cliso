@@ -249,7 +249,7 @@
                 android:drawableRight="@drawable/search_red"
                 android:hint="SEARCH TEST NAME"
                 android:iconifiedByDefault="false"
-                android:inputType="text"
+                android:digits="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz "
                 android:lines="1"
                 android:maxLines="1"
                 android:singleLine="true"

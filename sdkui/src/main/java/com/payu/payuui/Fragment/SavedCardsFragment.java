@@ -13,6 +13,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
+
 import com.payu.india.Interfaces.DeleteCardApiListener;
 import com.payu.india.Model.CardStatus;
 import com.payu.india.Model.MerchantWebService;
@@ -30,17 +33,13 @@ import com.payu.india.Tasks.DeleteCardTask;
 import com.payu.payuui.Activity.PayUBaseActivity;
 import com.payu.payuui.Adapter.PagerAdapter;
 import com.payu.payuui.Adapter.SavedCardItemFragmentAdapter;
+import com.payu.payuui.R;
 import com.payu.payuui.SdkuiUtil.SdkUIConstants;
 import com.payu.payuui.Widget.CirclePageIndicator;
-import com.payu.payuui.R;
-
 import com.payu.payuui.Widget.ZoomOutPageTransformer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
 
 
 /**

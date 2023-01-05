@@ -1,5 +1,10 @@
 package com.example.e5322.thyrosoft.Fragment;
 
+import static android.content.Context.MODE_PRIVATE;
+import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
+import static java.util.Calendar.MONTH;
+import static java.util.Calendar.YEAR;
+
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -7,16 +12,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,17 +31,24 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Adapter.CustomCalendarAdapter;
 import com.example.e5322.thyrosoft.Adapter.TrackDetAdapter;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.CAlendar_Inteface;
 import com.example.e5322.thyrosoft.Models.Mail_Model_Receipt;
@@ -70,11 +74,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import static android.content.Context.MODE_PRIVATE;
-import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
-import static java.util.Calendar.MONTH;
-import static java.util.Calendar.YEAR;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -138,6 +137,7 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
     private String getTextofMonth;
     private String dayToShow, monthToShow;
     private String getDateToShow, passMonth_Finally;
+    private  boolean isviewShown = false;
     final DatePickerDialog.OnDateSetListener setTime = new DatePickerDialog.OnDateSetListener() {
 
         @Override
@@ -243,6 +243,14 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
 //        }
         SimpleDateFormat sdfdata = new SimpleDateFormat("yyyy-MM-dd");
         convertedDate = datetoPass;
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(getView() != null){
+            GlobalClass.ComingFrom = "Receipt_Screen";
+        }
     }
 
     @Override

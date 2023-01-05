@@ -1,12 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.payu.india:payu-sdk:4.4.5@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a1cca7a99bad6dd07dfa7ce5dd19ab72/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a1cca7a99bad6dd07dfa7ce5dd19ab72/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a1cca7a99bad6dd07dfa7ce5dd19ab72/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/015381edab6bbfe764753c8f2646200f/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/015381edab6bbfe764753c8f2646200f/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/015381edab6bbfe764753c8f2646200f/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b5740f6108ec1bd29111ebeeb23aa4e8/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b5740f6108ec1bd29111ebeeb23aa4e8/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b5740f6108ec1bd29111ebeeb23aa4e8/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

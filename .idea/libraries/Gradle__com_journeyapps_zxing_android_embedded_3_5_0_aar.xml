@@ -1,12 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.journeyapps:zxing-android-embedded:3.5.0@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a1e5c8351b8c4ea5eb4906e3a3645e3a/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a1e5c8351b8c4ea5eb4906e3a3645e3a/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a1e5c8351b8c4ea5eb4906e3a3645e3a/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0e4225124ea024a7e277d893e24fc5f4/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0e4225124ea024a7e277d893e24fc5f4/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0e4225124ea024a7e277d893e24fc5f4/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6019df80acb9c3bfe2bc5e54ce88f027/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6019df80acb9c3bfe2bc5e54ce88f027/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6019df80acb9c3bfe2bc5e54ce88f027/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

@@ -19,6 +19,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Fragment.RATEnterFrag;
 import com.example.e5322.thyrosoft.Fragment.RATEnteredFrag;
+import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.AppPreferenceManager;
 import com.example.e5322.thyrosoft.R;
 
@@ -67,6 +68,13 @@ public class RATWOEActivity extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_rat_woe, container, false);
+    }
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(getView() != null){
+            GlobalClass.ComingFrom = "RAT_WOE";
+        }
     }
 
     @Override

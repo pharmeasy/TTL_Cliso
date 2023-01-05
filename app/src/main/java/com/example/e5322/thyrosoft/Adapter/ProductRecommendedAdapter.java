@@ -28,6 +28,7 @@ public class ProductRecommendedAdapter extends RecyclerView.Adapter<ProductRecom
      AppInterfaces.OnClickRecoTestListner onClickRecoTestListner;
     boolean isMainChecked = false;
     boolean makeMainRBChecked = false;
+    String recoSelectedTest = "";
 
     public ProductRecommendedAdapter(ProductLisitngActivityNew productLisitngActivityNew, ArrayList<GetProductsRecommendedResModel.ProductListDTO> listDTOS, Activity mActivity) {
         this.productLisitngActivityNew = productLisitngActivityNew;
@@ -75,7 +76,7 @@ public class ProductRecommendedAdapter extends RecyclerView.Adapter<ProductRecom
                 notifyItemChanged(CopyOfLastCheckedPosition);
                 notifyItemChanged(lastCheckedPostion);
                 isMainChecked = true;
-
+                     recoSelectedTest = listDTOS.get(position).getTestsRecommended();
             }
         });
 
@@ -87,7 +88,8 @@ public class ProductRecommendedAdapter extends RecyclerView.Adapter<ProductRecom
                     /*ProductLisitngActivityNew*/
                     if (onClickRecoTestListner != null) {
                         makeMainRBChecked=true;
-                        onClickRecoTestListner.onchecked(listDTOS.get(position), false, makeMainRBChecked);
+                        recoSelectedTest = listDTOS.get(position).getTestsRecommended();
+                        onClickRecoTestListner.onchecked(listDTOS.get(position), false, makeMainRBChecked, recoSelectedTest);
                     }
                 }
             }

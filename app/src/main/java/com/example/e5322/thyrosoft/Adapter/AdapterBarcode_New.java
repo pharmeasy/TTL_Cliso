@@ -1,12 +1,18 @@
 package com.example.e5322.thyrosoft.Adapter;
 
+import static android.content.Context.MODE_PRIVATE;
+import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -31,6 +37,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.CleverTapHelper;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.RecyclerInterface;
@@ -50,9 +57,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import static android.content.Context.MODE_PRIVATE;
-import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
-
 public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.ViewHolder> implements SendScanBarcodeDetails {
     SharedPreferences prefs;
     String user, passwrd, access, api_key, ERROR, RES_ID, barcode, response1, previouseBarcode, afterBarcode, searchBarcode, storeResponse;
@@ -68,6 +72,12 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
     int fromcome;
     String TAG = AdapterBarcode_New.class.getSimpleName();
     ArrayList<ScannedBarcodeDetails> distinctspecimentlist;
+    CleverTapHelper cleverTapHelper;
+    String Header, PatientDetails, randomId, cartList, version,vialType;
+    SharedPreferences getRandomIdPref, savepatientDetails;
+    String nameString, getFinalAge, saveGenderId, getFinalTime, labname, labAddress, patientAddress, referrredBy, kycinfo, typename, getPincode, EMAIL_ID, displayslectedtest;
+    int b2b = 0;
+    int b2c = 0;
     public static InputFilter EMOJI_FILTER = new InputFilter() {
 
         @Override
@@ -151,6 +161,38 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
         passwrd = prefs.getString("password", null);
         access = prefs.getString("ACCESS_TYPE", null);
         api_key = prefs.getString("API_KEY", null);
+
+        savepatientDetails = context.getSharedPreferences("savePatientDetails", MODE_PRIVATE);
+        nameString = savepatientDetails.getString("name", "");
+        getFinalAge = savepatientDetails.getString("age", "");
+        saveGenderId = savepatientDetails.getString("gender", "");
+        getFinalTime = savepatientDetails.getString("sct", "");
+        labname = savepatientDetails.getString("labname", "");
+        labAddress = savepatientDetails.getString("labAddress", "");
+        patientAddress = savepatientDetails.getString("patientAddress", "");
+        referrredBy = savepatientDetails.getString("refBy", "");
+        kycinfo = savepatientDetails.getString("kycinfo", "");
+        typename = savepatientDetails.getString("woetype", "");
+        getPincode = savepatientDetails.getString("pincode", "");
+        EMAIL_ID = savepatientDetails.getString("EMAIL_ID", "");
+
+        getRandomIdPref = context.getSharedPreferences("Temp_Wo_Id", MODE_PRIVATE);
+        randomId = getRandomIdPref.getString("Temp_Wo_Id", "");
+
+        cleverTapHelper = new CleverTapHelper((Activity) context);
+
+        PackageInfo pInfo = null;
+        try {
+            pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        version = pInfo.versionName;
+
+        Header = "CLISO APP" + "," + version;
+        PatientDetails = nameString + "," + getFinalAge + "," + saveGenderId + ", CLISO APP," +
+                getFinalTime + "," + labAddress + "," + referrredBy + "," + patientAddress + "," + typename + "," + labname + "," + getPincode + "," + EMAIL_ID + ",";
+
 
         holder.enter_barcode.setTag(position);
         holder.setback.setOnClickListener(new View.OnClickListener() {
@@ -248,6 +290,21 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
                     progressDialog.setCancelable(false);
                     progressDialog.show();
 
+                    b2b = 0;
+                    b2c = 0;
+                    ArrayList<String> getProducts = new ArrayList<>();
+                    for (int i = 0; i < selctedProductArraylist.size(); i++) {
+                        getProducts.add(selctedProductArraylist.get(i).getProduct());
+                        displayslectedtest = TextUtils.join(",", getProducts);
+                        b2b = b2b + Integer.parseInt(selctedProductArraylist.get(i).getRate().getB2b());
+                        b2c = b2c + Integer.parseInt(selctedProductArraylist.get(i).getRate().getB2c());
+                    }
+                    System.out.println("b2b rate " + b2b);
+                    System.out.println("b2c rate " + b2c);
+                    System.out.println("products " + displayslectedtest);
+
+                    cartList = displayslectedtest +"," + b2b + "," + b2c;
+
                     // final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(context);
 
                     System.out.println("barcode url  --> " + Api.checkBarcode + api_key + "/" + searchBarcode + "/getcheckbarcode");
@@ -287,6 +344,8 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
                                     for (int i = 0; i < GlobalClass.setScannedBarcodes.size(); i++) {
                                         Log.e(TAG, "onBindViewHolder: specimen type & barcode  --->" + GlobalClass.setScannedBarcodes.get(i).getBarcode_number() + GlobalClass.setScannedBarcodes.get(i).getSpecimenType());
                                     }
+                                    System.out.println(Header+ ","+ PatientDetails + "," + randomId + "," + cartList + "," +GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type()+","+ "Scanned Barcode" + "," +barcode+"," + response1);
+                                    cleverTapHelper.barcodeScanSuccessEvent(Header,PatientDetails,randomId,cartList,GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type(),"ScannedBarcode",barcode,response1);
 
                                     System.out.println("length of barcodes --->" + GlobalClass.setScannedBarcodes.size());
                                     Log.e(TAG, "onBind View Holder: size of array --->" + GlobalClass.setScannedBarcodes.size());
@@ -365,9 +424,34 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
         holder.element1_iv.setOnClickListener(onScanbarcodeClickListener);
         holder.element1_iv.setTag(GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type());
 
+
         holder.scanBarcode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                /*Header = "CLISO APP" + "," + version;
+                PatientDetails = nameString + "," + getFinalAge + "," + saveGenderId + ", CLISO APP," +
+                        getFinalTime + "," + labAddress + "," + referrredBy + "," + patientAddress + "," + typename + "," + labname + "," + getPincode + "," + EMAIL_ID + ",";
+*/
+                b2b = 0;
+                b2c = 0;
+                ArrayList<String> getProducts = new ArrayList<>();
+                for (int i = 0; i < selctedProductArraylist.size(); i++) {
+                    getProducts.add(selctedProductArraylist.get(i).getProduct());
+                    displayslectedtest = TextUtils.join(",", getProducts);
+                    b2b = b2b + Integer.parseInt(selctedProductArraylist.get(i).getRate().getB2b());
+                    b2c = b2c + Integer.parseInt(selctedProductArraylist.get(i).getRate().getB2c());
+                }
+                System.out.println("b2b rate " + b2b);
+                System.out.println("b2c rate " + b2c);
+                System.out.println("products " + displayslectedtest);
+
+                cartList = displayslectedtest +"," + b2b + "," + b2c;
+                vialType = GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type();
+
+                System.out.println(Header + "," + PatientDetails + "," + randomId + "," + cartList + "," + GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type() + "," + "Manual Barcode" + "," + " : Barcode event");
+                cleverTapHelper.barcodeScanEvent(Header,PatientDetails,randomId,cartList,vialType,"Manual_Barcode");
+
                 holder.linearEditbarcode.setVisibility(View.VISIBLE);
                 holder.barcode_linear.setVisibility(View.GONE);
 
@@ -555,6 +639,8 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
                                                     enter_barcode.setText(searchBarcode);
                                                     GlobalClass.hideProgress(context, showprogressDialog);
 
+                                                    System.out.println(Header+ ","+ PatientDetails + "," + randomId + "," + cartList + "," +GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type()+","+ "Manual Barcode" + "," +barcode+"," + response1);
+                                                    cleverTapHelper.barcodeScanSuccessEvent(Header,PatientDetails,randomId,cartList,GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type(),"Manual Barcode",barcode,response1);
                                                 } else if (ERROR.equalsIgnoreCase(caps_invalidApikey)) {
                                                     GlobalClass.hideProgress(context, showprogressDialog);
                                                     GlobalClass.redirectToLogin(((Activity) context));

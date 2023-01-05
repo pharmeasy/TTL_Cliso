@@ -5,6 +5,9 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.webkit.WebView;
+
+import androidx.fragment.app.FragmentActivity;
+
 import com.payu.custombrowser.Bank;
 import com.payu.custombrowser.CustomBrowser;
 import com.payu.custombrowser.PayUCustomBrowserCallback;
@@ -13,8 +16,6 @@ import com.payu.custombrowser.bean.CustomBrowserConfig;
 import com.payu.india.Model.PayuConfig;
 import com.payu.india.Payu.PayuConstants;
 import com.payu.payuui.R;
-
-import androidx.fragment.app.FragmentActivity;
 
 public class PaymentsActivity extends FragmentActivity {
     private Bundle bundle;

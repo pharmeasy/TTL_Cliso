@@ -1,5 +1,7 @@
 package com.example.e5322.thyrosoft.Adapter;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.e5322.thyrosoft.Activity.MultipleLeadActivity;
 import com.example.e5322.thyrosoft.Fragment.Start_New_Woe;
 import com.example.e5322.thyrosoft.LeadOrderIDModel.LeadOrderIdMainModel;
@@ -21,10 +25,6 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.recyclerview.widget.RecyclerView;
-
-import static android.content.Context.MODE_PRIVATE;
 
 public class AdapterRe extends RecyclerView.Adapter<AdapterRe.MyViewHolder> {
 

@@ -2,6 +2,9 @@ package com.payu.payuui.Adapter;
 
 import android.os.Bundle;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.payu.india.Model.PayuResponse;
 import com.payu.india.Payu.PayuConstants;
@@ -15,10 +18,6 @@ import com.payu.payuui.SdkuiUtil.SdkUIConstants;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
 
 /**
  * Created by piyush on 29/7/15.

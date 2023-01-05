@@ -1,11 +1,15 @@
 package com.example.e5322.thyrosoft.Adapter;
 
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -27,6 +31,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import com.example.e5322.thyrosoft.CleverTapHelper;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Controller.LogUserActivityTagging;
 import com.example.e5322.thyrosoft.GlobalClass;
@@ -39,8 +44,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by e5426@thyrocare.com on 18/5/18.
@@ -57,6 +60,7 @@ public class ResultDtlAdapter extends BaseAdapter {
     SharedPreferences sharedpreferences;
     private String TAG = ManagingTabsActivity.class.getSimpleName();
     private String user_code;
+    CleverTapHelper cleverTapHelper;
 
     public ResultDtlAdapter(Context context, ArrayList<TrackDetModel> arrayList) {
         sharedpreferences = context.getSharedPreferences("Userdetails", Context.MODE_PRIVATE);
@@ -100,6 +104,17 @@ public class ResultDtlAdapter extends BaseAdapter {
         ImageView share = (ImageView) convertView.findViewById(R.id.share);
         mail = (ImageView) convertView.findViewById(R.id.mail);
         clon = (ImageView) convertView.findViewById(R.id.colon);
+        cleverTapHelper = new CleverTapHelper((Activity) mContext);
+
+        PackageInfo pInfo = null;
+        try {
+            pInfo = mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+
+        String versionName = pInfo.versionName;
 
        /* if (trackdet.get(position).getEmail().equals("") || trackdet.get(position).getEmail().equals(null)) {
             mail.setVisibility(View.GONE);
@@ -156,11 +171,31 @@ public class ResultDtlAdapter extends BaseAdapter {
         download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                String name = trackdet.get(position).getName();
+                String Test = trackdet.get(position).getTests();
+                String refyBy = trackdet.get(position).getRef_By();
+                String email = trackdet.get(position).getEmail();
+                String labcode = trackdet.get(position).getLabcode();
+                String sct = trackdet.get(position).getSct();
+                String sample_type = trackdet.get(position).getSample_type();
+                String PatientDetails = name + "," + Test +","+ refyBy + "," + email + ","+labcode + "," + sct + "," + sample_type;
+
+                String header = "Cliso App" + versionName;
+                long currentTime = System.currentTimeMillis();
+
                 try {
                     if (trackdet.get(position).getPdflink() != null && !trackdet.get(position).getPdflink().isEmpty() && trackdet.get(position).getPdflink().length() > 0) {
                         new LogUserActivityTagging((Activity)mContext,Constants.REPORT_DOWNLOAD,""+barcode.getText().toString()+"- DOWNLOAD");
+                        long endTime = System.currentTimeMillis();
                         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(trackdet.get(position).getPdflink()));
                         mContext.startActivity(browserIntent);
+                        long calTime = endTime - currentTime;
+
+                        System.out.println("cal time : " + calTime/1000.0);
+                        cleverTapHelper.reportDownloadEvent(header,PatientDetails,Constants.REPORT_DOWNLOAD, String.valueOf(calTime),"","ClisoApp","Mobile");
+                    }else {
+                        cleverTapHelper.reportDownloadEvent(header,PatientDetails,"Report not found","","Not Download","ClisoApp","Mobile");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

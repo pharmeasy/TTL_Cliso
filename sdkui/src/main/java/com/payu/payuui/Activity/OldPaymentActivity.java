@@ -1,36 +1,21 @@
 package com.payu.payuui.Activity;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.webkit.WebView;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.webkit.JavascriptInterface;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.Toast;
-import com.payu.custombrowser.Bank;
-import com.payu.custombrowser.PayUWebChromeClient;
-import com.payu.custombrowser.PayUWebViewClient;
-import com.payu.india.Extras.PayUSdkDetails;
 import com.payu.india.Model.PayuConfig;
 import com.payu.india.Payu.PayuConstants;
-import com.payu.india.Payu.PayuUtils;
 import com.payu.magicretry.Helpers.Util;
 import com.payu.magicretry.MagicRetryFragment;
 import com.payu.payuui.R;
-import org.json.JSONException;
-import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 

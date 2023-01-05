@@ -1,12 +1,8 @@
 <component name="libraryTable">
   <library name="Gradle: com.google.firebase:firebase-installations-interop:16.0.1@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/04781c0a33e0db49c5332a29126033f0/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/04781c0a33e0db49c5332a29126033f0/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/04781c0a33e0db49c5332a29126033f0/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f87cea07ac7943280ecfac90a5fd4973/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f87cea07ac7943280ecfac90a5fd4973/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f87cea07ac7943280ecfac90a5fd4973/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/638c2b900ef312b61e5458d0f57d346d/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/638c2b900ef312b61e5458d0f57d346d/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

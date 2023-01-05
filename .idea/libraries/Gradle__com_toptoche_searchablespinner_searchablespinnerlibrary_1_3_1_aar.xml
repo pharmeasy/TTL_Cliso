@@ -1,12 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.toptoche.searchablespinner:searchablespinnerlibrary:1.3.1@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a8a8e88b9a2aa3114c86ab283c0a087b/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a8a8e88b9a2aa3114c86ab283c0a087b/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a8a8e88b9a2aa3114c86ab283c0a087b/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f629ff0ffa13df04333bbaee315eda9e/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f629ff0ffa13df04333bbaee315eda9e/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f629ff0ffa13df04333bbaee315eda9e/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ec78ae09c63b22ac1a616f9e0d04aa8f/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ec78ae09c63b22ac1a616f9e0d04aa8f/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ec78ae09c63b22ac1a616f9e0d04aa8f/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

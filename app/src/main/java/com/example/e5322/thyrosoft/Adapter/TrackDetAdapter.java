@@ -1,5 +1,7 @@
 package com.example.e5322.thyrosoft.Adapter;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -9,7 +11,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.text.Editable;
 import android.text.TextWatcher;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,10 +29,10 @@ import com.android.volley.RequestQueue;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.Mail_Model_Receipt;
 import com.example.e5322.thyrosoft.Models.TrackDetModel;
@@ -44,8 +45,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by e5426@thyrocare.com on 18/5/18.

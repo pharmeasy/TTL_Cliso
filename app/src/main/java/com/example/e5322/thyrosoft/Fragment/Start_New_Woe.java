@@ -81,6 +81,7 @@ import com.example.e5322.thyrosoft.Activity.frags.RootFragment;
 import com.example.e5322.thyrosoft.Adapter.AdapterRe;
 import com.example.e5322.thyrosoft.Adapter.CustomListAdapter;
 import com.example.e5322.thyrosoft.Adapter.PatientDtailsWoe;
+import com.example.e5322.thyrosoft.CleverTapHelper;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
 import com.example.e5322.thyrosoft.Controller.GetLeadgerDetailsController;
 import com.example.e5322.thyrosoft.Controller.Log;
@@ -279,7 +280,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     private ArrayList<String> statusForColor;
     private int minute;
     private int hour;
-    private SharedPreferences prefs,getRandomId;
+    private SharedPreferences prefs, getRandomId;
     private String user;
     private String passwrd;
     private String access, usercode;
@@ -382,6 +383,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     String Baseline, CMT, Shortage;
     GetBaselineDetailsResponseModel getBaselineDetailsResponseModel;
     Activity activity;
+    CleverTapHelper cleverTapHelper;
 
     public Start_New_Woe() {
         // Required empty public constructor
@@ -1234,6 +1236,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
 
     }
+
     private String getRandomString() {
         String char_random = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         StringBuilder str_random = new StringBuilder();
@@ -1274,6 +1277,19 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         appPreferenceManager = new AppPreferenceManager(activity);
 
         covidacc = appPreferenceManager.getCovidAccessResponseModel().isCovidRegistration();
+        PackageInfo pInfo = null;
+        try {
+            pInfo = getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        String versionName = pInfo.versionName;
+        cleverTapHelper = new CleverTapHelper(activity);
+        String Header = "Cliso App" +","+ versionName;
+        if (GlobalClass.ComingFrom != null) {
+            cleverTapHelper.NovidPageLoadEvent(Header, GlobalClass.ComingFrom);
+            GlobalClass.ComingFrom = "";
+        }
 
 
         name = (AutoCompleteTextView) viewMain.findViewById(R.id.name);

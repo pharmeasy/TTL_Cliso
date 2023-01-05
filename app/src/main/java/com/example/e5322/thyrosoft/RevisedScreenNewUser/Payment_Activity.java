@@ -49,6 +49,8 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -77,6 +79,7 @@ import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.MessageConstants;
+import com.example.e5322.thyrosoft.CleverTapHelper;
 import com.example.e5322.thyrosoft.Controller.DynamicPaymentController;
 import com.example.e5322.thyrosoft.Controller.GeneratePayTMchecksum;
 import com.example.e5322.thyrosoft.Controller.Log;
@@ -158,6 +161,9 @@ public class Payment_Activity extends AppCompatActivity {
     private int PaytmrequestCode = 83745;
     private String selGateway = "";
     LinearLayout ll_noauth, ll_activity_payment;
+    String version, Header;
+    CleverTapHelper cleverTapHelper;
+    private String BalancePref;
 
     @SuppressLint("NewApi")
     @Override
@@ -201,6 +207,7 @@ public class Payment_Activity extends AppCompatActivity {
         address_pref = getProfileName.getString("address", null);
         pincode_pref = getProfileName.getString("pincode", null);
         billavg = getProfileName.getString(Constants.Billamount, null);
+        BalancePref = getProfileName.getString(Constants.balance, null);
 
         // closing_balance_pref = getProfileName.getString("closing_balance", null);
 
@@ -213,8 +220,18 @@ public class Payment_Activity extends AppCompatActivity {
         mobile_pref = prefs.getString("mobile_user", null);
         CLIENT_TYP = prefs.getString("CLIENT_TYPE", "");
 
+
         COME_FROM_SCREEN = getIntent().getStringExtra("COMEFROM");
         title.setText("Online Payment");
+        PackageInfo pInfo = null;
+        try {
+            pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        version = pInfo.versionName;
+        Header = "Cliso App " + ", " + version;
+        cleverTapHelper = new CleverTapHelper(mActivity);
 
         if (Global.getLoginType(mActivity) == Constants.PEflag || CLIENT_TYP.equalsIgnoreCase(NHF)) {
             ll_activity_payment.setVisibility(View.GONE);
@@ -324,6 +341,8 @@ public class Payment_Activity extends AppCompatActivity {
         amountTopass = edt_enter_amt.getText().toString();
         Log.e(TAG, "Entered Amount ----->" + amountTopass);
         Log.e(TAG, "CB Amount ----->" + CBamount);
+        // System.out.println("Recharge Start : " + Header + "," + selGateway + "," + amountTopass + "," + BalancePref + "," + crd_amt);
+        cleverTapHelper.rechargeStartEvent(Header, selGateway, amountTopass, BalancePref, crd_amt);
         if (amountTopass.equals("")) {
             Toast.makeText(Payment_Activity.this, "Please enter amount", Toast.LENGTH_SHORT).show();
         } else if (CBamount < Constants.PAYAMOUNT) {
@@ -1196,9 +1215,11 @@ public class Payment_Activity extends AppCompatActivity {
                             }*/
 
                             if (paymentstatus.equalsIgnoreCase(SUCCESS)) {
+                                cleverTapHelper.rechargeSuccessEvent(Header, selGateway, amountTopass, BalancePref, crd_amt, ordno, true, "");
                                 Toast.makeText(Payment_Activity.this, "Transaction successful...", Toast.LENGTH_SHORT).show();
                                 edt_enter_amt.setText("");
                             } else {
+                                cleverTapHelper.rechargeSuccessEvent(Header, selGateway, amountTopass, BalancePref, crd_amt, ordno, false, "Transaction failed.");
                                 Toast.makeText(mActivity, "Transaction failed.", Toast.LENGTH_SHORT).show();
                             }
                         } else {

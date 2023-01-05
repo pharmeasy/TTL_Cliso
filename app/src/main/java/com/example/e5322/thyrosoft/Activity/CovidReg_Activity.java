@@ -19,6 +19,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Fragment.Covidenter_Frag;
 import com.example.e5322.thyrosoft.Fragment.Covidentered_frag;
+import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.AppPreferenceManager;
 import com.example.e5322.thyrosoft.R;
 
@@ -32,6 +33,7 @@ public class CovidReg_Activity extends Fragment {
     private static final String ARG_PARAM2 = "param2";
     private String mParam1;
     private String mParam2;
+    private String ComingFlag;
     private CovidReg_Activity.OnFragmentInteractionListener mListener;
     LinearLayout ll_mainCovidReg,ll_noauth;
     AppPreferenceManager appPreferenceManager;
@@ -65,6 +67,15 @@ public class CovidReg_Activity extends Fragment {
         View view = inflater.inflate(R.layout.lay_covidreg, container, false);
         return view;
     }
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(getView() != null){
+
+            GlobalClass.ComingFrom = "Covid_Registration";
+        }
+    }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {

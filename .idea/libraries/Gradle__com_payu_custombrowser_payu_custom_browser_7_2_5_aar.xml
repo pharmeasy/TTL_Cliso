@@ -1,16 +1,12 @@
 <component name="libraryTable">
   <library name="Gradle: com.payu.custombrowser:payu-custom-browser:7.2.5@aar">
     <ANNOTATIONS>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/150eeccde4e29afb848d1e3a2758dda3/annotations.zip!/" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6df0b110938446a263982ef6e54cca0d/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d9011b36864fe682ac40700d2b0e804b/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/150eeccde4e29afb848d1e3a2758dda3/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/150eeccde4e29afb848d1e3a2758dda3/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/150eeccde4e29afb848d1e3a2758dda3/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6df0b110938446a263982ef6e54cca0d/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6df0b110938446a263982ef6e54cca0d/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6df0b110938446a263982ef6e54cca0d/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d9011b36864fe682ac40700d2b0e804b/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d9011b36864fe682ac40700d2b0e804b/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d9011b36864fe682ac40700d2b0e804b/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

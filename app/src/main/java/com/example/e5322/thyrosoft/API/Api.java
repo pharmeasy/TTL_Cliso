@@ -38,7 +38,6 @@ public class Api {
     public static String Techso = " http://techsostng.thyrocare.cloud/";
     public static String Cloud_base_v2 = "http://stagingclisoapi.thyrocare.com/v2/";*/
 
-
     public static String PACKAGE_API = "https://clisomw.thyrocare.com/";
     public static String imgURL = "http://www.charbi.com/assets/photo/Emp/";
     public static String traningvideo = "http://www.charbi.com//CDN//Applications//Android//XiaoYing_Video_1547111134141.mp4";

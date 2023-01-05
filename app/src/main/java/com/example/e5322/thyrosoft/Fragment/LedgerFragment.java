@@ -113,6 +113,14 @@ public class LedgerFragment extends RootFragment {
     }
 
     @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(getView() != null){
+            GlobalClass.ComingFrom = "Ledger_Screen";
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -121,6 +129,7 @@ public class LedgerFragment extends RootFragment {
         SharedPreferences prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
 
         String CLIENT_TYPE = prefs.getString("CLIENT_TYPE", null);
+
 
         open_bal = (TextView) view.findViewById(R.id.open_bal);
         credit_limit = (TextView) view.findViewById(R.id.credit_limit);

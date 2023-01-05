@@ -1,12 +1,8 @@
 <component name="libraryTable">
   <library name="Gradle: com.google.android.gms:play-services-places-placereport:17.0.0@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0e502da6d546be8173cb82a8838f02e8/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0e502da6d546be8173cb82a8838f02e8/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0e502da6d546be8173cb82a8838f02e8/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/50b21a69fbac11ffd5b679e3b6182ee4/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/50b21a69fbac11ffd5b679e3b6182ee4/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/50b21a69fbac11ffd5b679e3b6182ee4/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d18dff81992c65d45b27fe34da2a61ce/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d18dff81992c65d45b27fe34da2a61ce/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

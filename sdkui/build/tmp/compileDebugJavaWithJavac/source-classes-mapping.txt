@@ -22,6 +22,8 @@ com/payu/payuui/Activity/PayUBaseActivity.java
  com.payu.payuui.Activity.PayUBaseActivity
  com.payu.payuui.Activity.PayUBaseActivity$1
  com.payu.payuui.Activity.PayUBaseActivity$2
+com/payu/payuui/Widget/ZoomOutPageTransformer.java
+ com.payu.payuui.Widget.ZoomOutPageTransformer
 com/payu/payuui/Adapter/SavedCardItemFragmentAdapter.java
  com.payu.payuui.Adapter.SavedCardItemFragmentAdapter
 com/payu/payuui/Fragment/LazyPayFragment.java
@@ -31,8 +33,6 @@ com/payu/payuui/Fragment/SavedCardsFragment.java
  com.payu.payuui.Fragment.SavedCardsFragment$1
  com.payu.payuui.Fragment.SavedCardsFragment$2
  com.payu.payuui.Fragment.SavedCardsFragment$3
-com/payu/payuui/Widget/ZoomOutPageTransformer.java
- com.payu.payuui.Widget.ZoomOutPageTransformer
 com/payu/payuui/Widget/SwipeTab/SlidingTabLayout.java
  com.payu.payuui.Widget.SwipeTab.SlidingTabLayout
  com.payu.payuui.Widget.SwipeTab.SlidingTabLayout$1
@@ -64,12 +64,12 @@ com/payu/payuui/Widget/CirclePageIndicator.java
  com.payu.payuui.Widget.CirclePageIndicator$1
  com.payu.payuui.Widget.CirclePageIndicator$SavedState
  com.payu.payuui.Widget.CirclePageIndicator$SavedState$1
+com/payu/payuui/SavedCard.java
+ com.payu.payuui.SavedCard
 com/payu/payuui/Fragment/CashCardFragment.java
  com.payu.payuui.Fragment.CashCardFragment
 com/payu/payuui/Fragment/NetBankingFragment.java
  com.payu.payuui.Fragment.NetBankingFragment
  com.payu.payuui.Fragment.NetBankingFragment$1
-com/payu/payuui/SavedCard.java
- com.payu.payuui.SavedCard
 com/payu/payuui/Fragment/PayuMoneyFragment.java
  com.payu.payuui.Fragment.PayuMoneyFragment

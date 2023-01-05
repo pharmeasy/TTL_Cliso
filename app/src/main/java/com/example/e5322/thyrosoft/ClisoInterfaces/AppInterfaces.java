@@ -4,7 +4,7 @@ import com.example.e5322.thyrosoft.Models.GetProductsRecommendedResModel;
 
 public class AppInterfaces {
     public interface OnClickRecoTestListner {
-        void onchecked(GetProductsRecommendedResModel.ProductListDTO listDTOS, boolean isChecked, boolean isMainChecked);
+        void onchecked(GetProductsRecommendedResModel.ProductListDTO listDTOS, boolean isChecked, boolean isMainChecked,String recoSelectedTest);
     }
 
 }

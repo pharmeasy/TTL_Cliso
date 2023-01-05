@@ -262,6 +262,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
         );
         setContentView(R.layout.activity_main_ll);
+        GlobalClass.ComingFrom = "Home_Screen";
 
 
         Constants.clevertapDefaultInstance = CleverTapAPI.getDefaultInstance(getApplicationContext());

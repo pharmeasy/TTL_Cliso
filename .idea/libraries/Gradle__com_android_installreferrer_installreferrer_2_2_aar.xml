@@ -1,12 +1,8 @@
 <component name="libraryTable">
   <library name="Gradle: com.android.installreferrer:installreferrer:2.2@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cdf4110a811adeb859b0a762b87450e5/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cdf4110a811adeb859b0a762b87450e5/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cdf4110a811adeb859b0a762b87450e5/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/71587a1e8e6977864c0236527904f7ef/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/71587a1e8e6977864c0236527904f7ef/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/71587a1e8e6977864c0236527904f7ef/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/866445ab3eb1427b25f8bbc8ee56588e/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/866445ab3eb1427b25f8bbc8ee56588e/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

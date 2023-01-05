@@ -258,6 +258,10 @@ public class GlobalClass {
     int[] textcolors = {R.color.WOEtext, R.color.enteredtext, R.color.confirmedtext, R.color.importedtext};
     ArrayList<Base_Model_Rate_Calculator> selectedTestsListCampIntimation = new ArrayList<>();
     ProgressDialog progressDialog;
+    public  static String ComingFrom ="";
+    public static  int recoCount  = 0;
+    public static  int recoSelectedCount  = 0;
+
 
     public GlobalClass(Context context) {
         this.context = context;
