@@ -398,7 +398,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                     }
                 }
             }*/
-            GetQuestions();
+          //  GetQuestions();
             openTermsAndConditions();
        // }
 

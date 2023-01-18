@@ -372,6 +372,35 @@
                     android:layout_height="wrap_content" />
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/ll_your_rate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_10"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:layout_weight="1"
+                    android:text="Your Rate :"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/value"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_your_rate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:layout_weight="1"
+                    android:text="Rs: 55555555/-"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/value" />
+            </LinearLayout>
+
 
             <LinearLayout
                 android:id="@+id/ll_letterhead"
@@ -835,8 +864,8 @@
         android:id="@+id/ll_location_note"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <TextView
             android:layout_width="wrap_content"

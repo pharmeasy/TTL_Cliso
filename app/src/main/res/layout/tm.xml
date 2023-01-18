@@ -35,7 +35,8 @@
                     android:layout_marginTop="5dp"
                     android:layout_marginRight="2dp"
                     android:background="@drawable/enter_entered_border_curve"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:id="@+id/enter_ll_unselected_consign"

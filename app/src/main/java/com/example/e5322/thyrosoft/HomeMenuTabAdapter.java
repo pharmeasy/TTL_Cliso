@@ -13,13 +13,13 @@ import com.example.e5322.thyrosoft.Activity.CovidReg_Activity;
 import com.example.e5322.thyrosoft.Activity.RATWOEActivity;
 import com.example.e5322.thyrosoft.Fragment.BillingSummary;
 import com.example.e5322.thyrosoft.Fragment.CHNfragment;
+import com.example.e5322.thyrosoft.Fragment.Consignment_fragment;
 import com.example.e5322.thyrosoft.Fragment.FilterReport;
 import com.example.e5322.thyrosoft.Fragment.LedgerFragment;
 import com.example.e5322.thyrosoft.Fragment.NHFFragment;
 import com.example.e5322.thyrosoft.Fragment.RateCalculatorFragment;
 import com.example.e5322.thyrosoft.Fragment.Start_New_Woe;
 import com.example.e5322.thyrosoft.Fragment.TrackDetails;
-import com.example.e5322.thyrosoft.Fragment.Wind_up_fragment;
 
 public class HomeMenuTabAdapter extends FragmentPagerAdapter {
 
@@ -80,7 +80,7 @@ public class HomeMenuTabAdapter extends FragmentPagerAdapter {
                 result = new LedgerFragment();
                 break;
             case 8:
-                result = new Wind_up_fragment();
+                result = new Consignment_fragment();
                 break;
             case 9:
                 // First Fragment of Third Tab

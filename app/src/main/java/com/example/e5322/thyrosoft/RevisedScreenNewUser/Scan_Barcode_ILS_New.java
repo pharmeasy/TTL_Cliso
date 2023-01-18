@@ -276,6 +276,8 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     SharedPreferences getRandomIdPref;
     ArrayList<String> getTestNameToPAss = new ArrayList<>();
     int B2C = 0;
+    TextView tv_your_rate;
+    LinearLayout ll_your_rate;
 
 
     @SuppressLint({"WrongViewCast", "NewApi"})
@@ -336,6 +338,9 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         btn_choosefile_presc = findViewById(R.id.btn_choosefile_presc);
         lin_preview_pres = findViewById(R.id.lin_preview_pres);
         txt_fileupload_pres = findViewById(R.id.txt_fileupload_pres);
+
+        tv_your_rate = findViewById(R.id.tv_your_rate);
+        ll_your_rate = findViewById(R.id.ll_your_rate);
 
         getRandomIdPref = getSharedPreferences("Temp_Wo_Id", MODE_PRIVATE);
         randomId = getRandomIdPref.getString("Temp_Wo_Id", "");
@@ -413,7 +418,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         myDb = new DatabaseHelper(getApplicationContext());
         CheckGpsStatus();
 
-        SetBrandLetterValues();
+        // SetBrandLetterValues();
 
         if (GpsStatus) {
             gpsTracker = new GpsTracker(Scan_Barcode_ILS_New.this);
@@ -513,6 +518,12 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         getFinalEmailIdToPost = GlobalClass.getFinalEmailAddressToPOst;
 
         pass_to_api = Integer.parseInt(sr_number);
+        if (access.equals("ADMIN")){
+            ll_your_rate.setVisibility(View.VISIBLE);
+            setRate();
+        }else {
+            ll_your_rate.setVisibility(View.GONE);
+        }
 
         PackageInfo pInfo = null;
         try {
@@ -861,7 +872,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                 }
                 GlobalClass.specimenttype = Specimenttype;
                 scanIntegrator.initiateScan();
-              //  System.out.println(Header + "," + PatientDetails + "," + randomId + "," + cartList + "," + GlobalClass.specimenttype + "," + "Barcode Scanner" + "," + " : Barcode event");
+                //  System.out.println(Header + "," + PatientDetails + "," + randomId + "," + cartList + "," + GlobalClass.specimenttype + "," + "Barcode Scanner" + "," + " : Barcode event");
                 cleverTapHelper.barcodeScanEvent(Header, PatientDetails, randomId, cartList, GlobalClass.specimenttype, "Scan_Barcode");
             }
         });
@@ -1004,6 +1015,16 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         cleverTapHelper.submitPageRedirectEvent(Header, PatientDetails, randomId, cartList);
     }
 
+    private void setRate() {
+        int rate = 0;
+        for (int i = 0; i < selctedTest.size(); i++) {
+            if (!GlobalClass.isNull(selctedTest.get(i).getRate().getB2b())) {
+                rate = rate + Integer.parseInt(selctedTest.get(i).getRate().getB2b());
+            }
+        }
+        tv_your_rate.setText("Rs: " + rate + "/-");
+    }
+
     boolean checkBSBPValidation() {
         if (edt_bsValue.isShown() && edt_bsValue.getText().toString().length() > 0 && Integer.parseInt(edt_bsValue.getText().toString()) < GlobalClass.getBSBPMinMaxValue(mActivity, Constants.BS_MIN)) {
             Toast.makeText(Scan_Barcode_ILS_New.this, GlobalClass.getBSBPValidationMsg(mActivity, Constants.BS_MSG), Toast.LENGTH_SHORT).show();
@@ -1058,7 +1079,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
             if (finallist.size() == 0) {
                 ll_letterhead.setVisibility(View.GONE);
             } else {
-                ll_letterhead.setVisibility(View.VISIBLE);
+                ll_letterhead.setVisibility(View.GONE);
             }
 
             BrandAdapter brandAdapter = new BrandAdapter(this, finallist, getBrandList, typeName);
@@ -1371,7 +1392,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                     }
                     GlobalClass.specimenttype = Specimenttype;
                     scanIntegrator.initiateScan();
-                  //  System.out.println(Header + "," + PatientDetails + "," + randomId + "," + cartList + "," + GlobalClass.specimenttype + "," + "Barcode Scanner" + "," + " : Barcode event");
+                    //  System.out.println(Header + "," + PatientDetails + "," + randomId + "," + cartList + "," + GlobalClass.specimenttype + "," + "Barcode Scanner" + "," + " : Barcode event");
                     cleverTapHelper.barcodeScanEvent(Header, PatientDetails, randomId, cartList, GlobalClass.specimenttype, "Scan_Barcode");
                 }
             });
@@ -1387,7 +1408,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
             barcodelists.add(GlobalClass.finalspecimenttypewiselist.get(a).getBarcode());
         }
 
-       // System.out.println(Header + "," + PatientDetails + "," + randomId + "," + cartList + "," + barcodelists + "," + " : Barcode verify pop event");
+        // System.out.println(Header + "," + PatientDetails + "," + randomId + "," + cartList + "," + barcodelists + "," + " : Barcode verify pop event");
         cleverTapHelper.barcodeVerifyPopup(Header, PatientDetails, randomId, cartList, String.valueOf(barcodelists));
 
         bottomSheetDialog = new BottomSheetDialog(this, R.style.BottomSheetTheme);
@@ -1578,7 +1599,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         for (int a = 0; a < GlobalClass.finalspecimenttypewiselist.size(); a++) {
             barcodelists.add(GlobalClass.finalspecimenttypewiselist.get(a).getBarcode());
         }
-       // System.out.println("submit event : " + Header + "," + PatientDetails + "," + randomId + "," + cartList + "," + String.valueOf(barcodelists));
+        // System.out.println("submit event : " + Header + "," + PatientDetails + "," + randomId + "," + cartList + "," + String.valueOf(barcodelists));
         cleverTapHelper.woeSubmitEvent(Header, PatientDetails, randomId, cartList, String.valueOf(barcodelists), getRecoDialogCount, getrecoSelectedCount, getrecoShownTest, getrecoSelectedTest);
         if (Global.isoffline) {
             StoreOfflineWOE(json);
