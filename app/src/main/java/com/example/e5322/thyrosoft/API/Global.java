@@ -503,7 +503,7 @@ public class Global {
                 "      class=\"bannerIframeClass\"\n" +
                 "      scrolling=\"no\"\n" +
                 "      style=\"display: none; width: 100%;\" \n" +
-                "      src=\"https://newcliso.thyrocare.com/banner\"\n" +
+                "      src=\"https://thyronxt.thyrocare.com/banner\"\n" +
                 "      allowfullscreen\n" +
                 "      >\n" +
                 "    </iframe>\n" +
