@@ -70,6 +70,7 @@ import com.example.e5322.thyrosoft.MainModelForAllTests.MainModel;
 import com.example.e5322.thyrosoft.MainModelForAllTests.Product_Rate_MasterModel;
 import com.example.e5322.thyrosoft.Models.BaseModel;
 import com.example.e5322.thyrosoft.Models.GetProductsRecommendedResModel;
+import com.example.e5322.thyrosoft.Models.PincodeMOdel.AppPreferenceManager;
 import com.example.e5322.thyrosoft.Models.TRFModel;
 import com.example.e5322.thyrosoft.Models.ULCResponseModel;
 import com.example.e5322.thyrosoft.R;
@@ -195,6 +196,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
     String setFinalRecoRate = "";
     String setFinalB2BRate = "";
     String setFinalB2CRate = "";
+    AppPreferenceManager appPreferenceManager;
 
 
     @SuppressLint("NewApi")
@@ -229,6 +231,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
         test_txt = (TextView) findViewById(R.id.test_txt);
         recycler_ulc_woe = (RecyclerView) findViewById(R.id.recycler_ulc_woe);
 
+        appPreferenceManager = new AppPreferenceManager(mActivity);
         CleverTapHelper cleverTapHelper = new CleverTapHelper(mActivity);
 
         linearLayoutManager = new LinearLayoutManager(ProductLisitngActivityNew.this);
@@ -903,6 +906,9 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
             if (!GlobalClass.isNetworkAvailable(ProductLisitngActivityNew.this)) {
                 TastyToast.makeText(ProductLisitngActivityNew.this, ToastFile.intConnection, Toast.LENGTH_SHORT, TastyToast.ERROR);
             } else {
+                if (appPreferenceManager.getSynProductCount() != 0) {
+                    appPreferenceManager.setProductSyncIntent("forcesync");
+                }
                 getAllproduct();
             }
         } else {
@@ -1024,10 +1030,11 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
         Log.e(TAG, "Product URL --->" + Api.getAllTests + api_key + "/ALL/getproducts");
         // https://clisoapi.thyrocare.com/v1/nVBoST2makUkW6Di6hOlZh9So2WmpVBvOGA2)koap4g=/ALL/getproducts
 
-        JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.getAllTests + api_key + "/ALL/getproducts", new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.getAllTests + api_key + "/ALL/getproducts" + getProductIntent(), new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Log.e(TAG, "onResponse: RESPONSE" + response);
+                appPreferenceManager.setProductSyncIntent("");
 
                 GlobalClass.hideProgress(ProductLisitngActivityNew.this, barProgressDialog);
 
@@ -1073,6 +1080,16 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueuepoptestILS.add(jsonObjectRequestPop);
         Log.e(TAG, "onCreate: URL" + jsonObjectRequestPop);
+    }
+
+    private String getProductIntent() {
+        String str_productsyncIntent = "";
+        if (appPreferenceManager.getProductSyncIntent() == null && appPreferenceManager.getProductSyncIntent().isEmpty()) {
+            str_productsyncIntent = "?intent=login";
+        } else {
+            str_productsyncIntent = "?intent=" + appPreferenceManager.getProductSyncIntent();
+        }
+        return str_productsyncIntent;
     }
 
     private void callAdapter(MainModel mainModel) {

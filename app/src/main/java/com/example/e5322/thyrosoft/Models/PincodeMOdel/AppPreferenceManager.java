@@ -26,6 +26,7 @@ public class AppPreferenceManager {
     private String TermsFlag = "TermsFlag";
     private String BaselineSync = "BaselineSync";
     private String WoMasterSync = "WoMasterSync";
+    private String ProductSyncIntent = "ProductSyncIntent";
 
 
     public AppPreferenceManager(Activity activity) {
@@ -37,6 +38,13 @@ public class AppPreferenceManager {
         appPreference = AppPreference.getAppPreferences(context);
     }
 
+    public String getProductSyncIntent() {
+        return appPreference.getString(ProductSyncIntent,"");
+    }
+
+    public void setProductSyncIntent(String productSyncIntent) {
+        appPreference.putString(ProductSyncIntent,productSyncIntent);
+    }
 
     public String getWoMasterSyncDate() {
         return appPreference.getString(WoMasterSync, "");

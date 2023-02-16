@@ -1693,6 +1693,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     }
 
     private void SyncData() {
+        appPreferenceManager.setProductSyncIntent("expired");
         SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(ManagingTabsActivity.this);
         SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
         prefsEditor1.remove("MyObject");

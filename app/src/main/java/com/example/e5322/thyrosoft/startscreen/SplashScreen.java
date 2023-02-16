@@ -31,7 +31,6 @@ import androidx.core.app.ActivityCompat;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
-import com.example.e5322.thyrosoft.Activity.MessageConstants;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
 import com.example.e5322.thyrosoft.Controller.GetBaselineDetailsAPIController;
 import com.example.e5322.thyrosoft.Controller.Log;
@@ -49,7 +48,6 @@ import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.Retrofit.APIInteface;
 import com.example.e5322.thyrosoft.Retrofit.PostAPIInterface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
-import com.example.e5322.thyrosoft.ToastFile;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
@@ -335,7 +333,7 @@ public class SplashScreen extends AppCompatActivity {
         }
     }
 
-    public void getVersionResponse(final String apiVersion, final String apkUrl, String response) {
+    public void getVersionResponse(final String apiVersion, final String apkUrl, String response, boolean isForceUpdate) {
         if (apiVersion != null && response.equalsIgnoreCase("Success")) {
             iv.startAnimation(anim);
 
@@ -353,7 +351,7 @@ public class SplashScreen extends AppCompatActivity {
                     int intPkgversion = Integer.parseInt(preversion);//pkg
 
                     if (intPkgversion < intApiVersion) {
-                        displayUpdateDialog(activity, apkUrl);
+                        displayUpdateDialog(activity, apkUrl,isForceUpdate);
                     } else {
                         callIntent();
                     }
@@ -464,7 +462,7 @@ public class SplashScreen extends AppCompatActivity {
         }
     }
 
-    private void displayUpdateDialog(final Activity mActivity, final String apkUrl) {
+    private void displayUpdateDialog(final Activity mActivity, final String apkUrl, boolean isForceUpdate) {
 
         ViewGroup viewGroup = findViewById(android.R.id.content);
         View dialogView = LayoutInflater.from(mActivity).inflate(R.layout.updatedialog, viewGroup, false);
@@ -489,9 +487,15 @@ public class SplashScreen extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    if (ValidateInstallPermission()) {
-                        alertDialog.dismiss();
-                        callDownLoadData(apkUrl);
+                    if (!isForceUpdate) {
+                        if (ValidateInstallPermission()) {
+                            alertDialog.dismiss();
+                            callDownLoadData(apkUrl);
+                        }
+                    }else {
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(apkUrl));
+                        startActivity(intent);
+                        finish();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

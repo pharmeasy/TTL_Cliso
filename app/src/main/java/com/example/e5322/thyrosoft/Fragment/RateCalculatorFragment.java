@@ -62,6 +62,7 @@ import com.example.e5322.thyrosoft.Interface.InterfaceRateCAlculator;
 import com.example.e5322.thyrosoft.MainModelForAllTests.OUTLAB_TESTLIST_GETALLTESTS;
 import com.example.e5322.thyrosoft.MainModelForAllTests.Outlabdetails_OutLab;
 import com.example.e5322.thyrosoft.Models.MyPojo;
+import com.example.e5322.thyrosoft.Models.PincodeMOdel.AppPreferenceManager;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.RateCalculatorForModels.Base_Model_Rate_Calculator;
 import com.example.e5322.thyrosoft.RateCalculatorForModels.GetMainModel;
@@ -156,6 +157,7 @@ public class RateCalculatorFragment extends Fragment {
     //    private ArrayList<String> locationsList;
     private Activity mActivity;
     private String CLIENT_TYPE = "";
+    AppPreferenceManager appPreferenceManager;
 
     public RateCalculatorFragment() {
         // Required empty public constructor
@@ -182,11 +184,10 @@ public class RateCalculatorFragment extends Fragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if(getView() != null){
+        if (getView() != null) {
             GlobalClass.ComingFrom = "RATE_CALCULATOR";
         }
     }
-
 
 
     @Override
@@ -198,6 +199,7 @@ public class RateCalculatorFragment extends Fragment {
         selectedTestsListRateCal = new ArrayList<>();
 
         initUI();
+        appPreferenceManager = new AppPreferenceManager(mActivity);
 
         show_selected_tests_list_test_ils1.setMovementMethod(new ScrollingMovementMethod());
 
@@ -296,6 +298,10 @@ public class RateCalculatorFragment extends Fragment {
 
 
         if (GlobalClass.syncProduct(getActivity())) {
+
+            if (appPreferenceManager.getSynProductCount() != 0) {
+                appPreferenceManager.setProductSyncIntent("forcesync");
+            }
             getAllproduct();
         } else {
             getDataFromSharedPref();
@@ -619,12 +625,13 @@ public class RateCalculatorFragment extends Fragment {
     private void getAllproduct() {
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(getActivity());
         RequestQueue requestQueuepoptestILS = GlobalClass.setVolleyReq(mContext);
-        JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.getAllTests + api_key + "/ALL/getproducts", new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.getAllTests + api_key + "/ALL/getproducts" + getProductIntent(), new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 GlobalClass.hideProgress(mContext, progressDialog);
                 Log.e(TAG, "onResponse for All products :::: " + response);
                 GlobalClass.StoresyncProduct(mActivity);
+                appPreferenceManager.setProductSyncIntent("");
                 String getResponse = response.optString("RESPONSE", "");
                 if (getResponse.equalsIgnoreCase(caps_invalidApikey)) {
                     redirectToLogin(mContext);
@@ -711,6 +718,16 @@ public class RateCalculatorFragment extends Fragment {
         GlobalClass.volleyRetryPolicy(jsonObjectRequestPop);
         requestQueuepoptestILS.add(jsonObjectRequestPop);
         Log.e(TAG, "afterTextChanged: url" + jsonObjectRequestPop);
+    }
+
+    private String getProductIntent() {
+        String str_productsyncIntent = "";
+        if (appPreferenceManager.getProductSyncIntent().isEmpty()) {
+            str_productsyncIntent = "?intent=login";
+        } else {
+            str_productsyncIntent = "?intent=" + appPreferenceManager.getProductSyncIntent();
+        }
+        return str_productsyncIntent;
     }
 
     private void getDataFromSharedPref() {

@@ -69,11 +69,12 @@ public class VersionCheckAPIController {
                         String RESPONSE = response.getString("response");
                         Boolean isoff = (response.optBoolean("isoffline", false));
                         Boolean isKYC = (response.optBoolean("isKYC", false));
+                        boolean isForceUpdate = (response.optBoolean("isnxt", false));
                         Global.isoffline = isoff;
                         Global.isKYC = isKYC;
 
                         if (response != null) {
-                            splashScreenActivity.getVersionResponse(apiVersion, ApkUrl, RESPONSE);
+                            splashScreenActivity.getVersionResponse(apiVersion, ApkUrl, RESPONSE,isForceUpdate);
                         } else {
                             GlobalClass.showShortToast(mactivity, MessageConstants.SOMETHING_WENT_WRONG);
                         }
